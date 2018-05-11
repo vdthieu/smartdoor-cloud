@@ -8,20 +8,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="apple-touch-icon" href="apple-icon.png">
-    <link rel="shortcut icon" href="favicon.ico">
     {% load static %}
+    <link rel="shortcut icon" href=" {% static 'favicon.png' %}">
+    
     <link rel="stylesheet" href=" {% static 'assets/css/normalize.css' %}">
     <link rel="stylesheet" href=" {% static 'assets/css/bootstrap.min.css' %}">
-    <link rel="stylesheet"
-          href=" {% static 'assets/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href=" {% static 'assets/css/font-awesome.min.css' %}">
     <link rel="stylesheet" href=" {% static 'assets/css/themify-icons.css' %}">
     <link rel="stylesheet" href=" {% static 'assets/css/flag-icon.min.css' %}">
-    <link rel="stylesheet"
-          href=" {% static 'assets/css/cs-skin-elastic.css' %}">
+    <link rel="stylesheet" href=" {% static 'assets/css/cs-skin-elastic.css' %}">
     <!-- <link rel="stylesheet" href="assets/css/bootstrap-select.less"> -->
     <link rel="stylesheet" href=" {% static 'assets/scss/style.css' %}">
     <link href=" {% static 'assets/css/lib/vector-map/jqvmap.min.css' %}"
-          rel="stylesheet">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>   
 </head>
 <body>
 
@@ -46,18 +48,15 @@
         <div id="main-menu" class="main-menu collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="active">
-                    <a href="index.html"> <i
-                            class="menu-icon fa fa-dashboard"></i>Dashboard
-                    </a>
+                    <a href="#dashboard"><i class="menu-icon fa fa-dashboard"></i>Dashboard</a>
                 </li>
-
                 <li class="active">
-                    <a href="#"> <i class="menu-icon fa fa-gears"></i>Thiết lập
+                    <a href="#set_pwd"> <i class="menu-icon fa fa-gears"></i>Thiết lập
                         mật khẩu</a>
                 </li>
 
                 <li class="active">
-                    <a href="#"> <i class="menu-icon fa fa-user"></i>Quản lý
+                    <a href="#manage_pwd"> <i class="menu-icon fa fa-user"></i>Quản lý
                         tài khoản</a>
                 </li>
             </ul>
@@ -186,39 +185,23 @@
                     </a>
 
                     <div class="user-menu dropdown-menu">
-                        <a class="nav-link" href="#"><i
+                        <!--<a class="nav-link" href="#"><i
                                 class="fa fa- user"></i>My Profile</a>
 
                         <a class="nav-link" href="#"><i
                                 class="fa fa- user"></i>Notifications <span
                                 class="count">13</span></a>
 
-                        <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
+                        <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>> -->
 
-                        <a class="nav-link" href="#"><i
+                        <a class="nav-link" href="/logout"><i
                                 class="fa fa-power -off"></i>Logout</a>
                     </div>
                 </div>
 
                 <div class="language-select dropdown" id="language-select">
-                    <a class="dropdown-toggle" href="#" data-toggle="dropdown"
-                       id="language" aria-haspopup="true" aria-expanded="true">
-                        <i class="flag-icon flag-icon-us"></i>
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="language">
-                        <div class="dropdown-item">
-                            <span class="flag-icon flag-icon-fr"></span>
-                        </div>
-                        <div class="dropdown-item">
-                            <i class="flag-icon flag-icon-es"></i>
-                        </div>
-                        <div class="dropdown-item">
-                            <i class="flag-icon flag-icon-us"></i>
-                        </div>
-                        <div class="dropdown-item">
-                            <i class="flag-icon flag-icon-it"></i>
-                        </div>
-                    </div>
+                                  
+                    <h7><b>Chào! {{user}}</b></h7>
                 </div>
 
             </div>
@@ -325,7 +308,7 @@
 
             </tbody>
         </table>
-        <div class="bg-light d-flex w-100 flex-column">
+        <div id="manage_pwd"class="bg-light d-flex w-100 flex-column">
             <div class="w-100 page-header float-left d-flex flex-row align-items-center">
                 <h1 class="w-100">Thêm mật khẩu</h1>
                 <div class="p-0 d-flex justify-content-center align-items-center bg-success rounded"
@@ -397,7 +380,7 @@
 <!-- Right Panel -->
 
 <script src="{% static 'assets/js/vendor/jquery-2.1.4.min.js' %}"></script>
-{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>#}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
 
 <script src="{% static 'assets/js/plugins.js' %}"></script>
 <script src="{% static 'assets/js/main.js' %}"></script>
@@ -408,7 +391,7 @@
 <script src="{% static 'assets/js/lib/vector-map/jquery.vmap.min.js' %}"></script>
 <script src="{% static 'assets/js/lib/vector-map/jquery.vmap.sampledata.js' %}"></script>
 <script src="{% static 'assets/js/lib/vector-map/country/jquery.vmap.world.js' %}"></script>
-{#    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>#}
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script>
     (function ($) {
         "use strict";
@@ -431,7 +414,7 @@
     var btnControlDoor = jQuery("#door_control_btn");
     var btnSavePwd = jQuery("#save_pwd_btn");
 
-    var socket = new WebSocket('ws://' + window.location.host + '/ws/chat/');
+    var socket = new WebSocket('ws://' + window.location.host + '/ws/door/');
 
     socket.onmessage = function (e) {
         var data = JSON.parse(e.data);

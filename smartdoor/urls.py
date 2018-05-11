@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-
+from django.contrib.auth import views as auth_views
+from . import views
+from django.shortcuts import redirect
 urlpatterns = [
+    
     url(r'^admin/', admin.site.urls),
+    url(r'^$', views.login_redirect, name='login_redirect'),
     url(r'', include('door.urls')),
 
 ]
