@@ -19,7 +19,7 @@
     <link rel="stylesheet" href=" {% static 'assets/css/cs-skin-elastic.css' %}">
     <!-- <link rel="stylesheet" href="assets/css/bootstrap-select.less"> -->
     <link rel="stylesheet" href=" {% static 'assets/scss/style.css' %}">
-    <link href=" {% static 'assets/css/lib/vector-map/jqvmap.min.css' %}"
+    <link href=" {% static 'assets/css/lib/vector-map/jqvmap.min.css' %}">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
@@ -184,16 +184,7 @@
                              alt="User Avatar">
                     </a>
 
-                    <div class="user-menu dropdown-menu">
-                        <!--<a class="nav-link" href="#"><i
-                                class="fa fa- user"></i>My Profile</a>
-
-                        <a class="nav-link" href="#"><i
-                                class="fa fa- user"></i>Notifications <span
-                                class="count">13</span></a>
-
-                        <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>> -->
-
+                    <div class="user-menu dropdown-menu">0
                         <a class="nav-link" href="/logout"><i
                                 class="fa fa-power -off"></i>Logout</a>
                     </div>
@@ -218,46 +209,25 @@
             </div>
         </div>
     </div>
+    <div class="row p-2">
+        <div class="col-sm-12 ">
+            <div class="alert  alert-success alert-dismissible fade show"
+                 role="alert">
+                <span class="badge badge-pill badge-success">Success</span>
+                You successfully read this important alert message.
+                <button type="button" class="close" data-dismiss="alert"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <div class="content mt-3">
-        <div class="row">
-            <div class="col-sm-12 ">
-                <div class="alert  alert-success alert-dismissible fade show"
-                     role="alert">
-                    <span class="badge badge-pill badge-success">Success</span>
-                    You successfully read this important alert message.
-                    <button type="button" class="close" data-dismiss="alert"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="row p-2">
-            <div class="col-lg-3 col-md-6 border p-0">
-                <div class="panel panel-primary bg-flat-color-1 ">
-                    <div class="panel-heading pl-1">
-                        <div class="row p-1">
-                            <div class="col-3">
-                                <i id="door_status_icon"
-                                   class="fa fa-lock fa-5x text-dark"></i>
-                            </div>
-                            <div class="col-9 text-right float-right">
-                                <div class="huge">New Comments!</div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#" id="door_control_btn">
-                        <div class="panel-footer bg-light p-1">
-                            <span class="pull-left">Thay đổi trạng thái</span>
-                            <span class="pull-right"><i
-                                    class="fa fa-arrow-circle-right"></i></span>
-                            <div class="clearfix"></div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
+    <div class="d-flex mb-5 justify-content-center">
+        <a href="#" id="door_control_btn" class="justify-content-center d-inline-flex" style="width: 127px; height: 175px">
+            <img id="door_status_icon" style="zoom: 1.5;" src="{% static 'door-open.png' %}" alt="Door status">
+        </a>
+        <span class="slider" style="width: 100px; height: 100px;"></span>
     </div> <!-- .content -->
     {#    Mật khẩu#}
 
@@ -413,30 +383,39 @@
     var iconDoor = jQuery("#door_status_icon");
     var btnControlDoor = jQuery("#door_control_btn");
     var btnSavePwd = jQuery("#save_pwd_btn");
+    var doorOpenStatus = true;
 
     var socket = new WebSocket('ws://' + window.location.host + '/ws/door/');
+
+    function updateDoorIcon() {
+        if(doorOpenStatus){
+            iconDoor.attr('src',"{% static 'door-open.png' %}")
+        }else{
+            iconDoor.attr('src',"{% static 'door-close.png' %}")
+        }
+    }
 
     socket.onmessage = function (e) {
         var data = JSON.parse(e.data);
         if (data.hasOwnProperty('door_status')) {
             var message = data['door_status'];
             if (message === 'close') {
-                iconDoor.removeClass('fa-unlock');
-                iconDoor.addClass('fa-lock');
+                doorOpenStatus = false;
             }
             if (message === 'open') {
-                iconDoor.addClass('fa-unlock');
-                iconDoor.removeClass('fa-lock');
+                doorOpenStatus = true;
             }
+            updateDoorIcon();
         }
     };
 
     btnControlDoor.click(function () {
         var data;
-        if (iconDoor.hasClass('fa-lock'))
+        doorOpenStatus = !doorOpenStatus;
+        if (doorOpenStatus)
             data = {door_control: 'open'};
         else data = {door_control: 'close'};
-        console.log(data);
+        updateDoorIcon();
         socket.send(JSON.stringify(data));
     });
 
@@ -456,7 +435,6 @@
                 due: dataDueDate.val()
             }
         };
-        console.log(data)
         socket.send(JSON.stringify(data))
     });
 
