@@ -2,9 +2,9 @@
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 import paho.mqtt.client as mqtt
-from door.models import DoorPassword
+from door.models import DoorPassword, DoorHistory
 import json
-
+import datetime
 
 class DoorConsumer(WebsocketConsumer):
     def connect(self):
@@ -39,6 +39,17 @@ class DoorConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         if 'door_control' in text_data_json:
             data = text_data_json['door_control']
+            if data == 'close':
+                history_data = DoorHistory.objects.create(
+                    action='manual close',
+                    time=datetime.datetime.now()
+                )
+            else:
+                history_data = DoorHistory.objects.create(
+                    action='manual open',
+                    time=datetime.datetime.now()
+                )
+            history_data.save()
             self.mqtt.publish("door-control", data)
 
         if 'door_save_pwd' in text_data_json:
@@ -61,6 +72,9 @@ class DoorConsumer(WebsocketConsumer):
                     due_time=data['due'],
                 )
                 pwd_data.save()
+            self.send(json.dumps({
+                'update_pwd_list': data
+            }))
 
         # # Send message to room group
         # async_to_sync(self.channel_layer.group_send)(
