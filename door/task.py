@@ -1,7 +1,9 @@
 import paho.mqtt.client as mqtt
 from door.models import DoorPassword, DoorHistory
 from django.core.signals import request_finished
+from channels.layers import get_channel_layer
 import datetime
+from door.consumers import DoorConsumer
 
 
 def start_job():
