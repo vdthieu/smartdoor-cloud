@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/1.11/howto/deployment/wsgi/
 
 import os
 from django.core.wsgi import get_wsgi_application
+import django
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "smartdoor.settings")
+django.setup()
 application = get_wsgi_application()

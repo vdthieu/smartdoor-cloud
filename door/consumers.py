@@ -4,9 +4,11 @@ from channels.generic.websocket import WebsocketConsumer
 import paho.mqtt.client as mqtt
 from door.models import DoorPassword, DoorHistory
 import json
-import datetime
+from datetime import datetime
+from pytz import timezone
+import arrow
 
-
+local_timezone = timezone('Asia/Ho_Chi_Minh')
 class DoorConsumer(WebsocketConsumer):
     def connect(self):
         self.room_group_name = 'door-control'
@@ -38,29 +40,36 @@ class DoorConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         if 'door_control' in text_data_json:
             data = text_data_json['door_control']
-            now = datetime.datetime.now()
+            now = datetime.now(local_timezone)
+            arrow_now = arrow.now().format()
             if data == 'close':
                 history_data = DoorHistory.objects.create(
                     action='manual close',
                     time=now
                 )
-                self.send(json.dumps({
-                    'update_history_list': {
-                        'action': 'manual close',
-                        'time': now
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name, {
+                        'type': 'update_history_list',
+                        'message': json.dumps({
+                            'action': 'manual close',
+                            'time': arrow_now
+                        })
                     }
-                }))
+                )
             else:
                 history_data = DoorHistory.objects.create(
                     action='manual open',
                     time=now
                 )
-                self.send(json.dumps({
-                    'update_history_list': {
-                        'action': 'manual ',
-                        'time': now
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name, {
+                        'type': 'update_history_list',
+                        'message': json.dumps({
+                            'action': 'manual open',
+                            'time': arrow_now
+                        })
                     }
-                }))
+                )
             history_data.save()
             self.mqtt.publish("door-control", data)
 
@@ -88,15 +97,9 @@ class DoorConsumer(WebsocketConsumer):
                 'update_pwd_list': data
             }))
 
-        # # Send message to room group
-        # async_to_sync(self.channel_layer.group_send)(
-        #     self.room_group_name,
-        #     {
-        #         'type': 'post_socket',
-        #         'message': message
-        #     }
-        # )
-
+    def update_history_list(self, event):
+        data = json.loads(event['message'])
+        self.send(json.dumps({'update_hty_list': data}))
 
     # Receive message from room group
     def post_socket(self, event):

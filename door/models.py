@@ -14,5 +14,5 @@ class DoorPassword(models.Model):
 class DoorHistory(models.Model):
     action = models.CharField(max_length=50)
     # ['manual close','manual open','password open','auto close']
-    time = models.DateTimeField()
+    time = models.DateTimeField(default=None, blank=True, null=True)
     # time when the action happened
