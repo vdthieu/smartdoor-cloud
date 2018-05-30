@@ -3,7 +3,7 @@ import datetime
 
 
 class DoorPassword(models.Model):
-    password = models.CharField(max_length=50)
+    password = models.CharField(max_length=5, primary_key=True)
     is_hard = models.BooleanField(default=False)
     create_time = models.DateTimeField(default=None, blank=True, null=True)
     apply_time = models.DateTimeField(default=None, blank=True, null=True)
@@ -16,3 +16,11 @@ class DoorHistory(models.Model):
     # ['manual close','manual open','password open','auto close']
     time = models.DateTimeField(default=None, blank=True, null=True)
     # time when the action happened
+
+
+class DoorDevices(models.Model):
+    id = models.CharField(max_length=10, primary_key=True)
+    #to identify devices
+    status = models.BooleanField(default=False)
+    # True if device are connected
+    last_check = models.DateTimeField(default=None, blank=True, null=True)

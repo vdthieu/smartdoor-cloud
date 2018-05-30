@@ -2,13 +2,19 @@
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 import paho.mqtt.client as mqtt
-from door.models import DoorPassword, DoorHistory
+from door.models import DoorPassword, DoorHistory, DoorDevices
 import json
 from datetime import datetime
 from pytz import timezone
 import arrow
+import ssl
+
 
 local_timezone = timezone('Asia/Ho_Chi_Minh')
+ssl.match_hostname = lambda cert, hostname: True
+pem_path='hivemq-server-cert.pem'
+
+
 class DoorConsumer(WebsocketConsumer):
     def connect(self):
         self.room_group_name = 'door-control'
@@ -16,7 +22,8 @@ class DoorConsumer(WebsocketConsumer):
         mqtt_client = mqtt.Client()
         mqtt_client.on_message = self.on_message
         mqtt_client.on_connect = self.on_connect
-        mqtt_client.connect('127.0.0.1', 1883, keepalive=10)
+        # mqtt_client.tls_set(pem_path, tls_version=ssl.PROTOCOL_TLSv1_2)
+        mqtt_client.connect('127.0.0.1', port=1883)
         mqtt_client.loop_start()
         self.mqtt = mqtt_client
 
@@ -26,6 +33,9 @@ class DoorConsumer(WebsocketConsumer):
             self.channel_name
         )
         self.accept()
+        self.send(json.dumps({
+            'update_devices_status': DoorDevices.objects.filter(status=True).count()
+        }))
 
     def disconnect(self, close_code):
         # Leave room group
@@ -72,34 +82,67 @@ class DoorConsumer(WebsocketConsumer):
                 )
             history_data.save()
             self.mqtt.publish("door-control", data)
+            pass
 
         if 'door_save_pwd' in text_data_json:
             data = text_data_json['door_save_pwd']
-            if not data['type']:
-                pwd_data = DoorPassword.objects.create(
-                    password=data['pwd'],
-                    is_hard=not data['type'],
-                    description=data['note'],
-                    create_time=data['create'],
-                )
-                pwd_data.save()
+            if not DoorPassword.objects.filter(password=data['pwd']).exists():
+                if not data['type']:
+                    pwd_data = DoorPassword.objects.create(
+                        password=data['pwd'],
+                        is_hard=not data['type'],
+                        description=data['note'],
+                        create_time=data['create'],
+                    )
+                    pwd_data.save()
+                else:
+                    pwd_data = DoorPassword.objects.create(
+                        password=data['pwd'],
+                        is_hard=not data['type'],
+                        create_time=data['create'],
+                        description=data['note'],
+                        apply_time=data['apply'],
+                        due_time=data['due'],
+                    )
+                    pwd_data.save()
+                data['ok'] = True
+                self.send(json.dumps({
+                    'update_pwd_list': data
+                }))
             else:
-                pwd_data = DoorPassword.objects.create(
-                    password=data['pwd'],
-                    is_hard=not data['type'],
-                    create_time=data['create'],
-                    description=data['note'],
-                    apply_time=data['apply'],
-                    due_time=data['due'],
-                )
-                pwd_data.save()
-            self.send(json.dumps({
-                'update_pwd_list': data
-            }))
+                self.send(json.dumps({
+                    'update_pwd_list': {
+                        'ok': False,
+                        'message': 'Mật khẩu đã tồn tại'
+                    }
+                }))
+            pass
+
+        if 'delete_password' in text_data_json:
+            password = text_data_json['delete_password']
+            if DoorPassword.objects.filter(password=password).exists():
+                item = DoorPassword.objects.filter(password=password)[0]
+                item.delete()
+            pass
+
+        if 'local_pwd' in text_data_json:
+            data = text_data_json['local_pwd']
+            print(data)
+            self.mqtt.publish('door-local', data[:4])
 
     def update_history_list(self, event):
         data = json.loads(event['message'])
+
         self.send(json.dumps({'update_hty_list': data}))
+
+    def update_devices_status(self, event):
+        data = event['message']
+        self.send(json.dumps({
+            'update_devices_status': data
+        }))
+
+    def update_door_state(self, event):
+        self.send(event['message'])
 
     # Receive message from room group
     def post_socket(self, event):
@@ -111,16 +154,11 @@ class DoorConsumer(WebsocketConsumer):
         }))
 
     # MQTT METHODS
-
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
-            self.mqtt.subscribe('door-status')
+            pass
         else:
             print("Connection failed")
 
     def on_message(self, client, userdata, msg):
-        if msg.topic == 'door-status':
-            self.send(text_data=json.dumps({
-                'door_status': msg.payload.decode('utf-8')
-            }))
         self.mqtt.loop_start()

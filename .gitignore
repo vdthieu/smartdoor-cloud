@@ -88,5 +88,7 @@ local_settings.py
 
 .env
 db.sqlite3
+*.sqlite3
 .idea/*
 env/
+migrations/

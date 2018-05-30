@@ -35,7 +35,6 @@
 
 <aside id="left-panel" class="left-panel">
     <nav class="navbar navbar-expand-sm navbar-default">
-
         <div class="navbar-header">
             <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#main-menu" aria-controls="main-menu"
@@ -55,15 +54,12 @@
                             class="menu-icon fa fa-dashboard"></i>Dashboard</a>
                 </li>
                 <li class="active">
-                    <a href="#set_pwd"> <i class="menu-icon fa fa-gears"></i>Thiết
-                        lập
-                        mật khẩu</a>
+                    <a href="#set_pwd"> <i class="menu-icon fa fa-gears"></i>Thiết lập mật khẩu</a>
                 </li>
 
                 <li class="active">
-                    <a href="#manage_pwd"> <i class="menu-icon fa fa-user"></i>Quản
-                        lý
-                        tài khoản</a>
+                    <a href="#manage_pwd"> <i class="menu-icon fa fa-user"></i>
+                        Quản lý tài khoản</a>
                 </li>
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -205,11 +201,13 @@
     </header>
     <!-- Header-->
     <div class="row p-2">
-        <div class="col-sm-12 ">
-            <div class="alert  alert-success alert-dismissible fade show"
-                 role="alert">
-                <span class="badge badge-pill badge-success">Success</span>
-                You successfully read this important alert message.
+        <div class="col-sm-12 " id="status-container">
+            <div class="alert  alert-dark alert-dismissible fade show"
+                 role="alert"
+                 id="status"
+            >
+                <span class="badge badge-pill badge-dark" id="status-label">Trạng thái</span>
+                <span id="status-content"> Đang chờ kết nối</span>
                 <button type="button" class="close" data-dismiss="alert"
                         aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -274,7 +272,7 @@
             </div>
         </div>
         <table width="100%"
-               class="table table-striped table-bordered table-hover"
+               class="table table-striped table-bordered table-hover pl-2 pr-2"
                id="password-table">
             <thead>
             <tr>
@@ -284,6 +282,7 @@
                 <th>Thời gian hiệu lực</th>
                 <th>Thời gian hết hạn</th>
                 <th>Ghi chú</th>
+                <th>Xóa</th>
             </tr>
             </thead>
             <tbody>
@@ -311,6 +310,11 @@
                         <td></td>
                     {% endif %}
                     <td>{{ pwd.description }}</td>
+                    <td>
+                        <button onclick="deletePwd('{{ pwd.password }}')">
+                        <i class="fa fa-trash-o"></i>
+                        </button>
+                    </td>
                 </tr>
             {% endfor %}
 
@@ -377,6 +381,20 @@
 
             </div>
 
+        </div>
+
+        <div id="manage_pwd" class="bg-light d-flex w-0 flex-column">
+            <div class="w-100 page-header float-left d-flex flex-row align-items-center">
+                <h1 style="width: 290px;">Mật khẩu dự phòng:</h1>
+                <input id="door-local-pwd" class="rounded d-flex w-100" style="margin-right: 20px">
+                <div class="p-0 d-flex justify-content-center align-items-center bg-success rounded"
+                     style="height: 30px;">
+                    <button id="save-local-pwd"
+                            type="button"
+                            class="btn p-3 bg-transparent text-white">Lưu
+                    </button>
+                </div>
+            </div>
         </div>
     </div> 
     <footer id="myFooter">
@@ -450,7 +468,21 @@
     var btnSavePwd = jQuery("#save_pwd_btn");
     var pwdTable = jQuery('#password-table > tbody:last-child');
     var htyTable = jQuery('#history-table > tbody > tr:first');
+    var statusContainer = jQuery('#status-container');
+    var statusBar = jQuery('#status');
+    var statusLabel = jQuery('#status-label');
+    var statusContent = jQuery('#status-content');
+    var localPwd = jQuery('#door-local-pwd');
+    var btnSaveLocalPwd = jQuery('#save-local-pwd');
+    var dataPwd = jQuery("#door_pwd");
+    var dataPwdType = jQuery("#door_type");
+    var dataNote = jQuery('#door_note');
+    var dataApplyDate = jQuery("#door_apply_date");
+    var dataDueDate = jQuery("#door_due_date");
+    var pwdTiming = jQuery('#timing');
     var doorOpenStatus = true;
+    var currentPwdRowId = {{ password_list|length }};
+    var savePwdDiabled = false;
 
     var displayDay = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
@@ -463,25 +495,65 @@
             iconDoor.attr('src', "{% static 'door-close.png' %}")
         }
     }
-
     function dateToString(_date){
         if (_date.length === 0) return "";
         if (typeof _date === 'string') _date = new Date(_date);
         var day = displayDay[_date.getDay()];
         var date = (_date.getDate() > 9) ? _date.getDate() : ('0' + _date.getDate() );
         var month = ((_date.getMonth()+1) > 9) ? (_date.getMonth() +1) : ('0' + (_date.getMonth()+1) );
-        var year = _date.getFullYear()
+        var year = _date.getFullYear();
         var hour = (_date.getHours() > 9) ? _date.getHours() : ('0' + _date.getHours() );
         var minutes = (_date.getMinutes() > 9) ? _date.getMinutes() : ('0' + _date.getMinutes() );
         return  day + ' ' + date + '/' + month + '/' + year + ' - ' + hour + ':' + minutes
     }
+    function updateStatusBar(state, message){
+        const element = document.getElementById('status');
+        if(element){
+            const elementClasses = element.className.split(' ');
+            elementClasses.forEach(function (value) {
+                if(value.substring(0,5) === 'alert' && value !== 'alert-dismissible' && value!== 'alert'){
+                    statusBar.toggleClass(value);
+                    statusBar.toggleClass('alert-'+ state);
+                    statusLabel.toggleClass('badge' + value.substring(5,value.length));
+                    statusLabel.toggleClass('badge-' + state);
+                }
+            });
+            statusContent.text(message);
+        }else { // when user close message bar
+            statusContainer.append('<div class="alert  alert-' + state +' alert-dismissible fade show"\n' +
+                '                 role="alert"\n' +
+                '                 id="status"\n' +
+                '            >\n' +
+                '                <span class="badge badge-pill badge-' + state+'" id="status-label">Trạng thái</span>\n' +
+                '                <span id="status-content"> ' + message+ '</span>\n' +
+                '                <button type="button" class="close" data-dismiss="alert"\n' +
+                '                        aria-label="Close">\n' +
+                '                    <span aria-hidden="true">&times;</span>\n' +
+                '                </button>\n' +
+                '            </div>')
+        }
+    }
+
+    function deletePwd(password){
+        console.log(password)
+        var row = jQuery('#password-table > tbody >tr :contains(' +password +')');
+        row.parent().remove();
+        socket.send(JSON.stringify({
+            delete_password : password
+        }))
+    }
+
+    socket.addEventListener('open', function (event) {
+        updateStatusBar('success','Kết nối đến server thành công')
+    });
 
     socket.onmessage = function (e) {
         var data = JSON.parse(e.data);
-        console.log(data);
+        console.log(data)
         // update door status
         if (data.hasOwnProperty('door_status')) {
             var message = data['door_status'];
+            console.log(message);
             if (message === 'close') {
                 doorOpenStatus = false;
             }
@@ -494,7 +566,8 @@
         // update password table
         if(data.hasOwnProperty('update_pwd_list')){
             var dataContent = data['update_pwd_list'];
-            var value=
+            if(dataContent.ok){
+                var value=
                 '<tr> ' +
                     '<td>'+ dataContent.pwd +'</td>' +
                     '<td>'+ (dataContent.type ? 'Tạm thời' : 'Cố định') + '</td>' +
@@ -502,9 +575,25 @@
                     '<td>'+ dateToString(dataContent.apply) +'</td>' +
                     '<td>'+ dateToString(dataContent.due) +'</td>' +
                     '<td>'+ dataContent.note +'</td>' +
+                    '<td>' +
+                        '<button onclick="deletePwd('+ "'" + dataContent.pwd +"'" + ')">' +
+                        '<i class="fa fa-trash-o"></i>' +
+                        '</button>' +
+                    '</td>'+
                 '</tr>';
-            console.log(JSON.stringify(value));
             pwdTable.append(value);
+            dataPwd.val('');
+            if( dataPwdType.is(':checked')){
+                dataPwdType.attr('checked', false);
+                pwdTiming.toggle();
+            }
+            dataNote.val('');
+            dataApplyDate.val('');
+            dataDueDate.val('');
+            }else{
+                alert(dataContent.message)
+            }
+            btnSavePwd.removeAttr('disabled');
             return;
         }
         // update history table
@@ -515,11 +604,18 @@
                     '<td>'+ dataContent.action +'</td>' +
                     '<td>'+ dateToString(dataContent.time) +'</td>' +
                 '</tr>';
-            console.log(JSON.stringify(value));
-            console.log(htyTable)
             htyTable.before(value);
+            return;
         }
 
+        if(data.hasOwnProperty('update_devices_status')){
+            var device_count = data.update_devices_status
+            if(device_count >0)
+                updateStatusBar('info','Có ' + device_count + ' thiết bị đang hoạt động');
+            else
+                updateStatusBar('warning','Không có thiết bị nào đang hoạt động')
+            return;
+        }
     };
 
     btnControlDoor.click(function () {
@@ -533,11 +629,6 @@
     });
 
     btnSavePwd.click(function () {
-        var dataPwd = jQuery("#door_pwd");
-        var dataPwdType = jQuery("#door_type");
-        var dataNote = jQuery('#door_note');
-        var dataApplyDate = jQuery("#door_apply_date");
-        var dataDueDate = jQuery("#door_due_date");
         var data = {
             door_save_pwd: {
                 pwd: dataPwd.val(),
@@ -548,11 +639,19 @@
                 due: dataDueDate.val()
             }
         };
-        socket.send(JSON.stringify(data))
+        socket.send(JSON.stringify(data));
+        btnSavePwd.attr('disable', true)
+    });
+
+    btnSaveLocalPwd.click(function(){
+        socket.send(JSON.stringify({
+            local_pwd : localPwd.val()
+        }));
+        localPwd.val('')
     });
 
     socket.onclose = function (e) {
-        console.error('Chat socket closed unexpectedly');
+        updateStatusBar('danger','Mất kết nối đến server')
     };
     jQuery('#close-action').on("click", function () {
         socket.send(JSON.stringify({
