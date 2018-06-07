@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-from door.models import DoorPassword, DoorHistory, DoorDevices
+from door.models import DoorPassword, DoorHistory, DoorDevices, DoorState
 from django.core.signals import request_finished
 from channels.layers import get_channel_layer
 import arrow
@@ -34,6 +34,8 @@ channel_layer = get_channel_layer()
 local_timezone = timezone('Asia/Ho_Chi_Minh')
 pem_path = '/home/pyrus/SmartDoor/smartdoor/hivemq-server-cert.pem'
 
+rfid_uid = '123456'
+rfid_length = 6
 
 def start_job():
     def on_message(client, userdata, msg):
@@ -118,6 +120,34 @@ def start_job():
                 }
             )
             pass
+        if msg.topic == 'door-rfid':
+            input_uid = msg.payload.decode('ascii')[:rfid_length]
+            if input_uid == rfid_uid:
+                auto_state = DoorState.objects.filter(key='auto')[0]
+                if auto_state.value == 'on':
+                    async_to_sync(channel_layer.group_send)(
+                        room_group_name, {
+                            'type': 'update_auto',
+                            'message': json.dumps({
+                                'update_door_auto': 'off',
+                            })
+                        }
+                    )
+                    mqtt_client.publish('door-distance', 'off')
+                    auto_state.value = 'off'
+                else:
+                    async_to_sync(channel_layer.group_send)(
+                        room_group_name, {
+                            'type': 'update_auto',
+                            'message': json.dumps({
+                                'update_door_auto': 'on',
+                            })
+                        }
+                    )
+                    mqtt_client.publish('door-distance', 'on')
+                    auto_state.value = 'on'
+                auto_state.save()
+            pass
 
     def on_interval():
         mqtt_client.publish('door-announce', '___')
@@ -135,11 +165,11 @@ def start_job():
 
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
-            print('connected')
             mqtt_client.subscribe('door-password')
             mqtt_client.subscribe('door-autoclose')
             mqtt_client.subscribe('door-identify')
             mqtt_client.subscribe('door-status')
+            mqtt_client.subscribe('door-rfid')
             set_interval(on_interval, 10)
 
     def disconnect(sender, **kwargs):
@@ -153,8 +183,11 @@ def start_job():
     mqtt_client.on_message = on_message
     mqtt_client.on_connect = on_connect
     mqtt_client.on_disconnect = on_disconnect
-    # mqtt_client.tls_set('hivemq-server-cert.pem', tls_version= ssl.PROTOCOL_TLSv1_2)
+#   mqtt_client.tls_set('hivemq-server-cert.pem', tls_version= ssl.PROTOCOL_TLSv1_2)
     mqtt_client.connect('127.0.0.1', port=1883)
     mqtt_client.loop_start()
     request_finished.connect(disconnect)
-
+#   init database data
+    if not DoorState.objects.filter(key='auto').exists():
+        state = DoorState.objects.create(key='auto', value='off')
+        state.save()

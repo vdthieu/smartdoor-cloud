@@ -24,3 +24,8 @@ class DoorDevices(models.Model):
     status = models.BooleanField(default=False)
     # True if device are connected
     last_check = models.DateTimeField(default=None, blank=True, null=True)
+
+
+class DoorState(models.Model):
+    key = models.CharField(max_length=100, primary_key=True)
+    value = models.TextField(max_length=500)

@@ -2,7 +2,7 @@
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 import paho.mqtt.client as mqtt
-from door.models import DoorPassword, DoorHistory, DoorDevices
+from door.models import DoorPassword, DoorHistory, DoorDevices, DoorState
 import json
 from datetime import datetime
 from pytz import timezone
@@ -106,9 +106,14 @@ class DoorConsumer(WebsocketConsumer):
                     )
                     pwd_data.save()
                 data['ok'] = True
-                self.send(json.dumps({
-                    'update_pwd_list': data
-                }))
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name, {
+                        'type': 'update_pwd_list',
+                        'message': json.dumps({
+                            'add_pwd_list': data
+                        })
+                    }
+                )
             else:
                 self.send(json.dumps({
                     'update_pwd_list': {
@@ -123,16 +128,38 @@ class DoorConsumer(WebsocketConsumer):
             if DoorPassword.objects.filter(password=password).exists():
                 item = DoorPassword.objects.filter(password=password)[0]
                 item.delete()
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name, {
+                        'type': 'remove_pwd_list',
+                        'message': json.dumps({
+                            'remove_pwd_list' : password
+                        })
+                    }
+                )
             pass
 
         if 'local_pwd' in text_data_json:
             data = text_data_json['local_pwd']
-            print(data)
             self.mqtt.publish('door-local', data[:4])
+            pass
+
+        if 'door_auto' in text_data_json:
+            data = text_data_json['door_auto']
+            db_state = DoorState.objects.filter(key='auto')[0]
+            db_state.value = data
+            db_state.save()
+            message=json.dumps({
+                        'update_door_auto': data
+                    })
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name, {
+                    'type': 'update_auto',
+                    'message': message
+                }
+            )
 
     def update_history_list(self, event):
         data = json.loads(event['message'])
-
         self.send(json.dumps({'update_hty_list': data}))
 
     def update_devices_status(self, event):
@@ -144,6 +171,14 @@ class DoorConsumer(WebsocketConsumer):
     def update_door_state(self, event):
         self.send(event['message'])
 
+    def update_auto(self, event):
+        self.send(event['message'])
+
+    def update_pwd_list(self, event):
+        self.send(event['message'])
+
+    def remove_pwd_list(self, event):
+        self.send(event['message'])
     # Receive message from room group
     def post_socket(self, event):
         message = event['door_status']

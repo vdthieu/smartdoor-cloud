@@ -1,22 +1,22 @@
 # chat/views.py
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
-from door.models import DoorPassword, DoorHistory
-import json
+from door.models import DoorPassword, DoorHistory, DoorState
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib import auth
-from django.contrib.auth.models import User
 
 @login_required
 def dashboard(request):
     password_list = DoorPassword.objects.all()
     history_list = DoorHistory.objects.all()
+    auto = True if DoorState.objects.filter(key='auto')[0].value == 'on' else False
     args = {
         'password_list': password_list,
         'history_list': history_list,
-        'user': request.user
+        'user': request.user,
+        'auto': auto
     }
     return render(request, 'dashboard.html', args)
 

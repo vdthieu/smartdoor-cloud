@@ -225,15 +225,24 @@
             </div>
         </div>
     </div>
-
     <div class=" mb-5 flex-row d-flex ">
-        <div class="w-100 d-flex justify-content-center align-items-center">
-            <a href="#" id="door_control_btn"
-               class="justify-content-center d-inline-flex"
-               style="width: 127px; height: 175px">
-                <img id="door_status_icon" style="zoom: 1.5;"
-                     src="{% static 'door-open.png' %}" alt="Door status">
-            </a>
+        <div class="w-100 d-flex flex-column align-items-stretch align-content-stretch">
+            <div class="justify-content-center align-items-center d-flex">
+                <a href="#" id="door_control_icon"
+                   class="justify-content-center d-inline-flex"
+                   style="width: 127px; height: 175px">
+                    <img id="door_status_icon" style="zoom: 1.5;"
+                         src="{% static 'door-open.png' %}" alt="Door status">
+                </a>
+            </div>
+            <div class="btn-group align-self-center" style="margin-top: 100px">
+                <button type="button" class="btn btn-primary border-primary" style="width: 140px;" id="door_control_btn">Mở</button>
+                {% if  auto %}
+                    <button type="button" class="btn btn-primary border-primary" style="width: 140px;" id="door_auto_btn">Tự động</button>
+                {% else %}
+                    <button type="button" class="btn btn-light border-primary" style="width: 140px;" id="door_auto_btn">Thủ công</button>
+                {% endif %}
+            </div>
         </div>
         <div class="w-100 d-flex flex-column">
             <div class="page-title">
@@ -463,9 +472,11 @@
     })(jQuery);
 </script>
 <script>
-    var iconDoor = jQuery("#door_status_icon");
-    var btnControlDoor = jQuery("#door_control_btn");
-    var btnSavePwd = jQuery("#save_pwd_btn");
+    var iconDoor = jQuery("#door_status_icon"); // hình cửa
+    var icnControlDoor = jQuery("#door_control_icon"); // thẻ bao icon cửa
+    var btnControlDoor = jQuery('#door_control_btn'); // nút đóng cửa
+    var btnAutoDoor = jQuery('#door_auto_btn');  // nút tự động
+    var btnSavePwd = jQuery("#save_pwd_btn"); // nút lưu password
     var pwdTable = jQuery('#password-table > tbody:last-child');
     var htyTable = jQuery('#history-table > tbody > tr:first');
     var statusContainer = jQuery('#status-container');
@@ -480,9 +491,13 @@
     var dataApplyDate = jQuery("#door_apply_date");
     var dataDueDate = jQuery("#door_due_date");
     var pwdTiming = jQuery('#timing');
+
     var doorOpenStatus = true;
-    var currentPwdRowId = {{ password_list|length }};
-    var savePwdDiabled = false;
+    {% if  auto %}
+        var isAuto = true;
+    {% else %}
+        var isAuto = false;
+    {% endif %};
 
     var displayDay = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
@@ -490,11 +505,30 @@
 
     function updateDoorIcon() {
         if (doorOpenStatus) {
-            iconDoor.attr('src', "{% static 'door-open.png' %}")
+            iconDoor.attr('src', "{% static 'door-open.png' %}");
+            btnControlDoor.text("Mở");
+            btnControlDoor.addClass('btn-primary');
+            btnControlDoor.removeClass('btn-light');
         } else {
-            iconDoor.attr('src', "{% static 'door-close.png' %}")
+            iconDoor.attr('src', "{% static 'door-close.png' %}");
+            btnControlDoor.text("Đóng");
+            btnControlDoor.removeClass('btn-primary');
+            btnControlDoor.addClass('btn-light');
         }
     }
+
+    function updateDoorAuto (){
+        if(isAuto){
+            btnAutoDoor.removeClass(' btn-light');
+            btnAutoDoor.addClass('btn-primary ');
+            btnAutoDoor.text('Tự động')
+        }else{
+            btnAutoDoor.addClass(' btn-light');
+            btnAutoDoor.removeClass('btn-primary ');
+            btnAutoDoor.text('Thủ công')
+        }
+    }
+
     function dateToString(_date){
         if (_date.length === 0) return "";
         if (typeof _date === 'string') _date = new Date(_date);
@@ -506,26 +540,27 @@
         var minutes = (_date.getMinutes() > 9) ? _date.getMinutes() : ('0' + _date.getMinutes() );
         return  day + ' ' + date + '/' + month + '/' + year + ' - ' + hour + ':' + minutes
     }
-    function updateStatusBar(state, message){
+
+    function updateStatusBar(state, message) {
         const element = document.getElementById('status');
-        if(element){
+        if (element) {
             const elementClasses = element.className.split(' ');
             elementClasses.forEach(function (value) {
-                if(value.substring(0,5) === 'alert' && value !== 'alert-dismissible' && value!== 'alert'){
+                if (value.substring(0, 5) === 'alert' && value !== 'alert-dismissible' && value !== 'alert') {
                     statusBar.toggleClass(value);
-                    statusBar.toggleClass('alert-'+ state);
-                    statusLabel.toggleClass('badge' + value.substring(5,value.length));
+                    statusBar.toggleClass('alert-' + state);
+                    statusLabel.toggleClass('badge' + value.substring(5, value.length));
                     statusLabel.toggleClass('badge-' + state);
                 }
             });
             statusContent.text(message);
-        }else { // when user close message bar
-            statusContainer.append('<div class="alert  alert-' + state +' alert-dismissible fade show"\n' +
+        } else { // when user close message bar
+            statusContainer.append('<div class="alert  alert-' + state + ' alert-dismissible fade show"\n' +
                 '                 role="alert"\n' +
                 '                 id="status"\n' +
                 '            >\n' +
-                '                <span class="badge badge-pill badge-' + state+'" id="status-label">Trạng thái</span>\n' +
-                '                <span id="status-content"> ' + message+ '</span>\n' +
+                '                <span class="badge badge-pill badge-' + state + '" id="status-label">Trạng thái</span>\n' +
+                '                <span id="status-content"> ' + message + '</span>\n' +
                 '                <button type="button" class="close" data-dismiss="alert"\n' +
                 '                        aria-label="Close">\n' +
                 '                    <span aria-hidden="true">&times;</span>\n' +
@@ -534,10 +569,8 @@
         }
     }
 
+
     function deletePwd(password){
-        console.log(password)
-        var row = jQuery('#password-table > tbody >tr :contains(' +password +')');
-        row.parent().remove();
         socket.send(JSON.stringify({
             delete_password : password
         }))
@@ -553,7 +586,6 @@
         // update door status
         if (data.hasOwnProperty('door_status')) {
             var message = data['door_status'];
-            console.log(message);
             if (message === 'close') {
                 doorOpenStatus = false;
             }
@@ -564,8 +596,8 @@
             return;
         }
         // update password table
-        if(data.hasOwnProperty('update_pwd_list')){
-            var dataContent = data['update_pwd_list'];
+        if(data.hasOwnProperty('add_pwd_list')){
+            var dataContent = data['add_pwd_list'];
             if(dataContent.ok){
                 var value=
                 '<tr> ' +
@@ -596,6 +628,12 @@
             btnSavePwd.removeAttr('disabled');
             return;
         }
+        if(data.hasOwnProperty('remove_pwd_list')){
+            var password = data.remove_pwd_list;
+            var row = jQuery('#password-table > tbody >tr :contains(' +password +')');
+            row.parent().remove();
+            return;
+        }
         // update history table
         if(data.hasOwnProperty('update_hty_list')){
             var dataContent = data['update_hty_list'];
@@ -607,7 +645,7 @@
             htyTable.before(value);
             return;
         }
-
+        // update active device
         if(data.hasOwnProperty('update_devices_status')){
             var device_count = data.update_devices_status
             if(device_count >0)
@@ -616,15 +654,26 @@
                 updateStatusBar('warning','Không có thiết bị nào đang hoạt động')
             return;
         }
+        // update door auto status
+        if(data.hasOwnProperty('update_door_auto')){
+            isAuto = data.update_door_auto === 'on';
+            updateDoorAuto()
+        }
     };
+
+    icnControlDoor.click(function () {
+        var data;
+        if (!doorOpenStatus)
+            data = {door_control: 'open'};
+        else data = {door_control: 'close'};
+        socket.send(JSON.stringify(data));
+    });
 
     btnControlDoor.click(function () {
         var data;
-        doorOpenStatus = !doorOpenStatus;
-        if (doorOpenStatus)
+        if (!doorOpenStatus)
             data = {door_control: 'open'};
         else data = {door_control: 'close'};
-        updateDoorIcon();
         socket.send(JSON.stringify(data));
     });
 
@@ -649,6 +698,13 @@
         }));
         localPwd.val('')
     });
+
+    btnAutoDoor.click(function(){
+        socket.send(JSON.stringify({
+            door_auto : !isAuto ? 'on' : 'off'
+        }))
+    });
+
 
     socket.onclose = function (e) {
         updateStatusBar('danger','Mất kết nối đến server')
