@@ -66,6 +66,7 @@ class DoorConsumer(WebsocketConsumer):
                         })
                     }
                 )
+                
             else:
                 history_data = DoorHistory.objects.create(
                     action='manual open',
@@ -77,6 +78,14 @@ class DoorConsumer(WebsocketConsumer):
                         'message': json.dumps({
                             'action': 'manual open',
                             'time': arrow_now
+                        })
+                    }
+                )
+                async_to_sync(self.channel_layer.group_send)(
+                    self.room_group_name, {
+                        'type': 'update_door_state',
+                        'message': json.dumps({
+                            'door_status': 'open'
                         })
                     }
                 )
@@ -165,7 +174,7 @@ class DoorConsumer(WebsocketConsumer):
     def update_devices_status(self, event):
         data = event['message']
         self.send(json.dumps({
-            'update_devices_status': data
+            'update_devices_status': json.loads(data)
         }))
 
     def update_door_state(self, event):
@@ -179,6 +188,7 @@ class DoorConsumer(WebsocketConsumer):
 
     def remove_pwd_list(self, event):
         self.send(event['message'])
+
     # Receive message from room group
     def post_socket(self, event):
         message = event['door_status']

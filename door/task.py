@@ -37,6 +37,7 @@ pem_path = '/home/pyrus/SmartDoor/smartdoor/hivemq-server-cert.pem'
 rfid_uid = '123456'
 rfid_length = 6
 
+
 def start_job():
     def on_message(client, userdata, msg):
         arrow_now = arrow.now().format()
@@ -155,11 +156,17 @@ def start_job():
         set_timeout(on_interval_timeout, 3)
 
     def on_interval_timeout():
-        online_devices = DoorDevices.objects.filter(status=True).count()
+        online_devices = DoorDevices.objects.filter(status=True)
+        ids = []
+        for item in list(online_devices):
+            ids.append(item.id)
         async_to_sync(channel_layer.group_send)(
             room_group_name, {
                 'type': 'update_devices_status',
-                'message': online_devices
+                'message': json.dumps({
+                    'count': online_devices.count(),
+                    'devices': ids
+                })
             }
         )
 

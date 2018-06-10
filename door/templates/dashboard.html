@@ -647,11 +647,13 @@
         }
         // update active device
         if(data.hasOwnProperty('update_devices_status')){
-            var device_count = data.update_devices_status
-            if(device_count >0)
-                updateStatusBar('info','Có ' + device_count + ' thiết bị đang hoạt động');
+            var dataContent = data['update_devices_status']
+            if(dataContent.count >0){
+                var devices_name = dataContent.devices.join(', ')
+                updateStatusBar('info',`${devices_name} đang hoạt động`);
+            }
             else
-                updateStatusBar('warning','Không có thiết bị nào đang hoạt động')
+                updateStatusBar('warning','Không có thiết bị nào đang hoạt động');
             return;
         }
         // update door auto status
