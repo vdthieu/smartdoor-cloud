@@ -42,6 +42,7 @@ def start_job():
     def on_message(client, userdata, msg):
         arrow_now = arrow.now().format()
         now = datetime.now(local_timezone)
+        print(msg.payload)
         if msg.topic == 'door-password':
             input_password = msg.payload.decode('ascii')[:4]
             print(input_password)
@@ -96,8 +97,8 @@ def start_job():
             pass
         if msg.topic == 'door-identify':
             door_id = msg.payload.decode('ascii')[:10]
-            print(door_id)
             if not DoorDevices.objects.filter(id=door_id).exists():
+                print("update")
                 devices_data = DoorDevices.objects.create(
                     id=door_id,
                     status=True,
@@ -105,6 +106,7 @@ def start_job():
                 )
                 devices_data.save()
             else:
+                print("create")
                 device = DoorDevices.objects.filter(id=door_id)[0]
                 device.status = True
                 device.last_check = now
@@ -153,7 +155,7 @@ def start_job():
     def on_interval():
         mqtt_client.publish('door-announce', '___')
         DoorDevices.objects.all().update(status=False)
-        set_timeout(on_interval_timeout, 3)
+        set_timeout(on_interval_timeout, 5)
 
     def on_interval_timeout():
         online_devices = DoorDevices.objects.filter(status=True)
@@ -177,7 +179,7 @@ def start_job():
             mqtt_client.subscribe('door-identify')
             mqtt_client.subscribe('door-status')
             mqtt_client.subscribe('door-rfid')
-            set_interval(on_interval, 10)
+            set_interval(on_interval, 15)
 
     def disconnect(sender, **kwargs):
         print("FINISH")
