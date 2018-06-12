@@ -23,6 +23,7 @@ class DoorConsumer(WebsocketConsumer):
         mqtt_client.on_message = self.on_message
         mqtt_client.on_connect = self.on_connect
         # mqtt_client.tls_set(pem_path, tls_version=ssl.PROTOCOL_TLSv1_2)
+        mqtt_client.username_pw_set(username="admin", password="123QWE!@#")
         mqtt_client.connect('127.0.0.1', port=1883)
         mqtt_client.loop_start()
         self.mqtt = mqtt_client

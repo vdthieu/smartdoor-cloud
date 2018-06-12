@@ -75,9 +75,7 @@
     <!-- Header-->
     <header id="header" class="header">
         <div class="header-menu">
-
             <div class="col-sm-7">
-               
                 <div class="header-left">
                     <button class="search-trigger"><i class="fa fa-search"></i>
                     </button>
@@ -200,8 +198,8 @@
         </div>
     </header>
     <!-- Header-->
-    <div class="row p-2">
-        <div class="col-sm-12 " id="status-container">
+    <div class="row">
+        <div class="col-sm-12" id="status-container">
             <div class="alert  alert-dark alert-dismissible fade show"
                  role="alert"
                  id="status"
@@ -542,6 +540,7 @@
     }
 
     function updateStatusBar(state, message) {
+        return;
         const element = document.getElementById('status');
         if (element) {
             const elementClasses = element.className.split(' ');

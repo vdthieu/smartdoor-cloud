@@ -134,7 +134,7 @@ def start_job():
                             })
                         }
                     )
-                    mqtt_client.publish('door-distance', 'off')
+                    mqtt_client.publish('door-auto', 'off')
                     auto_state.value = 'off'
                 else:
                     async_to_sync(channel_layer.group_send)(
@@ -145,7 +145,7 @@ def start_job():
                             })
                         }
                     )
-                    mqtt_client.publish('door-distance', 'on')
+                    mqtt_client.publish('door-auto', 'on')
                     auto_state.value = 'on'
                 auto_state.save()
             pass
@@ -191,6 +191,7 @@ def start_job():
     mqtt_client.on_connect = on_connect
     mqtt_client.on_disconnect = on_disconnect
 #   mqtt_client.tls_set('hivemq-server-cert.pem', tls_version= ssl.PROTOCOL_TLSv1_2)
+    mqtt_client.username_pw_set(username="admin", password="123QWE!@#")
     mqtt_client.connect('127.0.0.1', port=1883)
     mqtt_client.loop_start()
     request_finished.connect(disconnect)
