@@ -200,29 +200,29 @@
     <!-- Header-->
     <div class="row">
         <div class="col-sm-4" id="status-container">
-            <div class="alert  alert-dark fade show"
+            <div class="alert alert-dark fade show"
                  role="alert"
-                 id="status">
+                 id="device_servo_container">
                 <span class="badge badge-pill badge-dark" id="device_servo_label">Servo</span>
-                <span id="device_servo_content"> Đang chờ kết nối</span>
+                <span id="device_servo_content"> Đang chờ</span>
                
             </div>
         </div>
         <div class="col-sm-4" id="status-container">
-            <div class="alert  alert-dark fade show"
+            <div class="alert alert-dark fade show"
                  role="alert"
-                 id="status">
+                 id="device_keypad_container">
                 <span class="badge badge-pill badge-dark" id="device_keypad_label">Keypad</span>
-                <span id="device_keypad_content"> Đang chờ kết nối</span>
+                <span id="device_keypad_content"> Đang chờ</span>
                
             </div>
         </div>
         <div class="col-sm-4" id="status-container">
-            <div class="alert  alert-dark fade show"
+            <div class="alert alert-dark fade show"
                  role="alert"
-                 id="status">
+                 id="device_rfid_container">
                 <span class="badge badge-pill badge-dark" id="device_rfid_label">RFID</span>
-                <span id="device_rfid_content"> Đang chờ kết nối</span>
+                <span id="device_rfid_content"> Đang chờ</span>
                
             </div>
         </div>
@@ -504,14 +504,6 @@
     var dataDueDate = jQuery("#door_due_date");
     var pwdTiming = jQuery('#timing');
 
-    // devices status tag
-    var statusServoLabel = jQuery('#device_servo_label');
-    var statusKeypadLabel = jQuery('#device_keypad_label');
-    var statusRfidLabel = jQuery('#device_rfid_label');
-    var statusServoContent = jQuery('#device_servo_content');
-    var statusKeypadContent = jQuery('#device_keypad_content');
-    var statusRfidContent = jQuery('#device_rfid_content');
-
     var doorOpenStatus = false;
     {% if  auto %}
         var isAuto = true;
@@ -561,20 +553,44 @@
         return  day + ' ' + date + '/' + month + '/' + year + ' - ' + hour + ':' + minutes
     }
 
-    function updateStatusBar(state, message) {
-        const element = document.getElementById('status');
-        if (element) {
-            const elementClasses = element.className.split(' ');
-            elementClasses.forEach(function (value) {
-                if (value.substring(0, 5) === 'alert' && value !== 'alert-dismissible' && value !== 'alert') {
-                    statusBar.toggleClass(value);
-                    statusBar.toggleClass('alert-' + state);
-                    statusLabel.toggleClass('badge' + value.substring(5, value.length));
-                    statusLabel.toggleClass('badge-' + state);
-                }
-            });
-            statusContent.text(message);
-        } 
+    // devices status tag
+    var statusServoContainer = 'device_servo_container'
+    var statusServoLabel = jQuery('#device_servo_label');
+    var statusServoContent = jQuery('#device_servo_content');
+
+    var statusKeypadContainer = 'device_keypad_container'
+    var statusKeypadLabel = jQuery('#device_keypad_label');
+    var statusKeypadContent = jQuery('#device_keypad_content');
+
+    var statusRfidContainer = 'device_rfid_container';
+    var statusRfidLabel = jQuery('#device_rfid_label');
+    var statusRfidContent = jQuery('#device_rfid_content');
+
+    function updateStatusBar(device, state, message) {
+        var containerId, label, content;
+        switch(device){
+            case 'servo':
+                [containerId, label, content] = [statusServoContainer,statusServoLabel,statusServoContent];
+                break;
+            case 'keypad':
+                [containerId, label, content] = [statusKeypadContainer,statusKeypadLabel,statusKeypadContent];
+                break;
+            case 'rfid':
+                [containerId, label, content] = [statusRfidContainer,statusRfidLabel,statusRfidContent];
+                break;
+        }
+        var container = jQuery('#'+containerId);
+        const element = document.getElementById(containerId);
+        const elementClasses = element.className.split(' ');
+        elementClasses.forEach(function (value) {
+            if (value.substring(0, 5) === 'alert'  && value !== 'alert') {
+                container.toggleClass(value);
+                container.toggleClass('alert-' + state);
+                label.toggleClass('badge' + value.substring(5, value.length));
+                label.toggleClass('badge-' + state);
+            }
+        });
+        content.text(message);
     }
 
     function deletePwd(password){
@@ -654,13 +670,22 @@
         }
         // update active device
         if(data.hasOwnProperty('update_devices_status')){
-            var dataContent = data['update_devices_status']
-            if(dataContent.count >0){
-                var devices_name = dataContent.devices.join(', ')
-                updateStatusBar('info',`${devices_name} đang hoạt động`);
+            var dataContent = data['update_devices_status'];
+            if(dataContent.servo){
+                updateStatusBar('servo','info','Đang hoạt động')
+            }else{
+                updateStatusBar('servo','danger','Không có kết nối')
             }
-            else
-                updateStatusBar('warning','Không có thiết bị nào đang hoạt động');
+            if(dataContent.keypad){
+                updateStatusBar('keypad','info','Đang hoạt động')
+            }else{
+                updateStatusBar('keypad','danger','Không có kết nối')
+            }
+            if(dataContent.rfid){
+                updateStatusBar('rfid','info','Đang hoạt động')
+            }else{
+                updateStatusBar('rfid','danger','Không có kết nối')
+            }
             return;
         }
         // update door auto status

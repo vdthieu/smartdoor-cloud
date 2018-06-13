@@ -98,20 +98,18 @@ def start_job():
         if msg.topic == 'door-identify':
             door_id = msg.payload.decode('ascii')[:10]
             if not DoorDevices.objects.filter(id=door_id).exists():
-                print("update")
                 devices_data = DoorDevices.objects.create(
                     id=door_id,
                     status=True,
                     last_check=now
                 )
                 devices_data.save()
+                on_interval_timeout()
             else:
-                print("create")
                 device = DoorDevices.objects.filter(id=door_id)[0]
                 device.status = True
                 device.last_check = now
                 device.save()
-                on_interval_timeout()
             pass
         if msg.topic == 'door-status':
             async_to_sync(channel_layer.group_send)(
@@ -159,15 +157,16 @@ def start_job():
 
     def on_interval_timeout():
         online_devices = DoorDevices.objects.filter(status=True)
-        ids = []
-        for item in list(online_devices):
-            ids.append(item.id)
+        servo = online_devices.filter(id='servo')
+        keypad = online_devices.filter(id='keypad')
+        rfid = online_devices.filter(id='rfid')
         async_to_sync(channel_layer.group_send)(
             room_group_name, {
                 'type': 'update_devices_status',
                 'message': json.dumps({
-                    'count': online_devices.count(),
-                    'devices': ids
+                    'servo': servo.exists() and servo[0].status,
+                    'keypad':  keypad.exists() and keypad[0].status,
+                    'rfid':  rfid.exists() and rfid[0].status,
                 })
             }
         )

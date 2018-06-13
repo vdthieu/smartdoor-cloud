@@ -34,8 +34,13 @@ class DoorConsumer(WebsocketConsumer):
             self.channel_name
         )
         self.accept()
+        online_devices = DoorDevices.objects.filter(status=True)
         self.send(json.dumps({
-            'update_devices_status': DoorDevices.objects.filter(status=True).count()
+            'update_devices_status': {
+                    'servo': online_devices.filter(id='servo').exists(),
+                    'keypad': online_devices.filter(id='keypad').exists(),
+                    'rfid': online_devices.filter(id='rfid').exists()
+                }
         }))
 
     def disconnect(self, close_code):
