@@ -183,7 +183,7 @@
                              alt="User Avatar">
                     </a>
 
-                    <div class="user-menu dropdown-menu">0
+                    <div class="user-menu dropdown-menu">
                         <a class="nav-link" href="/logout"><i
                                 class="fa fa-power -off"></i>Logout</a>
                     </div>
@@ -199,17 +199,31 @@
     </header>
     <!-- Header-->
     <div class="row">
-        <div class="col-sm-12" id="status-container">
-            <div class="alert  alert-dark alert-dismissible fade show"
+        <div class="col-sm-4" id="status-container">
+            <div class="alert  alert-dark fade show"
                  role="alert"
-                 id="status"
-            >
-                <span class="badge badge-pill badge-dark" id="status-label">Trạng thái</span>
-                <span id="status-content"> Đang chờ kết nối</span>
-                <button type="button" class="close" data-dismiss="alert"
-                        aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                 id="status">
+                <span class="badge badge-pill badge-dark" id="device_servo_label">Servo</span>
+                <span id="device_servo_content"> Đang chờ kết nối</span>
+               
+            </div>
+        </div>
+        <div class="col-sm-4" id="status-container">
+            <div class="alert  alert-dark fade show"
+                 role="alert"
+                 id="status">
+                <span class="badge badge-pill badge-dark" id="device_keypad_label">Keypad</span>
+                <span id="device_keypad_content"> Đang chờ kết nối</span>
+               
+            </div>
+        </div>
+        <div class="col-sm-4" id="status-container">
+            <div class="alert  alert-dark fade show"
+                 role="alert"
+                 id="status">
+                <span class="badge badge-pill badge-dark" id="device_rfid_label">RFID</span>
+                <span id="device_rfid_content"> Đang chờ kết nối</span>
+               
             </div>
         </div>
     </div>
@@ -230,11 +244,11 @@
                    class="justify-content-center d-inline-flex"
                    style="width: 127px; height: 175px">
                     <img id="door_status_icon" style="zoom: 1.5;"
-                         src="{% static 'door-open.png' %}" alt="Door status">
+                         src="{% static 'door-close.png' %}" alt="Door status">
                 </a>
             </div>
             <div class="btn-group align-self-center" style="margin-top: 100px">
-                <button type="button" class="btn btn-primary border-primary" style="width: 140px;" id="door_control_btn">Mở</button>
+                <button type="button" class="btn border-primary" style="width: 140px;" id="door_control_btn">Đóng</button>
                 {% if  auto %}
                     <button type="button" class="btn btn-primary border-primary" style="width: 140px;" id="door_auto_btn">Tự động</button>
                 {% else %}
@@ -490,7 +504,15 @@
     var dataDueDate = jQuery("#door_due_date");
     var pwdTiming = jQuery('#timing');
 
-    var doorOpenStatus = true;
+    // devices status tag
+    var statusServoLabel = jQuery('#device_servo_label');
+    var statusKeypadLabel = jQuery('#device_keypad_label');
+    var statusRfidLabel = jQuery('#device_rfid_label');
+    var statusServoContent = jQuery('#device_servo_content');
+    var statusKeypadContent = jQuery('#device_keypad_content');
+    var statusRfidContent = jQuery('#device_rfid_content');
+
+    var doorOpenStatus = false;
     {% if  auto %}
         var isAuto = true;
     {% else %}
@@ -552,21 +574,8 @@
                 }
             });
             statusContent.text(message);
-        } else { // when user close message bar
-            statusContainer.append('<div class="alert  alert-' + state + ' alert-dismissible fade show"\n' +
-                '                 role="alert"\n' +
-                '                 id="status"\n' +
-                '            >\n' +
-                '                <span class="badge badge-pill badge-' + state + '" id="status-label">Trạng thái</span>\n' +
-                '                <span id="status-content"> ' + message + '</span>\n' +
-                '                <button type="button" class="close" data-dismiss="alert"\n' +
-                '                        aria-label="Close">\n' +
-                '                    <span aria-hidden="true">&times;</span>\n' +
-                '                </button>\n' +
-                '            </div>')
-        }
+        } 
     }
-
 
     function deletePwd(password){
         socket.send(JSON.stringify({

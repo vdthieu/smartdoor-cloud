@@ -34,8 +34,8 @@ channel_layer = get_channel_layer()
 local_timezone = timezone('Asia/Ho_Chi_Minh')
 pem_path = '/home/pyrus/SmartDoor/smartdoor/hivemq-server-cert.pem'
 
-rfid_uid = '123456'
-rfid_length = 6
+rfid_uid = '78f2dab'
+rfid_length = 7
 
 
 def start_job():
