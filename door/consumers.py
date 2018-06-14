@@ -23,7 +23,7 @@ class DoorConsumer(WebsocketConsumer):
         mqtt_client.on_message = self.on_message
         mqtt_client.on_connect = self.on_connect
         # mqtt_client.tls_set(pem_path, tls_version=ssl.PROTOCOL_TLSv1_2)
-        mqtt_client.username_pw_set(username="admin", password="123QWE!@#")
+        # mqtt_client.username_pw_set(username="admin", password="123QWE!@#")
         mqtt_client.connect('127.0.0.1', port=1883)
         mqtt_client.loop_start()
         self.mqtt = mqtt_client
@@ -34,12 +34,16 @@ class DoorConsumer(WebsocketConsumer):
             self.channel_name
         )
         self.accept()
+        # get devices status
         online_devices = DoorDevices.objects.filter(status=True)
+        servo = online_devices.filter(id='servo')
+        keypad = online_devices.filter(id='keypad')
+        rfid = online_devices.filter(id='rfid')
         self.send(json.dumps({
-            'update_devices_status': {
-                    'servo': online_devices.filter(id='servo').exists(),
-                    'keypad': online_devices.filter(id='keypad').exists(),
-                    'rfid': online_devices.filter(id='rfid').exists()
+            'update_devices_status':{
+                    'servo': servo.exists() and servo[0].status,
+                    'keypad':  keypad.exists() and keypad[0].status,
+                    'rfid':  rfid.exists() and rfid[0].status,
                 }
         }))
 
