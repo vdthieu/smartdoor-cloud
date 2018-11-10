@@ -117,7 +117,11 @@
       height: 12px; }
     .switch.switch-default.switch-xs .switch-input:checked ~ .switch-handle {
       left: 10px; }
-
+      .slidecontainer {
+        width: 100%;
+    }
+    
+    
 .switch.switch-text {
   position: relative;
   display: inline-block;
@@ -1329,7 +1333,7 @@ header .form-inline {
   color: #64666d;
   float: right;
   margin: 7px 20px 0 0;
-  max-width: 100px; }
+  max-width: 135px; }
   #language-select:focus, #language-select:visited {
     border: none;
     outline: 0; }
