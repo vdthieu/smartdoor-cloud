@@ -9,7 +9,8 @@
     <title>Smart Home Control</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="apple-touch-icon" href="apple-icon.png"> {% load static %}
+    <link rel="apple-touch-icon" href="apple-icon.png">
+    {% load static %}
     <link rel="shortcut icon" href=" {% static 'favicon.png' %}">
 
     <link rel="stylesheet" href=" {% static 'assets/css/normalize.css' %}">
@@ -21,44 +22,48 @@
     <link rel="stylesheet" href=" {% static 'assets/css/Footer-with-logo.css' %}">
     <link rel="stylesheet" href=" {% static 'assets/scss/style.css' %}">
     <link href=" {% static 'assets/css/lib/vector-map/jqvmap.min.css' %}">
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"
+          rel="stylesheet">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+    <script src="{% static 'assets/js/vendor/jquery-2.1.4.min.js' %}"></script>
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 </head>
 
 <body>
-    <!-- Left Panel ---->
-    <aside id="left-panel" class="left-panel">
-        <nav class="navbar navbar-expand-sm navbar-default">
+<!-- Left Panel ---->
+<aside id="left-panel" class="left-panel">
+    <nav class="navbar navbar-expand-sm navbar-default">
 
-            <div class="navbar-header">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false"
+        <div class="navbar-header">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false"
                     aria-label="Toggle navigation">
-                    <i class="fa fa-bars"></i>
-                </button>
-                <a class="navbar-brand" href="/dashboard">
-                    <h4 class="menu-icon ti-home"> Smart<b>Home</b>
-                    </h4>
-                </a>
-            </div>
-            <div id="main-menu" class="main-menu collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="/dashboard">
-                            <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
-                    </li>
-                    <h3 class="menu-title"></h3>
-                    <!-- /.menu-title -->
-                    <li>
-                        <a href="/training" class="aria-haspopup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a></li>
-            </div><!-- /.navbar-collapse -->
-        </nav>
-    </aside><!-- /#left-panel -->
-    <!-- Left Panel -->
+                <i class="fa fa-bars"></i>
+            </button>
+            <a class="navbar-brand" href="/dashboard">
+                <h4 class="menu-icon ti-home"> Smart<b>Home</b>
+                </h4>
+            </a>
+        </div>
+        <div id="main-menu" class="main-menu collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a href="/dashboard">
+                        <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
+                </li>
+                <h3 class="menu-title"></h3>
+                <!-- /.menu-title -->
+                <li>
+                    <a href="/training" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+</aside><!-- /#left-panel -->
+<!-- Left Panel -->
 
-    <!-- Right Panel -->
-    <div id="right-panel " class="right-panel ">
+<!-- Right Panel -->
+<div id="right-panel " class="right-panel ">
 
     <!------Header------->
     <header id="header " class="header ">
@@ -111,7 +116,7 @@
     </header>
     <!-- -----------------------------Header---------------------------->
     {# State Device#}
-    <div class="breadcrumbs" id = "dashboard ">
+    <div class="breadcrumbs" id="dashboard">
         <div class="col-sm-4">
             <div class="page-header float-left">
                 <div class="page-title ">
@@ -127,7 +132,7 @@
                  id="device_servo_container ">
                 <span class="badge badge-pill badge-dark " id="device_servo_label ">Servo</span>
                 <span id="device_servo_content "> Đang chờ</span>
-               
+
             </div>
         </div>
         <div class="col-sm-4" id="status-container">
@@ -136,7 +141,7 @@
                  id="device_keypad_container">
                 <span class="badge badge-pill badge-dark " id="device_keypad_label">Light System</span>
                 <span id="device_keypad_content "> Đang chờ</span>
-               
+
             </div>
         </div>
         <div class="col-sm-4 " id="status-container">
@@ -145,13 +150,13 @@
                  id="device_rfid_container">
                 <span class="badge badge-pill badge-dark " id="device_rfid_label">RFID</span>
                 <span id="device_rfid_content"> Đang chờ</span>
-               
+
             </div>
         </div>
     </div>
     <!------------------------------Control------------------------------->
     {# Điều khiển#}
-    <div class="breadcrumbs " id = "dashboard ">
+    <div class="breadcrumbs " id="dashboard ">
         <div class="col-sm-4 ">
             <div class="page-header float-left ">
                 <div class="page-title ">
@@ -161,124 +166,124 @@
         </div>
     </div>
 
-<div class="col-lg-4 col-md-6 ">
-    <aside class="profile-nav alt>
-                            <section class="card">
-                                <div class="card-header user-header alt bg-flat-color-1">
-                                    <div class="media">
-                                        <div>
-                                            <h5 class="text-light">
-                                                <span>Light Control</span>
-                                                <span class=""></span>
-                                            </h5>
+    <div class="col-lg-4 col-md-6 ">
+        <aside class="profile-nav alt">
+            <section class="card">
+                <div class="card-header user-header alt bg-flat-color-1">
+                    <div class="media">
+                        <div>
+                            <h5 class="text-light">
+                                <span>Light Control</span>
+                                <span class=""></span>
+                            </h5>
 
-                                        </div>
-                                    </div>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        Living Room
-                                        <span class="pull-right">
-                                            <label class="switch switch-text switch-primary">
-                                                <input type="checkbox" class="switch-input" checked="true">
-                                                <span data-on="On" data-off="Off" class="switch-label"></span>
-                                                <span class="switch-handle"></span>
-                                            </label>
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        Kitchen
-                                        <span class="pull-right">
-                                            <label class="switch switch-text switch-primary">
-                                                <input type="checkbox" class="switch-input" checked="true">
-                                                <span data-on="On" data-off="Off" class="switch-label"></span>
-                                                <span class="switch-handle"></span>
-                                            </label>
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        Bed Room
-                                        <span class="pull-right">
-                                            <label class="switch switch-text switch-primary">
-                                                <input type="checkbox" class="switch-input" checked="true">
-                                                <span data-on="On" data-off="Off" class="switch-label"></span>
-                                                <span class="switch-handle"></span>
-                                            </label>
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        Bath Room
-                                        <span class="pull-right">
-                                            <label class="switch switch-text switch-primary">
-                                                <input type="checkbox" class="switch-input" checked="true">
-                                                <span data-on="On" data-off="Off" class="switch-label"></span>
-                                                <span class="switch-handle"></span>
-                                            </label>
-                                        </span>
-                                    </li>
+                        </div>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush" id="led_list">
+                    <li class="list-group-item">
+                        Living Room
+                        <span class="pull-right">
+                            <label class="switch switch-text switch-primary">
+                                <input id="LLIV" type="checkbox" class="switch-input" checked="false">
+                                <span data-on="On" data-off="Off" class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        Kitchen
+                        <span class="pull-right">
+                            <label class="switch switch-text switch-primary">
+                                <input name="LKIT" type="checkbox" class="switch-input" checked="true">
+                                <span data-on="On" data-off="Off" class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        Bed Room
+                        <span class="pull-right">
+                            <label class="switch switch-text switch-primary">
+                                <input name="LBED" type="checkbox" class="switch-input" checked="false">
+                                <span data-on="On" data-off="Off" class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        Bath Room
+                        <span class="pull-right">
+                            <label class="switch switch-text switch-primary">
+                                <input name="LBAT" type="checkbox" class="switch-input" checked="true">
+                                <span data-on="On" data-off="Off" class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                        </span>
+                    </li>
 
-                                </ul>
-                            </section>
-    </aside>
+                </ul>
+            </section>
+        </aside>
     </div>
     <!---------Office Room Light---------------->
     <div class="col-lg-4 col-md-6 ">
-            <div class="card ">
-                <div class="card-header ">
-                    <strong class="card-title mb-3 ">Office Room Light</strong>
-                </div>
-                <div class="card-body ">
-                        <br>
-                                    <div class="stat-widget-four ">
-                                        <div class="stat-icon dib ">
-                                            <i class="ti-light-bulb text-muted "></i>
-                                        </div>
-                                        <div class="stat-content ">
-                                            <div class="text-left dib ">
-                                                <h5>Temperature</h5>
-                                                <h3><span class="count" id="light"></span> °C</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                         <hr>
-                         <h6><span>Warn</span><span class="pull-right ">Cool</span></h6>
-                    <div class="card-text text-sm-center ">
-                            <input type="range" min="1" max="100" value="50" class="Tempslider" id="LightRange">
+        <div class="card ">
+            <div class="card-header ">
+                <strong class="card-title mb-3 ">Office Room Light</strong>
+            </div>
+            <div class="card-body ">
+                <br>
+                <div class="stat-widget-four ">
+                    <div class="stat-icon dib ">
+                        <i class="ti-light-bulb text-muted "></i>
                     </div>
+                    <div class="stat-content ">
+                        <div class="text-left dib ">
+                            <h5>Temperature</h5>
+                            <h3><span class="count" id="light"></span> °C</h3>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h6><span>Warn</span><span class="pull-right ">Cool</span></h6>
+                <div class="card-text text-sm-center ">
+                    <input type="range" min="1" max="100" value="50" class="Tempslider" id="LightRange">
                 </div>
             </div>
         </div>
-    
-<!---------------->
-    <div class="col-lg-4 col-md-6 ">
-            <div class="card ">
-                <div class="card-header ">
-                    <strong class="card-title mb-3 ">Air Condition</strong>
-                </div>
-                <div class="card-body ">
-                        <br>
-                                    <div class="stat-widget-four ">
-                                        <div class="stat-icon dib ">
-                                            <i class="ti-pulse text-muted "></i>
-                                        </div>
-                                        <div class="stat-content ">
-                                            <div class="text-left dib ">
-                                                <h5>Temperature</h5>
-                                                <h3><span class="count" id="temp"></span> °C</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                        <hr>
-                        <h6><span>-</span><span class="pull-right ">+</span></h6F>
-                    <div class="card-text text-sm-center ">
-                            <input type="range" min="1" max="100" value="50" class="Tempslider" id="TempRange">
-                    </div>
-                </div>
-            </div>
-        </div>
+    </div>
 
-<!-------------------------------------------------->
-<input type="range " min="1 " max="100 " value="50 " class="slider " id="myRange ">
+    <!---------------->
+    <div class="col-lg-4 col-md-6 ">
+        <div class="card ">
+            <div class="card-header ">
+                <strong class="card-title mb-3 ">Air Condition</strong>
+            </div>
+            <div class="card-body ">
+                <br>
+                <div class="stat-widget-four ">
+                    <div class="stat-icon dib ">
+                        <i class="ti-pulse text-muted "></i>
+                    </div>
+                    <div class="stat-content ">
+                        <div class="text-left dib ">
+                            <h5>Temperature</h5>
+                            <h3><span class="count" id="temp"></span> °C</h3>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h6><span>-</span><span class="pull-right ">+</span></h6>
+                <div class="card-text text-sm-center ">
+                    <input type="range" min="1" max="100" value="50" class="Tempslider" id="TempRange">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-------------------------------------------------->
+    <input type="range " min="1 " max="100 " value="50 " class="slider " id="myRange ">
 
     <div class="col-lg-3 col-md-6 ">
         <div class="social-box facebook ">
@@ -292,7 +297,7 @@
                     <label class="switch switch-text switch-primary "><input type="checkbox " class="switch-input
         " checked="true "> <span data-on="On " data-off="Off " class="switch-label "></span> <span class="switch-handle "></span></label>
                 </li>
-                
+
             </ul>
         </div>
         <!--/social-box-->
@@ -320,7 +325,7 @@
             <div class="page-title ">
                 <span>Lịch sử</span>
             </div>
-{#            Lịch su#}
+            {#            Lịch su#}
             <div style="overflow-y:scroll; overflow-x:hidden; height:300px; ">
                 <table width="100% "
                        class="table table-striped table-bordered "
@@ -332,7 +337,7 @@
                     </tr>
                     </thead>
                     <tbody style="overflow-y: auto;overflow-x: hidden ">
-                    {% for item in history_list reversed%}
+                    {% for item in history_list reversed %}
                         <tr>
                             <td>{{ item.action }}</td>
                             <td>{{ item.time|date:"D d/m/Y " }} - {{ item.time|time:"H:i " }}</td>
@@ -393,7 +398,7 @@
                     <td>{{ pwd.description }}</td>
                     <td>
                         <button onclick="deletePwd( '{{ pwd.password }}') ">
-                        <i class="fa fa-trash-o "></i>
+                            <i class="fa fa-trash-o "></i>
                         </button>
                     </td>
                 </tr>
@@ -477,7 +482,7 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
     <footer id="myFooter ">
         <div class="container ">
             <div class="row ">
@@ -485,7 +490,7 @@
                     <div class="social-icons ">
                         <a href="https://github.com/vdthieu/smartdoor-mqtt-django-channels " class="twitter " style="font-size:3em
         "><i class="fa fa-github "></i></a>
-                                            </div>
+                    </div>
                 </div>
                 <div class="col-sm-3 ">
                     <h5>Member</h5>
@@ -505,7 +510,7 @@
                     <h5>Information</h5>
                     <p>Đồ án chuyên ngành khoa Mạng máy tính và Truyền thông.<br/>GVHD: PGS. TS Lê Trung Quân</p>
                 </div>
-                
+
             </div>
         </div>
     </footer>
@@ -514,20 +519,23 @@
 
 <!-- Right Panel -->
 
-<script src="{% static 'assets/js/vendor/jquery-2.1.4.min.js' %} "></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js "></script>
-<script src="{% static 'assets/js/plugins.js' %} "></script>
-<script src="{% static 'assets/js/main.js' %} "></script>
-<script src="{% static 'assets/js/lib/chart-js/Chart.bundle.js' %} "></script>
-<script src="{% static 'assets/js/dashboard.js' %} "></script>
-<script src="{% static 'assets/js/widgets.js' %} "></script>
-<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.js' %} "></script>
-<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.min.js' %} "></script>
-<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.sampledata.js' %} "></script>
-<script src="{% static 'assets/js/lib/vector-map/country/jquery.vmap.world.js' %} "></script>
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js "></script>
-<script>
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>#}
 
+<script src="{% static 'assets/js/plugins.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+<script src="{% static 'assets/js/lib/chart-js/Chart.bundle.js' %}"></script>
+{#<script src="{% static 'assets/js/dashboard.js' %}"></script>#}
+{#<script src="{% static 'assets/js/widgets.js' %}"></script>#}
+<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.js' %}"></script>
+<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.min.js' %}"></script>
+<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.sampledata.js' %}"></script>
+<script src="{% static 'assets/js/lib/vector-map/country/jquery.vmap.world.js' %}"></script>
+{#<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>#}
+
+{#<script src="{% static 'scripts/script.js' %}"></script>#}
+<script src="{% static 'scripts/webSocket.js' %}"></script>
+<script src="{% static 'scripts/ledControl.js' %}"></script>
+<script>
     (function ($) {
         "use strict ";
         jQuery('#vmap').vectorMap({
@@ -538,300 +546,10 @@
             selectedColor: '#1de9b6',
             enableZoom: true,
             showTooltip: true,
-            values: sample_data,
             scaleColors: ['#1de9b6', '#03a9f5'],
             normalizeFunction: 'polynomial'
         });
     })(jQuery);
-</script>
-<script>
-    var iconDoor = jQuery("#door_status_icon "); // hình cửa
-    var icnControlDoor = jQuery("#door_control_icon "); // thẻ bao icon cửa
-    var btnControlDoor = jQuery('#door_control_btn'); // nút đóng cửa
-    var btnAutoDoor = jQuery('#door_auto_btn');  // nút tự động
-    var btnSavePwd = jQuery("#save_pwd_btn "); // nút lưu password
-    var pwdTable = jQuery('#password-table > tbody:last-child');
-    var htyTable = jQuery('#history-table > tbody > tr:first');
-    var statusContainer = jQuery('#status-container');
-    var statusBar = jQuery('#status');
-    var statusLabel = jQuery('#status-label');
-    var statusContent = jQuery('#status-content');
-    var localPwd = jQuery('#door-local-pwd');
-    var btnSaveLocalPwd = jQuery('#save-local-pwd');
-    var dataPwd = jQuery("#door_pwd ");
-    var dataPwdType = jQuery("#door_type ");
-    var dataNote = jQuery('#door_note');
-    var dataApplyDate = jQuery("#door_apply_date ");
-    var dataDueDate = jQuery("#door_due_date ");
-    var pwdTiming = jQuery('#timing');
-
-    var doorOpenStatus = false;
-    {% if  auto %}
-    var isAuto = true;
-    {% else %}
-    var isAuto = false;
-    {% endif %};
-
-    var displayDay = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-    var socket = new WebSocket('ws://' + window.location.host + '/ws/door/');
-
-    function updateDoorIcon() {
-        if (doorOpenStatus) {
-            iconDoor.attr('src', "{% static 'door-open.png' %} ");
-            btnControlDoor.text("Mở ");
-            btnControlDoor.addClass('btn-primary');
-            btnControlDoor.removeClass('btn-light');
-        } else {
-            iconDoor.attr('src', "{% static 'door-close.png' %} ");
-            btnControlDoor.text("Đóng ");
-            btnControlDoor.removeClass('btn-primary');
-            btnControlDoor.addClass('btn-light');
-        }
-    }
-    var slider = document.getElementById("LightRange");
-    var output = document.getElementById("light");
-    output.innerHTML = slider.value; // Display the default slider value
-    // Update the current slider value (each time you drag the slider handle)
-    slider.oninput = function () {
-        output.innerHTML = this.value;
-    }
-
-    var slider2 = document.getElementById("TempRange");
-    var output2 = document.getElementById("temp");
-    output.innerHTML = slider.value; // Display the default slider value
-    // Update the current slider value (each time you drag the slider handle)
-    slider2.oninput = function () {
-        output2.innerHTML = this.value;
-    }
-
-    function updateDoorAuto() {
-        if (isAuto) {
-            btnAutoDoor.removeClass(' btn-light');
-            btnAutoDoor.addClass('btn-primary ');
-            btnAutoDoor.text('Tự động')
-        } else {
-            btnAutoDoor.addClass(' btn-light');
-            btnAutoDoor.removeClass('btn-primary ');
-            btnAutoDoor.text('Thủ công')
-        }
-    }
-
-    function dateToString(_date) {
-        if (_date.length === 0) return " ";
-        if (typeof _date === 'string') _date = new Date(_date);
-        var day = displayDay[_date.getDay()];
-        var date = (_date.getDate() > 9) ? _date.getDate() : ('0' + _date.getDate());
-        var month = ((_date.getMonth() + 1) > 9) ? (_date.getMonth() + 1) : ('0' + (_date.getMonth() + 1));
-        var year = _date.getFullYear();
-        var hour = (_date.getHours() > 9) ? _date.getHours() : ('0' + _date.getHours());
-        var minutes = (_date.getMinutes() > 9) ? _date.getMinutes() : ('0' + _date.getMinutes());
-        return day + ' ' + date + '/' + month + '/' + year + ' - ' + hour + ':' + minutes
-    }
-
-    // devices status tag
-    var statusServoContainer = 'device_servo_container'
-    var statusServoLabel = jQuery('#device_servo_label');
-    var statusServoContent = jQuery('#device_servo_content');
-
-    var statusKeypadContainer = 'device_keypad_container'
-    var statusKeypadLabel = jQuery('#device_keypad_label');
-    var statusKeypadContent = jQuery('#device_keypad_content');
-
-    var statusRfidContainer = 'device_rfid_container';
-    var statusRfidLabel = jQuery('#device_rfid_label');
-    var statusRfidContent = jQuery('#device_rfid_content');
-
-    function updateStatusBar(device, state, message) {
-        var containerId, label, content;
-        switch (device) {
-            case 'servo':
-                [containerId, label, content] = [statusServoContainer, statusServoLabel, statusServoContent];
-                break;
-            case 'keypad':
-                [containerId, label, content] = [statusKeypadContainer, statusKeypadLabel, statusKeypadContent];
-                break;
-            case 'rfid':
-                [containerId, label, content] = [statusRfidContainer, statusRfidLabel, statusRfidContent];
-                break;
-        }
-        var container = jQuery('#' + containerId);
-        const element = document.getElementById(containerId);
-        const elementClasses = element.className.split(' ');
-        elementClasses.forEach(function (value) {
-            if (value.substring(0, 5) === 'alert' && value !== 'alert') {
-                container.toggleClass(value);
-                container.toggleClass('alert-' + state);
-                label.toggleClass('badge' + value.substring(5, value.length));
-                label.toggleClass('badge-' + state);
-            }
-        });
-        content.text(message);
-    }
-
-    function deletePwd(password) {
-        socket.send(JSON.stringify({
-            delete_password: password
-        }))
-    }
-
-    socket.addEventListener('open', function (event) {
-        updateStatusBar('success', 'Kết nối đến server thành công')
-    });
-
-    socket.onmessage = function (e) {
-        var data = JSON.parse(e.data);
-        console.log(data)
-        // update door status
-        if (data.hasOwnProperty('door_status')) {
-            var message = data['door_status'];
-            if (message === 'close') {
-                doorOpenStatus = false;
-            }
-            if (message === 'open') {
-                doorOpenStatus = true;
-            }
-            updateDoorIcon();
-            return;
-        }
-        // update password table
-        if (data.hasOwnProperty('add_pwd_list')) {
-            var dataContent = data['add_pwd_list'];
-            if (dataContent.ok) {
-                var value =
-                    '<tr> ' +
-                    '<td>' + dataContent.pwd + '</td>' +
-                    '<td>' + (dataContent.type ? 'Tạm thời' : 'Cố định') + '</td>' +
-                    '<td>' + dateToString(dataContent.create) + '</td>' +
-                    '<td>' + dateToString(dataContent.apply) + '</td>' +
-                    '<td>' + dateToString(dataContent.due) + '</td>' +
-                    '<td>' + dataContent.note + '</td>' +
-                    '<td>' +
-                    '<button onclick="deletePwd( ' + "' " + dataContent.pwd + " '" + ') ">' +
-                    '<i class="fa fa-trash-o "></i>' +
-                    '</button>' +
-                    '</td>' +
-                    '</tr>';
-                pwdTable.append(value);
-                dataPwd.val('');
-                if (dataPwdType.is(':checked')) {
-                    dataPwdType.attr('checked', false);
-                    pwdTiming.toggle();
-                }
-                dataNote.val('');
-                dataApplyDate.val('');
-                dataDueDate.val('');
-            } else {
-                alert(dataContent.message)
-            }
-            btnSavePwd.removeAttr('disabled');
-            return;
-        }
-        if (data.hasOwnProperty('remove_pwd_list')) {
-            var password = data.remove_pwd_list;
-            var row = jQuery('#password-table > tbody >tr :contains(' + password + ')');
-            row.parent().remove();
-            return;
-        }
-        // update history table
-        if (data.hasOwnProperty('update_hty_list')) {
-            var dataContent = data['update_hty_list'];
-            var value =
-                '<tr> ' +
-                '<td>' + dataContent.action + '</td>' +
-                '<td>' + dateToString(dataContent.time) + '</td>' +
-                '</tr>';
-            htyTable.before(value);
-            return;
-        }
-        // update active device
-        if (data.hasOwnProperty('update_devices_status')) {
-            var dataContent = data['update_devices_status'];
-            if (dataContent.servo) {
-                updateStatusBar('servo', 'info', 'Đang hoạt động')
-            } else {
-                updateStatusBar('servo', 'danger', 'Không có kết nối')
-            }
-            if (dataContent.keypad) {
-                updateStatusBar('keypad', 'info', 'Đang hoạt động')
-            } else {
-                updateStatusBar('keypad', 'danger', 'Không có kết nối')
-            }
-            if (dataContent.rfid) {
-                updateStatusBar('rfid', 'info', 'Đang hoạt động')
-            } else {
-                updateStatusBar('rfid', 'danger', 'Không có kết nối')
-            }
-            return;
-        }
-        // update door auto status
-        if (data.hasOwnProperty('update_door_auto')) {
-            isAuto = data.update_door_auto === 'on';
-            updateDoorAuto()
-        }
-    };
-
-    icnControlDoor.click(function () {
-        var data;
-        if (!doorOpenStatus)
-            data = { door_control: 'open' };
-        else data = { door_control: 'close' };
-        socket.send(JSON.stringify(data));
-    });
-
-    btnControlDoor.click(function () {
-        var data;
-        if (!doorOpenStatus)
-            data = { door_control: 'open' };
-        else data = { door_control: 'close' };
-        socket.send(JSON.stringify(data));
-    });
-
-    btnSavePwd.click(function () {
-        var data = {
-            door_save_pwd: {
-                pwd: dataPwd.val(),
-                type: dataPwdType.is(':checked'),
-                note: dataNote.val(),
-                create: new Date(),
-                apply: dataApplyDate.val(),
-                due: dataDueDate.val()
-            }
-        };
-        socket.send(JSON.stringify(data));
-        btnSavePwd.attr('disable', true)
-    });
-
-    btnSaveLocalPwd.click(function () {
-        socket.send(JSON.stringify({
-            local_pwd: localPwd.val()
-        }));
-        localPwd.val('')
-    });
-
-    btnAutoDoor.click(function () {
-        socket.send(JSON.stringify({
-            door_auto: !isAuto ? 'on' : 'off'
-        }))
-    });
-
-
-    socket.onclose = function (e) {
-        updateStatusBar('danger', 'Mất kết nối đến server')
-    };
-    jQuery('#close-action').on("click ", function () {
-        socket.send(JSON.stringify({
-            message: 'close'
-        }))
-    });
-    jQuery('#open-action').on("click ", function () {
-        socket.send(JSON.stringify({
-            message: 'open'
-        }))
-    });
-</script>
-<script>
-
 </script>
 </body>
 </html>

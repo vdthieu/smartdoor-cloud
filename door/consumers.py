@@ -9,16 +9,15 @@ from pytz import timezone
 import arrow
 import ssl
 
-
 local_timezone = timezone('Asia/Ho_Chi_Minh')
 ssl.match_hostname = lambda cert, hostname: True
-pem_path='hivemq-server-cert.pem'
+pem_path = 'hivemq-server-cert.pem'
 
 
 class DoorConsumer(WebsocketConsumer):
     def connect(self):
         self.room_group_name = 'door-control'
-        #init mqttt
+        # init mqttt
         mqtt_client = mqtt.Client()
         mqtt_client.on_message = self.on_message
         mqtt_client.on_connect = self.on_connect
@@ -40,11 +39,11 @@ class DoorConsumer(WebsocketConsumer):
         keypad = online_devices.filter(id='keypad')
         rfid = online_devices.filter(id='rfid')
         self.send(json.dumps({
-            'update_devices_status':{
-                    'servo': servo.exists() and servo[0].status,
-                    'keypad':  keypad.exists() and keypad[0].status,
-                    'rfid':  rfid.exists() and rfid[0].status,
-                }
+            'update_devices_status': {
+                'servo': servo.exists() and servo[0].status,
+                'keypad': keypad.exists() and keypad[0].status,
+                'rfid': rfid.exists() and rfid[0].status,
+            }
         }))
 
     def disconnect(self, close_code):
@@ -58,6 +57,20 @@ class DoorConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
+        if text_data_json['type'] == 'LED CONTROL':
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name, {
+                    'type': 'led_control',
+                    'message': json.dumps({
+                        'id': text_data_json['id'],
+                        'state': text_data_json['state']
+                    })
+                }
+            )
+            print(text_data_json['update'])
+            if not text_data_json['update']:
+                self.mqtt.publish(text_data_json['id'], 1 if text_data_json['state'] else 0)
+
         if 'door_control' in text_data_json:
             data = text_data_json['door_control']
             now = datetime.now(local_timezone)
@@ -76,7 +89,7 @@ class DoorConsumer(WebsocketConsumer):
                         })
                     }
                 )
-                
+
             else:
                 history_data = DoorHistory.objects.create(
                     action='manual open',
@@ -151,7 +164,7 @@ class DoorConsumer(WebsocketConsumer):
                     self.room_group_name, {
                         'type': 'remove_pwd_list',
                         'message': json.dumps({
-                            'remove_pwd_list' : password
+                            'remove_pwd_list': password
                         })
                     }
                 )
@@ -167,9 +180,9 @@ class DoorConsumer(WebsocketConsumer):
             db_state = DoorState.objects.filter(key='auto')[0]
             db_state.value = data
             db_state.save()
-            message=json.dumps({
-                        'update_door_auto': data
-                    })
+            message = json.dumps({
+                'update_door_auto': data
+            })
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name, {
                     'type': 'update_auto',
@@ -197,6 +210,10 @@ class DoorConsumer(WebsocketConsumer):
         self.send(event['message'])
 
     def remove_pwd_list(self, event):
+        self.send(event['message'])
+
+    def led_control(self, event):
+        print(event['message'])
         self.send(event['message'])
 
     # Receive message from room group

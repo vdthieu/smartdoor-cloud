@@ -19,6 +19,7 @@ def set_interval(func, sec):
     def func_wrapper():
         set_interval(func, sec)
         func()
+
     t = threading.Timer(sec, func_wrapper)
     t.start()
     return t
@@ -36,6 +37,8 @@ pem_path = '/home/pyrus/SmartDoor/smartdoor/hivemq-server-cert.pem'
 
 rfid_uid = '78f2dab'
 rfid_length = 7
+
+ledIds = ['LLIV', 'LKIT', 'LBED', 'LBAT']
 
 
 def start_job():
@@ -149,6 +152,17 @@ def start_job():
                     auto_state.value = 'on'
                 auto_state.save()
             pass
+        if msg.topic in ledIds:
+            async_to_sync(channel_layer.group_send)(
+                room_group_name, {
+                    'type': 'led_control',
+                    'message': json.dumps({
+                        'id': msg.topic,
+                        'state': msg.payload.decode('utf-8') == 1
+                    })
+                }
+            )
+            pass
 
     def on_interval():
         mqtt_client.publish('door-announce', '___')
@@ -165,8 +179,8 @@ def start_job():
                 'type': 'update_devices_status',
                 'message': json.dumps({
                     'servo': servo.exists() and servo[0].status,
-                    'keypad':  keypad.exists() and keypad[0].status,
-                    'rfid':  rfid.exists() and rfid[0].status,
+                    'keypad': keypad.exists() and keypad[0].status,
+                    'rfid': rfid.exists() and rfid[0].status,
                 })
             }
         )
@@ -178,6 +192,8 @@ def start_job():
             mqtt_client.subscribe('door-identify')
             mqtt_client.subscribe('door-status')
             mqtt_client.subscribe('door-rfid')
+            for ledId in ledIds:
+                mqtt_client.subscribe(ledId)
             set_interval(on_interval, 15)
 
     def disconnect(sender, **kwargs):
@@ -191,12 +207,12 @@ def start_job():
     mqtt_client.on_message = on_message
     mqtt_client.on_connect = on_connect
     mqtt_client.on_disconnect = on_disconnect
-#   mqtt_client.tls_set('hivemq-server-cert.pem', tls_version= ssl.PROTOCOL_TLSv1_2)
+    #   mqtt_client.tls_set('hivemq-server-cert.pem', tls_version= ssl.PROTOCOL_TLSv1_2)
     mqtt_client.username_pw_set(username="admin", password="123QWE!@#")
     mqtt_client.connect('127.0.0.1', port=1883)
     mqtt_client.loop_start()
     request_finished.connect(disconnect)
-#   init database data
+    #   init database data
     if not DoorState.objects.filter(key='auto').exists():
         state = DoorState.objects.create(key='auto', value='off')
         state.save()
