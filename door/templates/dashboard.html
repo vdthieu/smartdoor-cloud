@@ -248,7 +248,7 @@
                 <hr>
                 <h6><span>Warn</span><span class="pull-right ">Cool</span></h6>
                 <div class="card-text text-sm-center ">
-                    <input type="range" min="1" max="100" value="50" class="Tempslider" id="LightRange">
+                    <input type="range" min="1" max="100" value="50" class="Tempslider" id="TOFF">
                 </div>
             </div>
         </div>
@@ -276,7 +276,7 @@
                 <hr>
                 <h6><span>-</span><span class="pull-right ">+</span></h6>
                 <div class="card-text text-sm-center ">
-                    <input type="range" min="1" max="100" value="50" class="Tempslider" id="TempRange">
+                    <input type="range" min="1" max="100" value="50" class="Tempslider" id="THOM">
                 </div>
             </div>
         </div>
@@ -535,6 +535,7 @@
 {#<script src="{% static 'scripts/script.js' %}"></script>#}
 <script src="{% static 'scripts/webSocket.js' %}"></script>
 <script src="{% static 'scripts/ledControl.js' %}"></script>
+<script src="{% static 'scripts/tempControl.js' %}"></script>
 <script>
     (function ($) {
         "use strict ";

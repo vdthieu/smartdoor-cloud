@@ -1,4 +1,3 @@
-const $ = jQuery.noConflict();
 const ledId = [
     'LLIV',
     'LKIT',

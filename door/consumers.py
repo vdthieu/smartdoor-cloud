@@ -64,9 +64,20 @@ class DoorConsumer(WebsocketConsumer):
                     'message': json.dumps(text_data_json)
                 }
             )
-            print(text_data_json['update'])
             if not text_data_json['update']:
                 self.mqtt.publish(text_data_json['id'], 1 if text_data_json['state'] else 0)
+            pass
+
+        if text_data_json['type'] == 'TEMP CONTROL':
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name, {
+                    'type': 'temp_control',
+                    'message': json.dumps(text_data_json)
+                }
+            )
+            if not text_data_json['update']:
+                self.mqtt.publish(text_data_json['id'], text_data_json['state'])
+            pass
 
         if 'door_control' in text_data_json:
             data = text_data_json['door_control']
@@ -210,7 +221,9 @@ class DoorConsumer(WebsocketConsumer):
         self.send(event['message'])
 
     def led_control(self, event):
-        print(event['message'])
+        self.send(event['message'])
+
+    def temp_control(self, event):
         self.send(event['message'])
 
     # Receive message from room group

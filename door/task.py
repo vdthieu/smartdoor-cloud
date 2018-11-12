@@ -39,7 +39,7 @@ rfid_uid = '78f2dab'
 rfid_length = 7
 
 ledIds = ['LLIV', 'LKIT', 'LBED', 'LBAT']
-
+tempIds = ['TOFF', 'THOM']
 
 def start_job():
     def on_message(client, userdata, msg):
@@ -153,8 +153,6 @@ def start_job():
                 auto_state.save()
             pass
         if msg.topic in ledIds:
-            print( msg.payload.decode('utf-8'))
-            print( msg.payload.decode('utf-8') == '1')
             async_to_sync(channel_layer.group_send)(
                 room_group_name, {
                     'type': 'led_control',
@@ -162,6 +160,19 @@ def start_job():
                         'id': msg.topic,
                         'state': msg.payload.decode('utf-8') == '1',
                         'type': 'LED CONTROL',
+                        'update': True
+                    })
+                }
+            )
+            pass
+        if msg.topic in tempIds:
+            async_to_sync(channel_layer.group_send)(
+                room_group_name, {
+                    'type': 'led_control',
+                    'message': json.dumps({
+                        'id': msg.topic,
+                        'state': int(msg.payload.decode('utf-8')),
+                        'type': 'TEMP CONTROL',
                         'update': True
                     })
                 }
@@ -198,6 +209,8 @@ def start_job():
             mqtt_client.subscribe('door-rfid')
             for ledId in ledIds:
                 mqtt_client.subscribe(ledId)
+            for tempId in tempIds:
+                mqtt_client.subscribe(tempId)
             set_interval(on_interval, 15)
 
     def disconnect(sender, **kwargs):
