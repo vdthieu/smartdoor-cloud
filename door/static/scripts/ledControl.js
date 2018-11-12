@@ -8,10 +8,9 @@ const ledId = [
 
 ledId.forEach(
     led => {
-        console.log('set',led)
-        $(`#${led}`).change(
+        $(`#${led}`).on('click',
             function(){
-                console.log('send',$(this).prop('checked'))
+                console.log('send',$(this).prop('checked'));
                 socket.send(
                     JSON.stringify({
                         type : 'LED CONTROL',
@@ -20,20 +19,7 @@ ledId.forEach(
                         update : false
                     })
                 );
-            }
-        )
+            })
+
     }
 );
-let counter = 0
-const interval = setInterval(function() {
-    counter++;
-    console.log(counter);
-    if(counter === 5){
-        clearInterval(interval)
-    }
-    if(counter % 2 === 0){
-        $('#LLIV').bootstrapToggle('on')
-    }else{
-        $('#LLIV').bootstrapToggle('off')
-    }
-},500)

@@ -8,4 +8,10 @@ socket.addEventListener('open', function (event) {
 socket.onmessage = function (e) {
     let data = JSON.parse(e.data);
     console.log(data)
+    switch (data.type) {
+        case 'LED CONTROL':
+            if(ledId.some( item => item === data.id)){
+                $(`#${data.id}`).prop('checked',data.state)
+            }
+    }
 };

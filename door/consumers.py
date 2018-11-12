@@ -61,10 +61,7 @@ class DoorConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name, {
                     'type': 'led_control',
-                    'message': json.dumps({
-                        'id': text_data_json['id'],
-                        'state': text_data_json['state']
-                    })
+                    'message': json.dumps(text_data_json)
                 }
             )
             print(text_data_json['update'])

@@ -153,12 +153,16 @@ def start_job():
                 auto_state.save()
             pass
         if msg.topic in ledIds:
+            print( msg.payload.decode('utf-8'))
+            print( msg.payload.decode('utf-8') == '1')
             async_to_sync(channel_layer.group_send)(
                 room_group_name, {
                     'type': 'led_control',
                     'message': json.dumps({
                         'id': msg.topic,
-                        'state': msg.payload.decode('utf-8') == 1
+                        'state': msg.payload.decode('utf-8') == '1',
+                        'type': 'LED CONTROL',
+                        'update': True
                     })
                 }
             )

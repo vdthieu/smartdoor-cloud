@@ -144,7 +144,7 @@
 
             </div>
         </div>
-        <div class="col-sm-4 " id="status-container">
+        <div class="col-sm-4">
             <div class="alert alert-dark fade show"
                  role="alert "
                  id="device_rfid_container">
@@ -195,7 +195,7 @@
                         Kitchen
                         <span class="pull-right">
                             <label class="switch switch-text switch-primary">
-                                <input name="LKIT" type="checkbox" class="switch-input" checked="true">
+                                <input id="LKIT" type="checkbox" class="switch-input" checked="true">
                                 <span data-on="On" data-off="Off" class="switch-label"></span>
                                 <span class="switch-handle"></span>
                             </label>
@@ -205,7 +205,7 @@
                         Bed Room
                         <span class="pull-right">
                             <label class="switch switch-text switch-primary">
-                                <input name="LBED" type="checkbox" class="switch-input" checked="false">
+                                <input id="LBED" type="checkbox" class="switch-input" checked="false">
                                 <span data-on="On" data-off="Off" class="switch-label"></span>
                                 <span class="switch-handle"></span>
                             </label>
@@ -215,7 +215,7 @@
                         Bath Room
                         <span class="pull-right">
                             <label class="switch switch-text switch-primary">
-                                <input name="LBAT" type="checkbox" class="switch-input" checked="true">
+                                <input id="LBAT" type="checkbox" class="switch-input" checked="true">
                                 <span data-on="On" data-off="Off" class="switch-label"></span>
                                 <span class="switch-handle"></span>
                             </label>
@@ -315,7 +315,7 @@
             <div class="btn-group align-self-center " style="margin-top: 100px ">
                 <button type="button " class="btn border-primary " style="width: 140px; " id="door_control_btn ">Đóng</button>
                 {% if  auto %}
-                    <button type="button " class="btn btn-primary border-primary " style="width: 140px; " id="door_auto_btn ">Tự động</button>
+                    <button type="button " class="btn btn-primary border-primary " style="width: 140px; ">Tự động</button>
                 {% else %}
                     <button type="button " class="btn btn-light border-primary " style="width: 140px; " id="door_auto_btn ">Thủ công</button>
                 {% endif %}
@@ -407,7 +407,7 @@
 
             </tbody>
         </table>
-        <div id="manage_pwd " class="bg-light d-flex w-100 flex-column ">
+        <div class="bg-light d-flex w-100 flex-column ">
             <div class="w-100 page-header float-left d-flex flex-row align-items-center ">
                 <h1 class="w-100 ">Thêm mật khẩu</h1>
                 <div class="p-0 d-flex justify-content-center align-items-center bg-success rounded "
