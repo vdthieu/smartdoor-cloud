@@ -9,7 +9,8 @@
     <title>Smart Home Control</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="apple-touch-icon" href="apple-icon.png"> {% load static %}
+    <link rel="apple-touch-icon" href="apple-icon.png">
+    {% load static %}
     <link rel="shortcut icon" href=" {% static 'favicon.png' %}">
 
     <link rel="stylesheet" href=" {% static 'assets/css/normalize.css' %}">
@@ -24,41 +25,42 @@
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+    <script src="{% static 'assets/js/vendor/jquery-2.1.4.min.js' %}"></script>
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 </head>
 
 <body>
-    <!-- Left Panel ---->
-    <aside id="left-panel" class="left-panel">
-        <nav class="navbar navbar-expand-sm navbar-default">
+<!-- Left Panel ---->
+<aside id="left-panel" class="left-panel">
+    <nav class="navbar navbar-expand-sm navbar-default">
 
-            <div class="navbar-header">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false"
+        <div class="navbar-header">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false"
                     aria-label="Toggle navigation">
-                    <i class="fa fa-bars"></i>
-                </button>
-                <a class="navbar-brand" href="/dashboard">
-                    <h4 class="menu-icon ti-home"> Smart<b>Home</b>
-                    </h4>
-                </a>
-            </div>
-            <div id="main-menu" class="main-menu collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="/dashboard">
-                            <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
-                    </li>
-                    <h3 class="menu-title"></h3>
-                    <!-- /.menu-title -->
-                    <li>
-                        <a href="/training" class="aria-haspopup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a></li>
-            </div><!-- /.navbar-collapse -->
-        </nav>
-    </aside><!-- /#left-panel -->
-    <!-- Left Panel -->
+                <i class="fa fa-bars"></i>
+            </button>
+            <a class="navbar-brand" href="/dashboard">
+                <h4 class="menu-icon ti-home"> Smart<b>Home</b>
+                </h4>
+            </a>
+        </div>
+        <div id="main-menu" class="main-menu collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a href="/dashboard">
+                        <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
+                </li>
+                <h3 class="menu-title"></h3>
+                <!-- /.menu-title -->
+                <li>
+                    <a href="/training" class="aria-haspopup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a></li>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+</aside><!-- /#left-panel -->
+<!-- Left Panel -->
 
-    <!-- Right Panel -->
-    <div id="right-panel " class="right-panel ">
+<!-- Right Panel -->
+<div id="right-panel " class="right-panel ">
 
     <!------Header------->
     <header id="header " class="header ">
@@ -81,45 +83,46 @@
                             </a>
                             <a class="dropdown-item " style="background: #eeeeee; "
                                href="# ">
-                                17:33 13/06: Nhập mật khẩu sai liên tục<div class="col-lg-6">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <strong class="card-title">Basic Table</strong>
-                                            </div>
-                                            <div class="card-body">
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col">#</th>
-                                                            <th scope="col">First</th>
-                                                            <th scope="col">Last</th>
-                                                            <th scope="col">Handle</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <th scope="row">1</th>
-                                                            <td>Mark</td>
-                                                            <td>Otto</td>
-                                                            <td>@mdo</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">2</th>
-                                                            <td>Jacob</td>
-                                                            <td>Thornton</td>
-                                                            <td>@fat</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">3</th>
-                                                            <td>Larry</td>
-                                                            <td>the Bird</td>
-                                                            <td>@twitter</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                17:33 13/06: Nhập mật khẩu sai liên tục
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <strong class="card-title">Basic Table</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">First</th>
+                                                    <th scope="col">Last</th>
+                                                    <th scope="col">Handle</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <th scope="row">1</th>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">2</th>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">3</th>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
+                                </div>
                             </a>
                         </div>
                     </div>
@@ -149,7 +152,7 @@
     </header>
     <!-- -----------------------------Header---------------------------->
     {# State Device#}
-    <div class="breadcrumbs" id = "dashboard ">
+    <div class="breadcrumbs" id="dashboard ">
         <div class="col-sm-4">
             <div class="page-header float-left">
                 <div class="page-title ">
@@ -160,9 +163,9 @@
     </div>
 
     <!--Switch-->
-    
+
     <div class="col-lg-6">
-    <div class="card col-lg-4 col-md-6 no-padding bg-flat-color-1">
+        <div class="card col-lg-4 col-md-6 no-padding bg-flat-color-1">
             <div class="card-body">
                 <div class="h1 text-muted text-center mb-4">
                     <i class="fa ti-hand-open text-light"></i>
@@ -171,7 +174,10 @@
                     <span class="count">87500</span>
                 </div>
                 <div class="text-center">
-                <label class="switch switch-text switch-success switch-pill "><input type="checkbox" class="switch-input" checked="true"> <span data-on="On" data-off="Off" class="switch-label"></span> <span class="switch-handle"></span></label>
+                    <label class="switch switch-text switch-success switch-pill ">
+                        <input id="train_switch" type="checkbox" class="switch-input" checked="true">
+                        <span data-on="On" data-off="Off" class="switch-label"></span>
+                        <span class="switch-handle"></span></label>
                 </div>
             </div>
         </div>
@@ -179,47 +185,46 @@
     </div>
     <!---Data Collection Table--->
     <div class="col-lg-6">
-            <div class="card">
-                <div class="card-header">
-                    <strong class="card-title">Data Collection</strong>
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Time stamp</th>
-                                <th scope="col">Device Code</th>
-                                <th scope="col">State/Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Data Collection</strong>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Time stamp</th>
+                        <th scope="col">Device Code</th>
+                        <th scope="col">State/Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-  
-   
-   
+    </div>
+
+
     <div class=" mb-5 flex-row d-flex ">
         <div class="w-100 d-flex flex-column align-items-stretch align-content-stretch ">
             <div class="justify-content-center align-items-center d-flex ">
@@ -243,7 +248,7 @@
             <div class="page-title ">
                 <span>Lịch sử</span>
             </div>
-{#            Lịch su#}
+            {#            Lịch su#}
             <div style="overflow-y:scroll; overflow-x:hidden; height:300px; ">
                 <table width="100% "
                        class="table table-striped table-bordered "
@@ -255,7 +260,7 @@
                     </tr>
                     </thead>
                     <tbody style="overflow-y: auto;overflow-x: hidden ">
-                    {% for item in history_list reversed%}
+                    {% for item in history_list reversed %}
                         <tr>
                             <td>{{ item.action }}</td>
                             <td>{{ item.time|date:"D d/m/Y " }} - {{ item.time|time:"H:i " }}</td>
@@ -316,7 +321,7 @@
                     <td>{{ pwd.description }}</td>
                     <td>
                         <button onclick="deletePwd( '{{ pwd.password }}') ">
-                        <i class="fa fa-trash-o "></i>
+                            <i class="fa fa-trash-o "></i>
                         </button>
                     </td>
                 </tr>
@@ -400,7 +405,7 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
     <footer id="myFooter ">
         <div class="container ">
             <div class="row ">
@@ -408,7 +413,7 @@
                     <div class="social-icons ">
                         <a href="https://github.com/vdthieu/smartdoor-mqtt-django-channels " class="twitter " style="font-size:3em
         "><i class="fa fa-github "></i></a>
-                                            </div>
+                    </div>
                 </div>
                 <div class="col-sm-3 ">
                     <h5>Member</h5>
@@ -428,7 +433,7 @@
                     <h5>Information</h5>
                     <p>Đồ án chuyên ngành khoa Mạng máy tính và Truyền thông.<br/>GVHD: PGS. TS Lê Trung Quân</p>
                 </div>
-                
+
             </div>
         </div>
     </footer>
@@ -437,19 +442,21 @@
 
 <!-- Right Panel -->
 
-<script src="{% static 'assets/js/vendor/jquery-2.1.4.min.js' %} "></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js "></script>
-<script src="{% static 'assets/js/plugins.js' %} "></script>
-<script src="{% static 'assets/js/main.js' %} "></script>
-<script src="{% static 'assets/js/lib/chart-js/Chart.bundle.js' %} "></script>
-<script src="{% static 'assets/js/dashboard.js' %} "></script>
-<script src="{% static 'assets/js/widgets.js' %} "></script>
-<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.js' %} "></script>
-<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.min.js' %} "></script>
-<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.sampledata.js' %} "></script>
-<script src="{% static 'assets/js/lib/vector-map/country/jquery.vmap.world.js' %} "></script>
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js "></script>
+<script src="{% static 'assets/js/plugins.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+<script src="{% static 'assets/js/lib/chart-js/Chart.bundle.js' %}"></script>
+{#<script src="{% static 'assets/js/dashboard.js' %}"></script>#}
+{#<script src="{% static 'assets/js/widgets.js' %}"></script>#}
+<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.js' %}"></script>
+<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.min.js' %}"></script>
+<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.sampledata.js' %}"></script>
+<script src="{% static 'assets/js/lib/vector-map/country/jquery.vmap.world.js' %}"></script>
+{#<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>#}
+<script src="{% static 'scripts/webSocket.js' %}"></script>
+<script src="{% static 'scripts/training.js' %}"></script>
+
 <script>
+
 
     (function ($) {
         "use strict ";
@@ -490,9 +497,9 @@
 
     var doorOpenStatus = false;
     {% if  auto %}
-    var isAuto = true;
+        var isAuto = true;
     {% else %}
-    var isAuto = false;
+        var isAuto = false;
     {% endif %};
 
     var displayDay = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -512,6 +519,7 @@
             btnControlDoor.addClass('btn-light');
         }
     }
+
     var slider = document.getElementById("LightRange");
     var output = document.getElementById("light");
     output.innerHTML = slider.value; // Display the default slider value
@@ -697,16 +705,16 @@
     icnControlDoor.click(function () {
         var data;
         if (!doorOpenStatus)
-            data = { door_control: 'open' };
-        else data = { door_control: 'close' };
+            data = {door_control: 'open'};
+        else data = {door_control: 'close'};
         socket.send(JSON.stringify(data));
     });
 
     btnControlDoor.click(function () {
         var data;
         if (!doorOpenStatus)
-            data = { door_control: 'open' };
-        else data = { door_control: 'close' };
+            data = {door_control: 'open'};
+        else data = {door_control: 'close'};
         socket.send(JSON.stringify(data));
     });
 

@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-from door.models import DoorPassword, DoorHistory, DoorDevices, DoorState
+from door.models import DoorPassword, DoorHistory, DoorDevices, DoorState, DeviceStates
 from django.core.signals import request_finished
 from channels.layers import get_channel_layer
 import arrow
@@ -164,6 +164,12 @@ def start_job():
                     })
                 }
             )
+            device_state = DeviceStates.objects.create(
+                id=msg.topic,
+                state=msg.payload.decode('utf-8') == '1',
+                time= datetime.now()
+            )
+            device_state.save()
             pass
         if msg.topic in tempIds:
             async_to_sync(channel_layer.group_send)(
@@ -177,6 +183,12 @@ def start_job():
                     })
                 }
             )
+            device_state = DeviceStates.objects.create(
+                id=msg.topic,
+                state=msg.payload.decode('utf-8') == '1',
+                time= datetime.now()
+            )
+            device_state.save()
             pass
 
     def on_interval():

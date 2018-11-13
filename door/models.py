@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 import datetime
 
 
@@ -20,7 +21,7 @@ class DoorHistory(models.Model):
 
 class DoorDevices(models.Model):
     id = models.CharField(max_length=10, primary_key=True)
-    #to identify devices
+    # to identify devices
     status = models.BooleanField(default=False)
     # True if device are connected
     last_check = models.DateTimeField(default=None, blank=True, null=True)
@@ -29,3 +30,9 @@ class DoorDevices(models.Model):
 class DoorState(models.Model):
     key = models.CharField(max_length=100, primary_key=True)
     value = models.TextField(max_length=500)
+
+
+class DeviceStates(models.Model):
+    id = models.CharField(max_length=10)
+    state = models.IntegerField(default=0, blank=True, null=True)
+    time = models.DateTimeField(default=now, primary_key=True)

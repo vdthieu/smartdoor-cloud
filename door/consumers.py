@@ -8,6 +8,7 @@ from datetime import datetime
 from pytz import timezone
 import arrow
 import ssl
+from door.learning import parse_data
 
 local_timezone = timezone('Asia/Ho_Chi_Minh')
 ssl.match_hostname = lambda cert, hostname: True
@@ -57,6 +58,7 @@ class DoorConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
+        print(text_data_json)
         if text_data_json['type'] == 'LED CONTROL':
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name, {
@@ -77,6 +79,12 @@ class DoorConsumer(WebsocketConsumer):
             )
             if not text_data_json['update']:
                 self.mqtt.publish(text_data_json['id'], text_data_json['state'])
+            pass
+
+        if text_data_json['type'] == 'TRAINING CONTROL':
+            if text_data_json['state']:
+                print('call')
+                parse_data()
             pass
 
         if 'door_control' in text_data_json:
