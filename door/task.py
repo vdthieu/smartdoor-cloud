@@ -211,7 +211,6 @@ def start_job():
         set_timeout(on_interval_timeout, 5)
 
     def on_interval_timeout():
-
         async_to_sync(channel_layer.group_send)(
             room_group_name, {
                 'type': 'update_devices_status',

@@ -215,10 +215,7 @@ class DoorConsumer(WebsocketConsumer):
         self.send(json.dumps({'update_hty_list': data}))
 
     def update_devices_status(self, event):
-        data = event['message']
-        self.send(json.dumps({
-            'update_devices_status': json.loads(data)
-        }))
+        self.send(event['message'])
 
     def update_door_state(self, event):
         self.send(event['message'])
