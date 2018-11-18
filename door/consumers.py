@@ -2,13 +2,15 @@
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 import paho.mqtt.client as mqtt
-from door.models import DoorPassword, DoorHistory, DoorDevices, DoorState
+from django.core.serializers.json import DjangoJSONEncoder
+from door.models import DoorPassword, DoorHistory, DoorState
 import json
 from datetime import datetime
 from pytz import timezone
 import arrow
 import ssl
 from door.learning import parse_data
+from door.utils import bind_ws_to_mq_message, get_online_devices_ws_message,get_devices_logs_from_times
 
 local_timezone = timezone('Asia/Ho_Chi_Minh')
 ssl.match_hostname = lambda cert, hostname: True
@@ -23,7 +25,7 @@ class DoorConsumer(WebsocketConsumer):
         mqtt_client.on_message = self.on_message
         mqtt_client.on_connect = self.on_connect
         # mqtt_client.tls_set(pem_path, tls_version=ssl.PROTOCOL_TLSv1_2)
-        # mqtt_client.username_pw_set(username="admin", password="123QWE!@#")
+        mqtt_client.username_pw_set(username="admin", password="123QWE!@#")
         mqtt_client.connect('127.0.0.1', port=1883)
         mqtt_client.loop_start()
         self.mqtt = mqtt_client
@@ -35,17 +37,7 @@ class DoorConsumer(WebsocketConsumer):
         )
         self.accept()
         # get devices status
-        online_devices = DoorDevices.objects.filter(status=True)
-        servo = online_devices.filter(id='servo')
-        keypad = online_devices.filter(id='keypad')
-        rfid = online_devices.filter(id='rfid')
-        self.send(json.dumps({
-            'update_devices_status': {
-                'servo': servo.exists() and servo[0].status,
-                'keypad': keypad.exists() and keypad[0].status,
-                'rfid': rfid.exists() and rfid[0].status,
-            }
-        }))
+        self.send(json.dumps(get_online_devices_ws_message()))
 
     def disconnect(self, close_code):
         # Leave room group
@@ -67,7 +59,8 @@ class DoorConsumer(WebsocketConsumer):
                 }
             )
             if not text_data_json['update']:
-                self.mqtt.publish(text_data_json['id'], 1 if text_data_json['state'] else 0)
+                mqtt_message = bind_ws_to_mq_message(text_data_json)
+                self.mqtt.publish(mqtt_message["topic"], mqtt_message['message'])
             pass
 
         if text_data_json['type'] == 'TEMP CONTROL':
@@ -85,6 +78,17 @@ class DoorConsumer(WebsocketConsumer):
             if text_data_json['state']:
                 print('call')
                 parse_data()
+            pass
+
+        if text_data_json['type'] == 'GET TABLE':
+            time = datetime.strptime(text_data_json['time'], "%a, %d %b %Y %H:%M:%S %Z")
+            data = get_devices_logs_from_times(time)
+            self.send(json.dumps({
+                "type": "DATA TABLE",
+                "data": data
+            },
+                cls=DjangoJSONEncoder
+            ))
             pass
 
         if 'door_control' in text_data_json:

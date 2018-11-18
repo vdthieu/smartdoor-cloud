@@ -53,7 +53,19 @@
                 <h3 class="menu-title"></h3>
                 <!-- /.menu-title -->
                 <li>
-                    <a href="/training" class="aria-haspopup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a></li>
+                    <a href="/training" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a>
+                </li>
+                <h3 class="menu-title"></h3>
+                <!-- /.menu-title -->
+                <li>
+                    <a href="/aboutus" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-github"></i>About us</a>
+                </li>
+                <h3 class="menu-title"></h3>
+                <!-- /.menu-title -->
+                <li>
+                    <a href="/logout" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-shift-left"></i>Logout</a>
+                </li>
+            </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
 </aside><!-- /#left-panel -->
@@ -66,67 +78,6 @@
     <header id="header " class="header ">
         <div class="header-menu ">
             <div class="col-sm-7 ">
-                <div class="header-left ">
-                    <div class="dropdown for-notification border-light ">
-                        <button class="btn btn-secondary dropdown-toggle "
-                                type="button " id="notification "
-                                data-toggle="dropdown " aria-haspopup="true "
-                                aria-expanded="false ">
-                            <i class="fa fa-bell "></i>
-                            <span class="count bg-danger ">2</span>
-                        </button>
-                        <div class="dropdown-menu "
-                             aria-labelledby="notification ">
-                            <a class="dropdown-item media " style="background: #e2e2e2; "
-                               href="# ">
-                                14:20 12/06: Nhập mật khẩu sai liên tục
-                            </a>
-                            <a class="dropdown-item " style="background: #eeeeee; "
-                               href="# ">
-                                17:33 13/06: Nhập mật khẩu sai liên tục
-                                <div class="col-lg-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <strong class="card-title">Basic Table</strong>
-                                        </div>
-                                        <div class="card-body">
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th scope="col">#</th>
-                                                    <th scope="col">First</th>
-                                                    <th scope="col">Last</th>
-                                                    <th scope="col">Handle</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <th scope="row">1</th>
-                                                    <td>Mark</td>
-                                                    <td>Otto</td>
-                                                    <td>@mdo</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">2</th>
-                                                    <td>Jacob</td>
-                                                    <td>Thornton</td>
-                                                    <td>@fat</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">3</th>
-                                                    <td>Larry</td>
-                                                    <td>the Bird</td>
-                                                    <td>@twitter</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="col-sm-5 ">
@@ -137,11 +88,6 @@
                              src=" {% static 'images/admin.jpg' %} "
                              alt="User Avatar ">
                     </a>
-
-                    <div class="user-menu dropdown-menu ">
-                        <a class="nav-link " href="/logout "><i
-                                class="fa fa-power -off "></i>Logout</a>
-                    </div>
                 </div>
 
                 <div class="language-select dropdown" id="language-select">
@@ -163,15 +109,14 @@
     </div>
 
     <!--Switch-->
-
     <div class="col-lg-6">
-        <div class="card col-lg-4 col-md-6 no-padding bg-flat-color-1">
-            <div class="card-body">
+       <div class="col-lg-6 no-padding">
+        <div class="card-body bg-flat-color-5">
                 <div class="h1 text-muted text-center mb-4">
-                    <i class="fa ti-hand-open text-light"></i>
+                    <i class="fa ti-pencil-alt text-light"></i>
                 </div>
-                <div class="h4 mb-2 text-light text-center">
-                    <span class="count">87500</span>
+                <div class="h6 mb-2 text-light text-center">
+                    <span class="count">Training Mode</span>
                 </div>
                 <div class="text-center">
                     <label class="switch switch-text switch-success switch-pill ">
@@ -180,9 +125,58 @@
                         <span class="switch-handle"></span></label>
                 </div>
             </div>
-        </div>
-
     </div>
+    <div class="col-lg-6 no-padding">
+        <div class="card-body bg-flat-color-1">
+                <div class="h1 text-muted text-center mb-4">
+                    <i class="fa ti-flag text-light"></i>
+                </div>
+                <div class="h6 mb-2 text-light text-center">
+                    <span class="count">Predict Mode</span>
+                </div>
+                <div class="text-center">
+                    <label class="switch switch-text switch-success switch-pill ">
+                        <input id="train_switch" type="checkbox" class="switch-input" checked="true">
+                        <span data-on="On" data-off="Off" class="switch-label"></span>
+                        <span class="switch-handle"></span></label>
+                </div>
+            </div>
+    </div>
+    <div class="col-lg-6 no-padding">
+        <div class="card-body bg-flat-color-3">
+                <div class="h1 text-muted text-center mb-4">
+                    <i class="fa ti-timer text-light"></i>
+                </div>
+                <div class="h6 mb-2 text-light text-center">
+                    <span class="count">Time Training</span>
+                </div>
+                <div class="text-center">
+                    <label class="switch switch-text switch-success switch-pill ">
+                        <input id="train_switch" type="checkbox" class="switch-input" checked="true">
+                        <span data-on="On" data-off="Off" class="switch-label"></span>
+                        <span class="switch-handle"></span></label>
+                </div>
+            </div>
+    </div>
+    <div class="no-padding col-lg-6">
+        <div class="card-body bg-flat-color-1">
+                <div class="h1 text-muted text-center mb-4">
+                    <i class="fa ti-pencil-alt text-light"></i>
+                </div>
+                <div class="h6 mb-2 text-light text-center">
+                    <span class="count">Training Mode</span>
+                </div>
+                <div class="text-center">
+                    <label class="switch switch-text switch-success switch-pill ">
+                        <input id="train_switch" type="checkbox" class="switch-input" checked="true">
+                        <span data-on="On" data-off="Off" class="switch-label"></span>
+                        <span class="switch-handle"></span></label>
+                </div>
+            </div>
+    </div>
+    
+</div>
+    <!--/.col-->
     <!---Data Collection Table--->
     <div class="col-lg-6">
         <div class="card">
@@ -190,7 +184,7 @@
                 <strong class="card-title">Data Collection</strong>
             </div>
             <div class="card-body">
-                <table class="table">
+                <table class="table" id="data-table">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -200,243 +194,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-
-    <div class=" mb-5 flex-row d-flex ">
-        <div class="w-100 d-flex flex-column align-items-stretch align-content-stretch ">
-            <div class="justify-content-center align-items-center d-flex ">
-                <a href="# " id="door_control_icon "
-                   class="justify-content-center d-inline-flex "
-                   style="width: 127px; height: 175px ">
-                    <img id="door_status_icon " style="zoom: 1.5; "
-                         src="{% static 'door-close.png' %} " alt="Door status ">
-                </a>
-            </div>
-            <div class="btn-group align-self-center " style="margin-top: 100px ">
-                <button type="button " class="btn border-primary " style="width: 140px; " id="door_control_btn ">Đóng</button>
-                {% if  auto %}
-                    <button type="button " class="btn btn-primary border-primary " style="width: 140px; " id="door_auto_btn ">Tự động</button>
-                {% else %}
-                    <button type="button " class="btn btn-light border-primary " style="width: 140px; " id="door_auto_btn ">Thủ công</button>
-                {% endif %}
-            </div>
-        </div>
-        <div class="w-100 d-flex flex-column ">
-            <div class="page-title ">
-                <span>Lịch sử</span>
-            </div>
-            {#            Lịch su#}
-            <div style="overflow-y:scroll; overflow-x:hidden; height:300px; ">
-                <table width="100% "
-                       class="table table-striped table-bordered "
-                       id="history-table ">
-                    <thead>
-                    <tr style="position: relative; ">
-                        <th>Trạng thái</th>
-                        <th>Thời gian</th>
-                    </tr>
-                    </thead>
-                    <tbody style="overflow-y: auto;overflow-x: hidden ">
-                    {% for item in history_list reversed %}
-                        <tr>
-                            <td>{{ item.action }}</td>
-                            <td>{{ item.time|date:"D d/m/Y " }} - {{ item.time|time:"H:i " }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div> <!-- .content -->
-    {#    Mật khẩu#}
-
-    <div class="d-flex w-100 bg-light flex-column ">
-        <div class="w-100 page-header float-left ">
-            <div class="page-title ">
-                <h1>Quản lí mật khẩu</h1>
-            </div>
-        </div>
-        <table width="100% "
-               class="table table-striped table-bordered table-hover pl-2 pr-2 "
-               id="password-table ">
-            <thead>
-            <tr>
-                <th>Nội dung</th>
-                <th>Loại</th>
-                <th>Thời gian tạo</th>
-                <th>Thời gian hiệu lực</th>
-                <th>Thời gian hết hạn</th>
-                <th>Ghi chú</th>
-                <th>Xóa</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for pwd in password_list %}
-                <tr>
-                    <td>{{ pwd.password }}</td>
-                    <td>{% if pwd.is_hard %}
-                        Cố định
-                    {% else %}
-                        Tạm thời
-                    {% endif %}
-                    </td>
-                    <td>{{ pwd.create_time|date:"D d/m/Y " }}
-                        - {{ pwd.create_time|time:"H:i " }}</td>
-                    {% if pwd.apply_time %}
-                        <td>{{ pwd.apply_time|date:"D d/m/Y " }}
-                            - {{ pwd.apply_time|time:"H:i " }}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                    {% if pwd.due_time %}
-                        <td>{{ pwd.due_time|date:"D d/m/Y " }}
-                            - {{ pwd.due_time|time:"H:i " }}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                    <td>{{ pwd.description }}</td>
-                    <td>
-                        <button onclick="deletePwd( '{{ pwd.password }}') ">
-                            <i class="fa fa-trash-o "></i>
-                        </button>
-                    </td>
-                </tr>
-            {% endfor %}
-
-
-            </tbody>
-        </table>
-        <div id="manage_pwd " class="bg-light d-flex w-100 flex-column ">
-            <div class="w-100 page-header float-left d-flex flex-row align-items-center ">
-                <h1 class="w-100 ">Thêm mật khẩu</h1>
-                <div class="p-0 d-flex justify-content-center align-items-center bg-success rounded "
-                     style="height: 30px; ">
-                    {#                    save password button#}
-                    <button id="save_pwd_btn "
-                            type="button "
-                            class="btn p-3 bg-transparent text-white ">Lưu
-                    </button>
-                </div>
-            </div>
-            <div class="d-flex align-items-start ">
-                <div class="w-100 justify-content-center p-2 ">
-                    <div style="min-width: 100px; vertical-align: middle; align-items: center ">
-                        <div class="d-flex ">
-                            <div class="d-flex w-100 ">
-                                <span class="d-flex ">Mật khẩu</span>
-                            </div>
-                            <div class=" d-flex align-self-end justify-content-end "
-                                 style="min-width: 120px; ">
-                                <span>Tạm thời</span>
-                                <div class="pl-2 ">
-                                    <input id="door_type " class="rounded "
-                                           type="checkbox "
-                                           data-toggle="collapse "
-                                           aria-expanded="false "
-                                           aria-controls="collapseExample "
-                                           data-target="#timing ">
-                                </div>
-                            </div>
-                        </div>
-                        <input id="door_pwd " class="rounded d-flex w-100 ">
-                    </div>
-                </div>
-                <div class="w-100 justify-content-center p-2 ">
-                    <div style="min-width: 100px; vertical-align: middle; align-items: center ">
-                        <div class="d-flex w-100 ">
-                            <span class="d-flex ">Ghi chú</span>
-                        </div>
-                        <input id="door_note " class="rounded d-flex w-100 ">
-                    </div>
-                </div>
-            </div>
-            <div id="timing " class="w-100 justify-content-center collapse ">
-                <div class="d-flex flex-row ">
-                    <div class="d-flex flex-column w-100 p-2 ">
-                        <span>Bắt đầu</span>
-                        <input id="door_apply_date " class="rounded "
-                               type="datetime-local " step="2 ">
-                    </div>
-                    <div class="d-flex flex-column w-100 p-2 ">
-                        <span>Kết thúc</span>
-                        <input id="door_due_date " class="rounded "
-                               type="datetime-local " step="2 ">
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div id="manage_pwd " class="bg-light d-flex w-0 flex-column ">
-            <div class="w-100 page-header float-left d-flex flex-row align-items-center ">
-                <h1 style="width: 290px; ">Mật khẩu dự phòng:</h1>
-                <input id="door-local-pwd " class="rounded d-flex w-100 " style="margin-right: 20px ">
-                <div class="p-0 d-flex justify-content-center align-items-center bg-success rounded "
-                     style="height: 30px; ">
-                    <button id="save-local-pwd "
-                            type="button "
-                            class="btn p-3 bg-transparent text-white ">Lưu
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <footer id="myFooter ">
-        <div class="container ">
-            <div class="row ">
-                <div class="col-sm-3 ">
-                    <div class="social-icons ">
-                        <a href="https://github.com/vdthieu/smartdoor-mqtt-django-channels " class="twitter " style="font-size:3em
-        "><i class="fa fa-github "></i></a>
-                    </div>
-                </div>
-                <div class="col-sm-3 ">
-                    <h5>Member</h5>
-                    <ul>
-                        <li>Phùng Nhật Hải</li>
-                        <li>Võ Đình Trung Hiếu</li>
-                    </ul>
-                </div>
-                <div class="col-sm-3 ">
-                    <h5>Contact us</h5>
-                    <ul>
-                        <li><a href="# ">phungnhathai96@gmail.com</a></li>
-                        <li><a href="# ">trunghieu.vodinh@gmail.com</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-3 info ">
-                    <h5>Information</h5>
-                    <p>Đồ án chuyên ngành khoa Mạng máy tính và Truyền thông.<br/>GVHD: PGS. TS Lê Trung Quân</p>
-                </div>
-
-            </div>
-        </div>
-    </footer>
+ 
 
 </div><!-- /#right-panel -->
 
@@ -452,8 +216,10 @@
 <script src="{% static 'assets/js/lib/vector-map/jquery.vmap.sampledata.js' %}"></script>
 <script src="{% static 'assets/js/lib/vector-map/country/jquery.vmap.world.js' %}"></script>
 {#<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>#}
-<script src="{% static 'scripts/webSocket.js' %}"></script>
-<script src="{% static 'scripts/training.js' %}"></script>
+
+<script src="{% static 'scripts/training/ws-learning.js' %}"></script>
+<script src="{% static 'scripts/training/training.js' %}"></script>
+<script src="{% static 'scripts/training/data-table.js' %}"></script>
 
 <script>
 
@@ -474,294 +240,8 @@
         });
     })(jQuery);
 </script>
-<script>
-    var iconDoor = jQuery("#door_status_icon "); // hình cửa
-    var icnControlDoor = jQuery("#door_control_icon "); // thẻ bao icon cửa
-    var btnControlDoor = jQuery('#door_control_btn'); // nút đóng cửa
-    var btnAutoDoor = jQuery('#door_auto_btn');  // nút tự động
-    var btnSavePwd = jQuery("#save_pwd_btn "); // nút lưu password
-    var pwdTable = jQuery('#password-table > tbody:last-child');
-    var htyTable = jQuery('#history-table > tbody > tr:first');
-    var statusContainer = jQuery('#status-container');
-    var statusBar = jQuery('#status');
-    var statusLabel = jQuery('#status-label');
-    var statusContent = jQuery('#status-content');
-    var localPwd = jQuery('#door-local-pwd');
-    var btnSaveLocalPwd = jQuery('#save-local-pwd');
-    var dataPwd = jQuery("#door_pwd ");
-    var dataPwdType = jQuery("#door_type ");
-    var dataNote = jQuery('#door_note');
-    var dataApplyDate = jQuery("#door_apply_date ");
-    var dataDueDate = jQuery("#door_due_date ");
-    var pwdTiming = jQuery('#timing');
-
-    var doorOpenStatus = false;
-    {% if  auto %}
-        var isAuto = true;
-    {% else %}
-        var isAuto = false;
-    {% endif %};
-
-    var displayDay = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-    var socket = new WebSocket('ws://' + window.location.host + '/ws/door/');
-
-    function updateDoorIcon() {
-        if (doorOpenStatus) {
-            iconDoor.attr('src', "{% static 'door-open.png' %} ");
-            btnControlDoor.text("Mở ");
-            btnControlDoor.addClass('btn-primary');
-            btnControlDoor.removeClass('btn-light');
-        } else {
-            iconDoor.attr('src', "{% static 'door-close.png' %} ");
-            btnControlDoor.text("Đóng ");
-            btnControlDoor.removeClass('btn-primary');
-            btnControlDoor.addClass('btn-light');
-        }
-    }
-
-    var slider = document.getElementById("LightRange");
-    var output = document.getElementById("light");
-    output.innerHTML = slider.value; // Display the default slider value
-    // Update the current slider value (each time you drag the slider handle)
-    slider.oninput = function () {
-        output.innerHTML = this.value;
-    }
-
-    var slider2 = document.getElementById("TempRange");
-    var output2 = document.getElementById("temp");
-    output.innerHTML = slider.value; // Display the default slider value
-    // Update the current slider value (each time you drag the slider handle)
-    slider2.oninput = function () {
-        output2.innerHTML = this.value;
-    }
-
-    function updateDoorAuto() {
-        if (isAuto) {
-            btnAutoDoor.removeClass(' btn-light');
-            btnAutoDoor.addClass('btn-primary ');
-            btnAutoDoor.text('Tự động')
-        } else {
-            btnAutoDoor.addClass(' btn-light');
-            btnAutoDoor.removeClass('btn-primary ');
-            btnAutoDoor.text('Thủ công')
-        }
-    }
-
-    function dateToString(_date) {
-        if (_date.length === 0) return " ";
-        if (typeof _date === 'string') _date = new Date(_date);
-        var day = displayDay[_date.getDay()];
-        var date = (_date.getDate() > 9) ? _date.getDate() : ('0' + _date.getDate());
-        var month = ((_date.getMonth() + 1) > 9) ? (_date.getMonth() + 1) : ('0' + (_date.getMonth() + 1));
-        var year = _date.getFullYear();
-        var hour = (_date.getHours() > 9) ? _date.getHours() : ('0' + _date.getHours());
-        var minutes = (_date.getMinutes() > 9) ? _date.getMinutes() : ('0' + _date.getMinutes());
-        return day + ' ' + date + '/' + month + '/' + year + ' - ' + hour + ':' + minutes
-    }
-
-    // devices status tag
-    var statusServoContainer = 'device_servo_container'
-    var statusServoLabel = jQuery('#device_servo_label');
-    var statusServoContent = jQuery('#device_servo_content');
-
-    var statusKeypadContainer = 'device_keypad_container'
-    var statusKeypadLabel = jQuery('#device_keypad_label');
-    var statusKeypadContent = jQuery('#device_keypad_content');
-
-    var statusRfidContainer = 'device_rfid_container';
-    var statusRfidLabel = jQuery('#device_rfid_label');
-    var statusRfidContent = jQuery('#device_rfid_content');
-
-    function updateStatusBar(device, state, message) {
-        var containerId, label, content;
-        switch (device) {
-            case 'servo':
-                [containerId, label, content] = [statusServoContainer, statusServoLabel, statusServoContent];
-                break;
-            case 'keypad':
-                [containerId, label, content] = [statusKeypadContainer, statusKeypadLabel, statusKeypadContent];
-                break;
-            case 'rfid':
-                [containerId, label, content] = [statusRfidContainer, statusRfidLabel, statusRfidContent];
-                break;
-        }
-        var container = jQuery('#' + containerId);
-        const element = document.getElementById(containerId);
-        const elementClasses = element.className.split(' ');
-        elementClasses.forEach(function (value) {
-            if (value.substring(0, 5) === 'alert' && value !== 'alert') {
-                container.toggleClass(value);
-                container.toggleClass('alert-' + state);
-                label.toggleClass('badge' + value.substring(5, value.length));
-                label.toggleClass('badge-' + state);
-            }
-        });
-        content.text(message);
-    }
-
-    function deletePwd(password) {
-        socket.send(JSON.stringify({
-            delete_password: password
-        }))
-    }
-
-    socket.addEventListener('open', function (event) {
-        updateStatusBar('success', 'Kết nối đến server thành công')
-    });
-
-    socket.onmessage = function (e) {
-        var data = JSON.parse(e.data);
-        console.log(data)
-        // update door status
-        if (data.hasOwnProperty('door_status')) {
-            var message = data['door_status'];
-            if (message === 'close') {
-                doorOpenStatus = false;
-            }
-            if (message === 'open') {
-                doorOpenStatus = true;
-            }
-            updateDoorIcon();
-            return;
-        }
-        // update password table
-        if (data.hasOwnProperty('add_pwd_list')) {
-            var dataContent = data['add_pwd_list'];
-            if (dataContent.ok) {
-                var value =
-                    '<tr> ' +
-                    '<td>' + dataContent.pwd + '</td>' +
-                    '<td>' + (dataContent.type ? 'Tạm thời' : 'Cố định') + '</td>' +
-                    '<td>' + dateToString(dataContent.create) + '</td>' +
-                    '<td>' + dateToString(dataContent.apply) + '</td>' +
-                    '<td>' + dateToString(dataContent.due) + '</td>' +
-                    '<td>' + dataContent.note + '</td>' +
-                    '<td>' +
-                    '<button onclick="deletePwd( ' + "' " + dataContent.pwd + " '" + ') ">' +
-                    '<i class="fa fa-trash-o "></i>' +
-                    '</button>' +
-                    '</td>' +
-                    '</tr>';
-                pwdTable.append(value);
-                dataPwd.val('');
-                if (dataPwdType.is(':checked')) {
-                    dataPwdType.attr('checked', false);
-                    pwdTiming.toggle();
-                }
-                dataNote.val('');
-                dataApplyDate.val('');
-                dataDueDate.val('');
-            } else {
-                alert(dataContent.message)
-            }
-            btnSavePwd.removeAttr('disabled');
-            return;
-        }
-        if (data.hasOwnProperty('remove_pwd_list')) {
-            var password = data.remove_pwd_list;
-            var row = jQuery('#password-table > tbody >tr :contains(' + password + ')');
-            row.parent().remove();
-            return;
-        }
-        // update history table
-        if (data.hasOwnProperty('update_hty_list')) {
-            var dataContent = data['update_hty_list'];
-            var value =
-                '<tr> ' +
-                '<td>' + dataContent.action + '</td>' +
-                '<td>' + dateToString(dataContent.time) + '</td>' +
-                '</tr>';
-            htyTable.before(value);
-            return;
-        }
-        // update active device
-        if (data.hasOwnProperty('update_devices_status')) {
-            var dataContent = data['update_devices_status'];
-            if (dataContent.servo) {
-                updateStatusBar('servo', 'info', 'Đang hoạt động')
-            } else {
-                updateStatusBar('servo', 'danger', 'Không có kết nối')
-            }
-            if (dataContent.keypad) {
-                updateStatusBar('keypad', 'info', 'Đang hoạt động')
-            } else {
-                updateStatusBar('keypad', 'danger', 'Không có kết nối')
-            }
-            if (dataContent.rfid) {
-                updateStatusBar('rfid', 'info', 'Đang hoạt động')
-            } else {
-                updateStatusBar('rfid', 'danger', 'Không có kết nối')
-            }
-            return;
-        }
-        // update door auto status
-        if (data.hasOwnProperty('update_door_auto')) {
-            isAuto = data.update_door_auto === 'on';
-            updateDoorAuto()
-        }
-    };
-
-    icnControlDoor.click(function () {
-        var data;
-        if (!doorOpenStatus)
-            data = {door_control: 'open'};
-        else data = {door_control: 'close'};
-        socket.send(JSON.stringify(data));
-    });
-
-    btnControlDoor.click(function () {
-        var data;
-        if (!doorOpenStatus)
-            data = {door_control: 'open'};
-        else data = {door_control: 'close'};
-        socket.send(JSON.stringify(data));
-    });
-
-    btnSavePwd.click(function () {
-        var data = {
-            door_save_pwd: {
-                pwd: dataPwd.val(),
-                type: dataPwdType.is(':checked'),
-                note: dataNote.val(),
-                create: new Date(),
-                apply: dataApplyDate.val(),
-                due: dataDueDate.val()
-            }
-        };
-        socket.send(JSON.stringify(data));
-        btnSavePwd.attr('disable', true)
-    });
-
-    btnSaveLocalPwd.click(function () {
-        socket.send(JSON.stringify({
-            local_pwd: localPwd.val()
-        }));
-        localPwd.val('')
-    });
-
-    btnAutoDoor.click(function () {
-        socket.send(JSON.stringify({
-            door_auto: !isAuto ? 'on' : 'off'
-        }))
-    });
-
-
-    socket.onclose = function (e) {
-        updateStatusBar('danger', 'Mất kết nối đến server')
-    };
-    jQuery('#close-action').on("click ", function () {
-        socket.send(JSON.stringify({
-            message: 'close'
-        }))
-    });
-    jQuery('#open-action').on("click ", function () {
-        socket.send(JSON.stringify({
-            message: 'open'
-        }))
-    });
-</script>
-<script>
+</body>
+</html><script>
 
 </script>
 </body>

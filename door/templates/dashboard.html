@@ -56,6 +56,16 @@
                 <li>
                     <a href="/training" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a>
                 </li>
+                <h3 class="menu-title"></h3>
+                <!-- /.menu-title -->
+                <li>
+                    <a href="/aboutus" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-github"></i>About us</a>
+                </li>
+                <h3 class="menu-title"></h3>
+                <!-- /.menu-title -->
+                <li>
+                    <a href="/logout" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-shift-left"></i>Logout</a>
+                </li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
@@ -69,28 +79,6 @@
     <header id="header " class="header ">
         <div class="header-menu ">
             <div class="col-sm-7 ">
-                <div class="header-left ">
-                    <div class="dropdown for-notification border-light ">
-                        <button class="btn btn-secondary dropdown-toggle "
-                                type="button " id="notification "
-                                data-toggle="dropdown " aria-haspopup="true "
-                                aria-expanded="false ">
-                            <i class="fa fa-bell "></i>
-                            <span class="count bg-danger ">2</span>
-                        </button>
-                        <div class="dropdown-menu "
-                             aria-labelledby="notification ">
-                            <a class="dropdown-item media " style="background: #e2e2e2; "
-                               href="# ">
-                                14:20 12/06: Nhập mật khẩu sai liên tục
-                            </a>
-                            <a class="dropdown-item " style="background: #eeeeee; "
-                               href="# ">
-                                17:33 13/06: Nhập mật khẩu sai liên tục
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="col-sm-5 ">
@@ -125,7 +113,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div >
         <div class="col-sm-4 " id="status-container ">
             <div class="alert alert-dark fade show "
                  role="alert "
@@ -283,238 +271,7 @@
     </div>
 
     <!-------------------------------------------------->
-    <input type="range " min="1 " max="100 " value="50 " class="slider " id="myRange ">
-
-    <div class="col-lg-3 col-md-6 ">
-        <div class="social-box facebook ">
-            <i class="card-title ">Light Control</i>
-            <ul class="card-header ">
-                <li>
-                    <span class="count ">40</span> k
-                    <span>friends</span>
-                </li>
-                <li>
-                    <label class="switch switch-text switch-primary "><input type="checkbox " class="switch-input
-        " checked="true "> <span data-on="On " data-off="Off " class="switch-label "></span> <span class="switch-handle "></span></label>
-                </li>
-
-            </ul>
-        </div>
-        <!--/social-box-->
-    </div>
-    <div class=" mb-5 flex-row d-flex ">
-        <div class="w-100 d-flex flex-column align-items-stretch align-content-stretch ">
-            <div class="justify-content-center align-items-center d-flex ">
-                <a href="# " id="door_control_icon "
-                   class="justify-content-center d-inline-flex "
-                   style="width: 127px; height: 175px ">
-                    <img id="door_status_icon " style="zoom: 1.5; "
-                         src="{% static 'door-close.png' %} " alt="Door status ">
-                </a>
-            </div>
-            <div class="btn-group align-self-center " style="margin-top: 100px ">
-                <button type="button " class="btn border-primary " style="width: 140px; " id="door_control_btn ">Đóng</button>
-                {% if  auto %}
-                    <button type="button " class="btn btn-primary border-primary " style="width: 140px; ">Tự động</button>
-                {% else %}
-                    <button type="button " class="btn btn-light border-primary " style="width: 140px; " id="door_auto_btn ">Thủ công</button>
-                {% endif %}
-            </div>
-        </div>
-        <div class="w-100 d-flex flex-column ">
-            <div class="page-title ">
-                <span>Lịch sử</span>
-            </div>
-            {#            Lịch su#}
-            <div style="overflow-y:scroll; overflow-x:hidden; height:300px; ">
-                <table width="100% "
-                       class="table table-striped table-bordered "
-                       id="history-table ">
-                    <thead>
-                    <tr style="position: relative; ">
-                        <th>Trạng thái</th>
-                        <th>Thời gian</th>
-                    </tr>
-                    </thead>
-                    <tbody style="overflow-y: auto;overflow-x: hidden ">
-                    {% for item in history_list reversed %}
-                        <tr>
-                            <td>{{ item.action }}</td>
-                            <td>{{ item.time|date:"D d/m/Y " }} - {{ item.time|time:"H:i " }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div> <!-- .content -->
-    {#    Mật khẩu#}
-
-    <div class="d-flex w-100 bg-light flex-column ">
-        <div class="w-100 page-header float-left ">
-            <div class="page-title ">
-                <h1>Quản lí mật khẩu</h1>
-            </div>
-        </div>
-        <table width="100% "
-               class="table table-striped table-bordered table-hover pl-2 pr-2 "
-               id="password-table ">
-            <thead>
-            <tr>
-                <th>Nội dung</th>
-                <th>Loại</th>
-                <th>Thời gian tạo</th>
-                <th>Thời gian hiệu lực</th>
-                <th>Thời gian hết hạn</th>
-                <th>Ghi chú</th>
-                <th>Xóa</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for pwd in password_list %}
-                <tr>
-                    <td>{{ pwd.password }}</td>
-                    <td>{% if pwd.is_hard %}
-                        Cố định
-                    {% else %}
-                        Tạm thời
-                    {% endif %}
-                    </td>
-                    <td>{{ pwd.create_time|date:"D d/m/Y " }}
-                        - {{ pwd.create_time|time:"H:i " }}</td>
-                    {% if pwd.apply_time %}
-                        <td>{{ pwd.apply_time|date:"D d/m/Y " }}
-                            - {{ pwd.apply_time|time:"H:i " }}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                    {% if pwd.due_time %}
-                        <td>{{ pwd.due_time|date:"D d/m/Y " }}
-                            - {{ pwd.due_time|time:"H:i " }}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                    <td>{{ pwd.description }}</td>
-                    <td>
-                        <button onclick="deletePwd( '{{ pwd.password }}') ">
-                            <i class="fa fa-trash-o "></i>
-                        </button>
-                    </td>
-                </tr>
-            {% endfor %}
-
-
-            </tbody>
-        </table>
-        <div class="bg-light d-flex w-100 flex-column ">
-            <div class="w-100 page-header float-left d-flex flex-row align-items-center ">
-                <h1 class="w-100 ">Thêm mật khẩu</h1>
-                <div class="p-0 d-flex justify-content-center align-items-center bg-success rounded "
-                     style="height: 30px; ">
-                    {#                    save password button#}
-                    <button id="save_pwd_btn "
-                            type="button "
-                            class="btn p-3 bg-transparent text-white ">Lưu
-                    </button>
-                </div>
-            </div>
-            <div class="d-flex align-items-start ">
-                <div class="w-100 justify-content-center p-2 ">
-                    <div style="min-width: 100px; vertical-align: middle; align-items: center ">
-                        <div class="d-flex ">
-                            <div class="d-flex w-100 ">
-                                <span class="d-flex ">Mật khẩu</span>
-                            </div>
-                            <div class=" d-flex align-self-end justify-content-end "
-                                 style="min-width: 120px; ">
-                                <span>Tạm thời</span>
-                                <div class="pl-2 ">
-                                    <input id="door_type " class="rounded "
-                                           type="checkbox "
-                                           data-toggle="collapse "
-                                           aria-expanded="false "
-                                           aria-controls="collapseExample "
-                                           data-target="#timing ">
-                                </div>
-                            </div>
-                        </div>
-                        <input id="door_pwd " class="rounded d-flex w-100 ">
-                    </div>
-                </div>
-                <div class="w-100 justify-content-center p-2 ">
-                    <div style="min-width: 100px; vertical-align: middle; align-items: center ">
-                        <div class="d-flex w-100 ">
-                            <span class="d-flex ">Ghi chú</span>
-                        </div>
-                        <input id="door_note " class="rounded d-flex w-100 ">
-                    </div>
-                </div>
-            </div>
-            <div id="timing " class="w-100 justify-content-center collapse ">
-                <div class="d-flex flex-row ">
-                    <div class="d-flex flex-column w-100 p-2 ">
-                        <span>Bắt đầu</span>
-                        <input id="door_apply_date " class="rounded "
-                               type="datetime-local " step="2 ">
-                    </div>
-                    <div class="d-flex flex-column w-100 p-2 ">
-                        <span>Kết thúc</span>
-                        <input id="door_due_date " class="rounded "
-                               type="datetime-local " step="2 ">
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div id="manage_pwd " class="bg-light d-flex w-0 flex-column ">
-            <div class="w-100 page-header float-left d-flex flex-row align-items-center ">
-                <h1 style="width: 290px; ">Mật khẩu dự phòng:</h1>
-                <input id="door-local-pwd " class="rounded d-flex w-100 " style="margin-right: 20px ">
-                <div class="p-0 d-flex justify-content-center align-items-center bg-success rounded "
-                     style="height: 30px; ">
-                    <button id="save-local-pwd "
-                            type="button "
-                            class="btn p-3 bg-transparent text-white ">Lưu
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <footer id="myFooter ">
-        <div class="container ">
-            <div class="row ">
-                <div class="col-sm-3 ">
-                    <div class="social-icons ">
-                        <a href="https://github.com/vdthieu/smartdoor-mqtt-django-channels " class="twitter " style="font-size:3em
-        "><i class="fa fa-github "></i></a>
-                    </div>
-                </div>
-                <div class="col-sm-3 ">
-                    <h5>Member</h5>
-                    <ul>
-                        <li>Phùng Nhật Hải</li>
-                        <li>Võ Đình Trung Hiếu</li>
-                    </ul>
-                </div>
-                <div class="col-sm-3 ">
-                    <h5>Contact us</h5>
-                    <ul>
-                        <li><a href="# ">phungnhathai96@gmail.com</a></li>
-                        <li><a href="# ">trunghieu.vodinh@gmail.com</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-3 info ">
-                    <h5>Information</h5>
-                    <p>Đồ án chuyên ngành khoa Mạng máy tính và Truyền thông.<br/>GVHD: PGS. TS Lê Trung Quân</p>
-                </div>
-
-            </div>
-        </div>
-    </footer>
-
+    
 </div><!-- /#right-panel -->
 
 <!-- Right Panel -->
@@ -533,9 +290,9 @@
 {#<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>#}
 
 {#<script src="{% static 'scripts/script.js' %}"></script>#}
-<script src="{% static 'scripts/webSocket.js' %}"></script>
-<script src="{% static 'scripts/ledControl.js' %}"></script>
-<script src="{% static 'scripts/tempControl.js' %}"></script>
+<script src="{% static 'scripts/dashboard/ws-training.js' %}"></script>
+<script src="{% static 'scripts/dashboard/ledControl.js' %}"></script>
+<script src="{% static 'scripts/dashboard/tempControl.js' %}"></script>
 <script>
     (function ($) {
         "use strict ";

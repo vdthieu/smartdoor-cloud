@@ -9,8 +9,7 @@ import json
 from pytz import timezone
 import threading
 import ssl
-import random
-
+from door.utils import bind_mq_to_ws_message,get_online_devices_ws_message
 ssl.match_hostname = lambda cert, hostname: True
 
 
@@ -152,24 +151,38 @@ def start_job():
                     auto_state.value = 'on'
                 auto_state.save()
             pass
-        if msg.topic in ledIds:
+        if msg.topic == "LED_CONTROL":
+            mq_message = msg.payload.decode('utf-8')
+            ws_message = bind_mq_to_ws_message(msg.topic,mq_message)
+            print('mq',ws_message)
             async_to_sync(channel_layer.group_send)(
                 room_group_name, {
                     'type': 'led_control',
-                    'message': json.dumps({
-                        'id': msg.topic,
-                        'state': msg.payload.decode('utf-8') == '1',
-                        'type': 'LED CONTROL',
-                        'update': True
-                    })
+                    'message': json.dumps(ws_message)
                 }
             )
             device_state = DeviceStates.objects.create(
-                id=msg.topic,
-                state=msg.payload.decode('utf-8') == '1',
+                id=ws_message['id'],
+                state= mq_message.isupper(),
                 time= datetime.now()
             )
             device_state.save()
+            pass
+        if msg.topic == "RES_STAT":
+            device_id = msg.payload.decode('ascii')[:len(msg.payload)]
+            if not DoorDevices.objects.filter(id=device_id).exists():
+                devices_data = DoorDevices.objects.create(
+                    id=device_id,
+                    status=True,
+                    last_check=now
+                )
+                devices_data.save()
+                on_interval_timeout()
+            else:
+                device = DoorDevices.objects.filter(id=device_id)[0]
+                device.status = True
+                device.last_check = now
+                device.save()
             pass
         if msg.topic in tempIds:
             async_to_sync(channel_layer.group_send)(
@@ -183,32 +196,26 @@ def start_job():
                     })
                 }
             )
+            print('receive',msg.payload.decode('ascii'))
             device_state = DeviceStates.objects.create(
                 id=msg.topic,
-                state=msg.payload.decode('utf-8') == '1',
+                state= int(msg.payload.decode('utf-8')),
                 time= datetime.now()
             )
             device_state.save()
             pass
 
     def on_interval():
-        mqtt_client.publish('door-announce', '___')
+        mqtt_client.publish('REQ_STAT', '')
         DoorDevices.objects.all().update(status=False)
         set_timeout(on_interval_timeout, 5)
 
     def on_interval_timeout():
-        online_devices = DoorDevices.objects.filter(status=True)
-        servo = online_devices.filter(id='servo')
-        keypad = online_devices.filter(id='keypad')
-        rfid = online_devices.filter(id='rfid')
+
         async_to_sync(channel_layer.group_send)(
             room_group_name, {
                 'type': 'update_devices_status',
-                'message': json.dumps({
-                    'servo': servo.exists() and servo[0].status,
-                    'keypad': keypad.exists() and keypad[0].status,
-                    'rfid': rfid.exists() and rfid[0].status,
-                })
+                'message': json.dumps(get_online_devices_ws_message())
             }
         )
 
@@ -219,6 +226,9 @@ def start_job():
             mqtt_client.subscribe('door-identify')
             mqtt_client.subscribe('door-status')
             mqtt_client.subscribe('door-rfid')
+
+            mqtt_client.subscribe('LED_CONTROL')
+            mqtt_client.subscribe('RES_STAT')
             for ledId in ledIds:
                 mqtt_client.subscribe(ledId)
             for tempId in tempIds:
@@ -245,3 +255,4 @@ def start_job():
     if not DoorState.objects.filter(key='auto').exists():
         state = DoorState.objects.create(key='auto', value='off')
         state.save()
+    DoorDevices.objects.all().delete()

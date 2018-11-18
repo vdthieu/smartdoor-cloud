@@ -1329,7 +1329,7 @@ header .form-inline {
   color: #64666d;
   float: right;
   margin: 7px 20px 0 0;
-  max-width: 100px; }
+  max-width: 1px; }
   #language-select:focus, #language-select:visited {
     border: none;
     outline: 0; }

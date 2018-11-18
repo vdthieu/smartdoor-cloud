@@ -31,6 +31,18 @@ def training(request):
         'auto': auto
     }
     return render(request, 'training.html', args)
+@login_required
+def aboutus(request):
+    password_list = DoorPassword.objects.all()
+    history_list = DoorHistory.objects.all()
+    auto = True if DoorState.objects.filter(key='auto')[0].value == 'on' else False
+    args = {
+        'password_list': password_list,
+        'history_list': history_list,
+        'user': request.user,
+        'auto': auto
+    }
+    return render(request, 'aboutus.html', args)
 
 
 def login(request):

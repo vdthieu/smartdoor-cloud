@@ -20,10 +20,8 @@ class DoorHistory(models.Model):
 
 
 class DoorDevices(models.Model):
-    id = models.CharField(max_length=10, primary_key=True)
-    # to identify devices
-    status = models.BooleanField(default=False)
-    # True if device are connected
+    id = models.CharField(max_length=10, primary_key=True)  # to identify devices
+    status = models.BooleanField(default=False)  # True if device are connected
     last_check = models.DateTimeField(default=None, blank=True, null=True)
 
 
@@ -32,6 +30,7 @@ class DoorState(models.Model):
     value = models.TextField(max_length=500)
 
 
+# device's data logs
 class DeviceStates(models.Model):
     id = models.CharField(max_length=10)
     state = models.IntegerField(default=0, blank=True, null=True)
