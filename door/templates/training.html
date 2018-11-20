@@ -109,8 +109,7 @@
     </div>
 
     <!--Switch-->
-    <div class="col-lg-6">
-       <div class="col-lg-6 no-padding">
+       <div class="col-lg-3 col-md-6 no-padding">
         <div class="card-body bg-flat-color-5">
                 <div class="h1 text-muted text-center mb-4">
                     <i class="fa ti-pencil-alt text-light"></i>
@@ -126,7 +125,7 @@
                 </div>
             </div>
     </div>
-    <div class="col-lg-6 no-padding">
+    <div class="col-lg-3 col-md-6 no-padding">
         <div class="card-body bg-flat-color-1">
                 <div class="h1 text-muted text-center mb-4">
                     <i class="fa ti-flag text-light"></i>
@@ -142,7 +141,7 @@
                 </div>
             </div>
     </div>
-    <div class="col-lg-6 no-padding">
+    <div class="col-lg-3 col-md-6 no-padding">
         <div class="card-body bg-flat-color-3">
                 <div class="h1 text-muted text-center mb-4">
                     <i class="fa ti-timer text-light"></i>
@@ -150,55 +149,48 @@
                 <div class="h6 mb-2 text-light text-center">
                     <span class="count">Time Training</span>
                 </div>
-                <div class="text-center">
-                    <label class="switch switch-text switch-success switch-pill ">
-                        <input id="train_switch" type="checkbox" class="switch-input" checked="true">
-                        <span data-on="On" data-off="Off" class="switch-label"></span>
-                        <span class="switch-handle"></span></label>
-                </div>
+                <div class="text-center text-light h4 mb-0">5:34:11</div>
             </div>
     </div>
-    <div class="no-padding col-lg-6">
-        <div class="card-body bg-flat-color-1">
+    <div class="no-padding col-lg-3 col-md-6">
+        <div class="card-body bg-flat-color-2">
                 <div class="h1 text-muted text-center mb-4">
-                    <i class="fa ti-pencil-alt text-light"></i>
+                    <i class="fa ti-list text-light"></i>
                 </div>
                 <div class="h6 mb-2 text-light text-center">
                     <span class="count">Training Mode</span>
                 </div>
-                <div class="text-center">
-                    <label class="switch switch-text switch-success switch-pill ">
-                        <input id="train_switch" type="checkbox" class="switch-input" checked="true">
-                        <span data-on="On" data-off="Off" class="switch-label"></span>
-                        <span class="switch-handle"></span></label>
-                </div>
+                 <div class="h4 mb-0 text-light text-center ">
+                      <span class="count">1238</span>
+                 </div>
             </div>
     </div>
     
-</div>
     <!--/.col-->
     <!---Data Collection Table--->
-    <div class="col-lg-6">
+
+     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
                 <strong class="card-title">Data Collection</strong>
             </div>
             <div class="card-body">
-                <table class="table" id="data-table">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Time stamp</th>
-                        <th scope="col">Device Code</th>
-                        <th scope="col">State/Value</th>
-                    </tr>
-                    </thead>
+                <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
+                   <thead>
+	                    <tr>
+	                        <th scope="col">#</th>
+	                        <th scope="col">Time stamp</th>
+	                        <th scope="col">Device Code</th>
+	                        <th scope="col">State/Value</th>
+	                    </tr>
+	                 </thead>
                     <tbody>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+                 	</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+                        
 
  
 
@@ -239,6 +231,46 @@
             normalizeFunction: 'polynomial'
         });
     })(jQuery);
+    (function ($) {
+    //    "use strict";
+
+
+    /*  Data Table
+    -------------*/
+
+    $('#bootstrap-data-table').DataTable({
+        lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
+    });
+
+    $('#data-table').DataTable({
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+    });
+
+    $('#row-select').DataTable( {
+        initComplete: function () {
+                this.api().columns().every( function () {
+                    var column = this;
+                    var select = $('<select class="form-control"><option value=""></option></select>')
+                        .appendTo( $(column.footer()).empty() )
+                        .on( 'change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search( val ? '^'+val+'$' : '', true, false )
+                                .draw();
+                        } );
+
+                    column.data().unique().sort().each( function ( d, j ) {
+                        select.append( '<option value="'+d+'">'+d+'</option>' )
+                    } );
+                } );
+            }
+        } );
+
+})(jQuery);
 </script>
 </body>
 </html><script>

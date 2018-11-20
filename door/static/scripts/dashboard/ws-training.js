@@ -19,18 +19,31 @@ socket.onmessage = function (e) {
             if(tempIds.some(item => item === data.id)){
                 $(`#${data.id}`).val(data.state)
             }
-            break
-        case 'DEVICE STATUS':
+            break;
+        case 'BOARD STATUS':
             data.device_status.forEach(
                 item => {
-                    console.log('update',item);
                     if(item.status){
                         updateStatusBar(item.id,'info',"Đang hoạt động")
                     }else{
                         updateStatusBar(item.id,'danger','Không có kết nối')
                     }
                 }
-            )
+            );
+            break;
+        case 'DEVICE STATUS':
+            data.device_states.forEach(
+                item => {
+                    if(ledId.some(led => led === item.id)){
+                        $(`#${item.id}`).prop('checked',item.state)
+                    }else if(tempIds.some(temp => temp === item.id)){
+                        console.log(item.id, item.state);
+                        $(`#${item.id}`).val(item.state)
+                    }
+                }
+            );
+            break
+
     }
 };
 
@@ -54,8 +67,19 @@ const device_tag_dict= {
 
 function updateStatusBar(device, state, message) {
     //state : ['info', 'danger','success']
-    console.log(device)
-    const [containerId, label, content] = device_tag_dict[device];
+    let found = false;
+    for(let i in device_tag_dict){
+        if(i === device){
+            found = true;
+            break;
+        }
+    }
+    if(!found){
+        return;
+    }
+    const containerId = device_tag_dict[device][0];
+    const label= device_tag_dict[device][1];
+    const content= device_tag_dict[device][2];
     const container = jQuery('#' + containerId);
     const element = document.getElementById(containerId);
     const elementClasses = element.className.split(' ');

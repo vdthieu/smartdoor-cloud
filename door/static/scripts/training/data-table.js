@@ -1,4 +1,4 @@
-let dataTable = jQuery('#data-table > tbody:last-child');
+let dataTable = jQuery('#bootstrap-data-table-export > tbody:last-child');
 
 function getTable (){
     socket.send(JSON.stringify({

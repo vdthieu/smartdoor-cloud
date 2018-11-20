@@ -187,7 +187,7 @@ def start_job():
         if msg.topic in tempIds:
             async_to_sync(channel_layer.group_send)(
                 room_group_name, {
-                    'type': 'led_control',
+                    'type': 'temp_control',
                     'message': json.dumps({
                         'id': msg.topic,
                         'state': int(msg.payload.decode('utf-8')),
