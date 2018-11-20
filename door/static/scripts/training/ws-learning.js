@@ -14,6 +14,10 @@ socket.onmessage = function (e) {
             appendDataTable(data.data);
             break;
         }
+        case 'UNSHIFT DATA TABLE':{
+            unshiftDataTable(data);
+            break;
+        }
 
     }
 };

@@ -232,12 +232,29 @@ class DoorConsumer(WebsocketConsumer):
 
     def led_control(self, event):
         self.send(event['message'])
+        message = json.loads(event['message'])
+        print(message)
+        self.send(json.dumps({
+            "type" : "UNSHIFT DATA TABLE",
+            'id' : message['id'],
+            'state' : message['state'],
+            'time' : datetime.now()
+        },
+            cls=DjangoJSONEncoder
+        ))
 
     def temp_control(self, event):
         self.send(event['message'])
-        self.send({
-            "type" : "UNSHIFT DATA TABLE"
-        })
+        message = json.loads(event['message'])
+        print(message)
+        self.send(json.dumps({
+            "type" : "UNSHIFT DATA TABLE",
+            'id' : message['id'],
+            'state' : message['state'],
+            'time' : datetime.now()
+        },
+            cls=DjangoJSONEncoder
+        ))
 
     # Receive message from room group
     def post_socket(self, event):
