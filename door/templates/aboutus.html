@@ -1,0 +1,313 @@
+<!doctype html>
+
+<html class="no-js" lang="">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Smart Home Control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="apple-icon.png">
+    {% load static %}
+    <link rel="shortcut icon" href=" {% static 'favicon.png' %}">
+
+    <link rel="stylesheet" href=" {% static 'assets/css/normalize.css' %}">
+    <link rel="stylesheet" href=" {% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href=" {% static 'assets/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href=" {% static 'assets/css/themify-icons.css' %}">
+    <link rel="stylesheet" href=" {% static 'assets/css/flag-icon.min.css' %}">
+    <link rel="stylesheet" href=" {% static 'assets/css/cs-skin-elastic.css' %}">
+    <link rel="stylesheet" href=" {% static 'assets/css/Footer-with-logo.css' %}">
+    <link rel="stylesheet" href=" {% static 'assets/scss/style.css' %}">
+    <link href=" {% static 'assets/css/lib/vector-map/jqvmap.min.css' %}">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"
+          rel="stylesheet">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+    <script src="{% static 'assets/js/vendor/jquery-2.1.4.min.js' %}"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+</head>
+
+<body>
+<!-- Left Panel ---->
+<aside id="left-panel" class="left-panel">
+    <nav class="navbar navbar-expand-sm navbar-default">
+
+        <div class="navbar-header">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <i class="fa fa-bars"></i>
+            </button>
+            <a class="navbar-brand" href="/dashboard">
+                <h4 class="menu-icon ti-home"> Smart<b>Home</b>
+                </h4>
+            </a>
+        </div>
+        <div id="main-menu" class="main-menu collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a href="/dashboard">
+                        <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
+                </li>
+                <h3 class="menu-title"></h3>
+                <!-- /.menu-title -->
+                <li>
+                    <a href="/training" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a>
+                </li>
+                <h3 class="menu-title"></h3>
+                <!-- /.menu-title -->
+                <li>
+                    <a href="/aboutus" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-shift-left"></i>About us</a>
+                </li>
+                <h3 class="menu-title"></h3>
+                <!-- /.menu-title -->
+                <li>
+                    <a href="/logout" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-shift-left"></i>Logout</a>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+</aside><!-- /#left-panel -->
+<!-- Left Panel -->
+
+<!-- Right Panel -->
+<div id="right-panel " class="right-panel ">
+
+    <!------Header------->
+    <header id="header " class="header ">
+        <div class="header-menu ">
+            <div class="col-sm-7 ">
+            </div>
+
+            <div class="col-sm-5 ">
+                <div class="user-area dropdown float-right ">
+                    <a href="# " class="dropdown-toggle " data-toggle="dropdown "
+                       aria-haspopup="true " aria-expanded="false ">
+                        <img class="user-avatar rounded-circle "
+                             src=" {% static 'images/admin.jpg' %} "
+                             alt="User Avatar ">
+                    </a>
+
+                    <div class="user-menu dropdown-menu ">
+                        <a class="nav-link " href="/logout "><i
+                                class="fa fa-power -off "></i>Logout</a>
+                    </div>
+                </div>
+
+                <div class="language-select dropdown" id="language-select">
+                    <h7><b>Welcome! {{ user }}</b></h7>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- -----------------------------Header---------------------------->
+    {# State Device#}
+    <div class="breadcrumbs" id="dashboard">
+        <div class="col-sm-4">
+            <div class="page-header float-left">
+                <div class="page-title ">
+                    <h1>State Device</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div >
+        <div class="col-sm-4 " id="status-container ">
+            <div class="alert alert-dark fade show "
+                 role="alert "
+                 id="device_servo_container ">
+                <span class="badge badge-pill badge-dark " id="device_servo_label ">Servo</span>
+                <span id="device_servo_content "> Đang chờ</span>
+
+            </div>
+        </div>
+        <div class="col-sm-4" id="status-container">
+            <div class="alert alert-dark fade show"
+                 role="alert"
+                 id="device_keypad_container">
+                <span class="badge badge-pill badge-dark " id="device_keypad_label">Light System</span>
+                <span id="device_keypad_content "> Đang chờ</span>
+
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="alert alert-dark fade show"
+                 role="alert "
+                 id="device_rfid_container">
+                <span class="badge badge-pill badge-dark " id="device_rfid_label">RFID</span>
+                <span id="device_rfid_content"> Đang chờ</span>
+
+            </div>
+        </div>
+    </div>
+    <!------------------------------Control------------------------------->
+    {# Điều khiển#}
+    <div class="breadcrumbs " id="dashboard ">
+        <div class="col-sm-4 ">
+            <div class="page-header float-left ">
+                <div class="page-title ">
+                    <h1>Control</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 ">
+        <aside class="profile-nav alt">
+            <section class="card">
+                <div class="card-header user-header alt bg-flat-color-1">
+                    <div class="media">
+                        <div>
+                            <h5 class="text-light">
+                                <span>Light Control</span>
+                                <span class=""></span>
+                            </h5>
+
+                        </div>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush" id="led_list">
+                    <li class="list-group-item">
+                        Living Room
+                        <span class="pull-right">
+                            <label class="switch switch-text switch-primary">
+                                <input id="LLIV" type="checkbox" class="switch-input" checked="false">
+                                <span data-on="On" data-off="Off" class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        Kitchen
+                        <span class="pull-right">
+                            <label class="switch switch-text switch-primary">
+                                <input id="LKIT" type="checkbox" class="switch-input" checked="true">
+                                <span data-on="On" data-off="Off" class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        Bed Room
+                        <span class="pull-right">
+                            <label class="switch switch-text switch-primary">
+                                <input id="LBED" type="checkbox" class="switch-input" checked="false">
+                                <span data-on="On" data-off="Off" class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        Bath Room
+                        <span class="pull-right">
+                            <label class="switch switch-text switch-primary">
+                                <input id="LBAT" type="checkbox" class="switch-input" checked="true">
+                                <span data-on="On" data-off="Off" class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                        </span>
+                    </li>
+
+                </ul>
+            </section>
+        </aside>
+    </div>
+    <!---------Office Room Light---------------->
+    <div class="col-lg-4 col-md-6 ">
+        <div class="card ">
+            <div class="card-header ">
+                <strong class="card-title mb-3 ">Office Room Light</strong>
+            </div>
+            <div class="card-body ">
+                <br>
+                <div class="stat-widget-four ">
+                    <div class="stat-icon dib ">
+                        <i class="ti-light-bulb text-muted "></i>
+                    </div>
+                    <div class="stat-content ">
+                        <div class="text-left dib ">
+                            <h5>Temperature</h5>
+                            <h3><span class="count" id="light"></span> °C</h3>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h6><span>Warn</span><span class="pull-right ">Cool</span></h6>
+                <div class="card-text text-sm-center ">
+                    <input type="range" min="1" max="100" value="50" class="Tempslider" id="TOFF">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!---------------->
+    <div class="col-lg-4 col-md-6 ">
+        <div class="card ">
+            <div class="card-header ">
+                <strong class="card-title mb-3 ">Air Condition</strong>
+            </div>
+            <div class="card-body ">
+                <br>
+                <div class="stat-widget-four ">
+                    <div class="stat-icon dib ">
+                        <i class="ti-pulse text-muted "></i>
+                    </div>
+                    <div class="stat-content ">
+                        <div class="text-left dib ">
+                            <h5>Temperature</h5>
+                            <h3><span class="count" id="temp"></span> °C</h3>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h6><span>-</span><span class="pull-right ">+</span></h6>
+                <div class="card-text text-sm-center ">
+                    <input type="range" min="1" max="100" value="50" class="Tempslider" id="THOM">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-------------------------------------------------->
+    
+</div><!-- /#right-panel -->
+
+<!-- Right Panel -->
+
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>#}
+
+<script src="{% static 'assets/js/plugins.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+<script src="{% static 'assets/js/lib/chart-js/Chart.bundle.js' %}"></script>
+{#<script src="{% static 'assets/js/dashboard.js' %}"></script>#}
+{#<script src="{% static 'assets/js/widgets.js' %}"></script>#}
+<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.js' %}"></script>
+<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.min.js' %}"></script>
+<script src="{% static 'assets/js/lib/vector-map/jquery.vmap.sampledata.js' %}"></script>
+<script src="{% static 'assets/js/lib/vector-map/country/jquery.vmap.world.js' %}"></script>
+{#<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>#}
+
+{#<script src="{% static 'scripts/script.js' %}"></script>#}
+<script src="{% static 'scripts/webSocket.js' %}"></script>
+<script src="{% static 'scripts/dashboard/ledControl.js' %}"></script>
+<script src="{% static 'scripts/dashboard/tempControl.js' %}"></script>
+<script>
+    (function ($) {
+        "use strict ";
+        jQuery('#vmap').vectorMap({
+            map: 'world_en',
+            backgroundColor: null,
+            color: '#ffffff',
+            hoverOpacity: 0.7,
+            selectedColor: '#1de9b6',
+            enableZoom: true,
+            showTooltip: true,
+            scaleColors: ['#1de9b6', '#03a9f5'],
+            normalizeFunction: 'polynomial'
+        });
+    })(jQuery);
+</script>
+</body>
+</html>
