@@ -14,7 +14,7 @@
 WiFiClient espClient;
 PubSubClient mqttclient(espClient);
 Servo myservo;
-SSD1306  display(0x3c, 0, 16);
+SSD1306  display(0x3c, 4, 5);
 
 const char* ssid     = "UiTiOt-E3.1";
 const char* password = "UiTiOtAP";
@@ -39,8 +39,9 @@ const char* board_id = "SERVO";
 const char* temp_topic = "THOM";
 
 //---------------DISTANCE-------------------------
-const int trig = 4;     
-const int echo = 5;    
+const int trig = 12;     
+const int echo = 13;    
+const int servo_pin = 2;
 unsigned long duration;
 int distance;  
 int f;
@@ -59,7 +60,7 @@ int distance_threshold = 8;
 
 void setup() {
   Serial.begin(115200);
-  myservo.attach(10);
+  myservo.attach(servo_pin);
   myservo.write(8);
   connect_wifi();
   pinMode(trig, OUTPUT);  //Initiate  trig
@@ -77,7 +78,8 @@ void setup() {
 void loop()
 {
   current_time = millis();
-  if( is_auto || is_door_open ) {
+//  if( is_auto || is_door_open ) {
+  if(true){
     digitalWrite(trig, 0);  
     delayMicroseconds(2);
     digitalWrite(trig, 1);  
@@ -86,7 +88,7 @@ void loop()
   
     duration = pulseIn(echo, HIGH);
     distance = int(duration / 58.824);
-    Serial.print(distance);
+    //Serial.println(distance);
     if( distance < distance_threshold) {
       open_door();
     }
@@ -124,8 +126,6 @@ void reconnect() {
           mqttclient.publish("door-identify","servo");
           is_connected_mqtt = true;
           Serial.println("connected");
-            mqttclient.subscribe(TOPIC_ANNOUNCE); 
-            mqttclient.subscribe(TOPIC_CONTROL); 
             mqttclient.subscribe(TOPIC_CONTROL);
             mqttclient.subscribe(TOPIC_AUTO);
             mqttclient.subscribe(TOPIC_SET_DISTANCE);
@@ -146,7 +146,6 @@ void reconnect() {
 }
 void close_door(){
   if(!is_door_open) {
-    Serial.print("IS CLOSING");
     return;
   }
   is_door_open = false;
@@ -157,7 +156,6 @@ void close_door(){
   
 void open_door() {
   if(is_door_open) {
-    Serial.print("IS OPENING");
     return;
   }
   last_open_time = current_time;
