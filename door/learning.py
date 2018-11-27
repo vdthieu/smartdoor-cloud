@@ -28,10 +28,6 @@ def parse_data():
     data_set = pd.DataFrame(data=data[1:, 0:], columns=data[0, 0:])
     data_set.to_csv('./door/output/dataset.csv', index=False, header=False)
 
-    # data = [column] + values
-    # # data = np.array(data)
-    # data_set = pd.DataFrame(data
-    #                     )
     data_set = pd.get_dummies(data_set, columns=['weekDate'])
 
     for device_name in column[4: len(column)]:
