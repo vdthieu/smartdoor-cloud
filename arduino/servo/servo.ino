@@ -15,10 +15,17 @@ WiFiClient espClient;
 PubSubClient mqttclient(espClient);
 Servo myservo;
 SSD1306  display(0x3c, 4, 5);
+void onReceiveMQTT(char* _topic, byte* payload, unsigned int length);
+void close_door();
+void open_door();
+//const char* ssid     = "UiTiOt-E3.1";
+//const char* password = "UiTiOtAP";
+//const char* server = "10.71.2.217";
 
-const char* ssid     = "UiTiOt-E3.1";
-const char* password = "UiTiOtAP";
-const char* server = "10.71.2.217";
+const char* ssid     = "Hieu-2";
+const char* password = "trunghieu196";
+const char* server = "192.168.100.100";
+
 const char* username = "admin";
 const char* pwd = "123QWE!@#";
 void connect_wifi();
@@ -27,12 +34,9 @@ void reconnect();
 const char* TOPIC_CONTROL = "door-control";
 const char* TOPIC_STATUS = "door-status";
 const char* TOPIC_AUTO = "door-auto";
-const char* TOPIC_ANNOUNCE = "door-announce"; 
 
-const char* TOPIC_SET_DISTANCE = "door-set-distance";
-const char* TOPIC_SET_CLOSE = "door-set-close";
-const char* TOPIC_SET_OPEN = "door-set-open";
-
+const char* rfid_topic = "RFID";
+const char* door_topic = "DOOR";
 const char* req_stat_topic = "REQ_STAT";
 const char* res_stat_topic = "RES_STAT";
 const char* board_id = "SERVO";
@@ -54,8 +58,8 @@ bool is_connected_mqtt = false;
 bool is_door_open = false;
 bool is_auto = false;
 
-int open_deg = 183;
-int close_deg = 8;
+int open_deg = 183; // servo open degree
+int close_deg = 8; // servo close degree
 int distance_threshold = 8;
 
 void setup() {
@@ -67,7 +71,7 @@ void setup() {
   pinMode(echo, INPUT);  // Initiate  echo
   f = 0;
   mqttclient.setServer(server,1883); // set server info mation
-  mqttclient.setCallback(callback); 
+  mqttclient.setCallback(onReceiveMQTT); 
   reconnect();
 
   display.init();
@@ -75,11 +79,9 @@ void setup() {
   display.drawString(15, 22, "Device started");
   display.display();
 } 
-void loop()
-{
+void loop(){
   current_time = millis();
-//  if( is_auto || is_door_open ) {
-  if(true){
+  if( is_auto || is_door_open ) {
     digitalWrite(trig, 0);  
     delayMicroseconds(2);
     digitalWrite(trig, 1);  
@@ -123,14 +125,11 @@ void reconnect() {
       is_connected_mqtt = false;
         Serial.print("Attempting MQTT connection...");
         if (mqttclient.connect("door-servo",username,pwd)) {
-          mqttclient.publish("door-identify","servo");
+          mqttclient.publish(res_stat_topic,board_id);
           is_connected_mqtt = true;
           Serial.println("connected");
-            mqttclient.subscribe(TOPIC_CONTROL);
-            mqttclient.subscribe(TOPIC_AUTO);
-            mqttclient.subscribe(TOPIC_SET_DISTANCE);
-            mqttclient.subscribe(TOPIC_SET_CLOSE);
-            mqttclient.subscribe(TOPIC_SET_OPEN);
+            mqttclient.subscribe(door_topic);
+            mqttclient.subscribe(rfid_topic);
             mqttclient.subscribe(req_stat_topic);
             mqttclient.subscribe(temp_topic);
         } else {
@@ -144,27 +143,7 @@ void reconnect() {
     Serial.println("Attempting Wifi connection...");
   }
 }
-void close_door(){
-  if(!is_door_open) {
-    return;
-  }
-  is_door_open = false;
-  mqttclient.publish(TOPIC_STATUS,"close"); 
-  myservo.write(close_deg);
-  Serial.println("close");
-}
-  
-void open_door() {
-  if(is_door_open) {
-    return;
-  }
-  last_open_time = current_time;
-  is_door_open = true;
-  myservo.write(open_deg);
-  mqttclient.publish(TOPIC_STATUS,"open");
-  Serial.println("open"); 
-}    
-void callback(char* _topic, byte* payload, unsigned int length)
+void onReceiveMQTT(char* _topic, byte* payload, unsigned int length)
 {
   String msg = "";
   String topic = String(_topic);
@@ -176,38 +155,48 @@ void callback(char* _topic, byte* payload, unsigned int length)
   Serial.println(topic);
   Serial.print("message:");
   Serial.println(msg);
-  if (topic == TOPIC_CONTROL) {
+  if (topic == door_topic) {
     if (msg == "close") {
       close_door();
     } else if (msg == "open") {
       open_door();
     }
   }  
-  else if (topic == TOPIC_AUTO) {
+  if (topic == rfid_topic) {
     if(msg == "on"){
-      is_auto = true;
-    }else{
       is_auto = false;
     }
+    if(msg == "off"){
+      is_auto = true;
+    }
   }
-  //thay đổi độ quay offline20
-  else if (topic == TOPIC_SET_DISTANCE) {
-    distance_threshold = msg.toInt();
-  }
-  else if (topic == TOPIC_SET_CLOSE) {
-    close_deg = msg.toInt();
-  }
-  else if (topic == TOPIC_SET_OPEN) {
-    open_deg = msg.toInt();
-  }
-  else if (topic == TOPIC_ANNOUNCE) {
-    mqttclient.publish("door-identify", "servo");
-  }else if(topic.equals(req_stat_topic)){
+  if(topic.equals(req_stat_topic)){
     mqttclient.publish(res_stat_topic,board_id);
-  }else if(topic.equals(temp_topic)){
+  }
+  if(topic.equals(temp_topic)){
     display.clear();
     display.drawString(17,0,"Temperature");
     display.drawString(53,16, msg);
     display.display();
   }
 }
+void close_door(){
+  if(!is_door_open) {
+    return;
+  }
+  is_door_open = false;
+  mqttclient.publish(door_topic,"close");
+  myservo.write(close_deg);
+  Serial.println("close");
+}
+  
+void open_door() {
+  if(is_door_open) {
+    return;
+  }
+  last_open_time = current_time;
+  is_door_open = true;
+  mqttclient.publish(door_topic,"open");
+  myservo.write(open_deg);
+  Serial.println("open"); 
+}    

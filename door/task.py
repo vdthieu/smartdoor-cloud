@@ -9,7 +9,8 @@ import json
 from pytz import timezone
 import threading
 import ssl
-from door.utils import bind_mq_to_ws_message,get_online_devices_ws_message
+from door.utils import bind_mq_to_ws_message, get_online_devices_ws_message
+
 ssl.match_hostname = lambda cert, hostname: True
 
 
@@ -34,127 +35,73 @@ channel_layer = get_channel_layer()
 local_timezone = timezone('Asia/Ho_Chi_Minh')
 pem_path = '/home/pyrus/SmartDoor/smartdoor/hivemq-server-cert.pem'
 
-rfid_uid = '78f2dab'
-rfid_length = 7
+# rfid_uid = '78f2dab'
+rfid_uid = ['856c5628']
 
 ledIds = ['LLIV', 'LKIT', 'LBED', 'LBAT']
 tempIds = ['TOFF', 'THOM']
+
 
 def start_job():
     def on_message(client, userdata, msg):
         arrow_now = arrow.now().format()
         now = datetime.now(local_timezone)
         print(msg.payload)
-        if msg.topic == 'door-password':
-            input_password = msg.payload.decode('ascii')[:4]
-            print(input_password)
-            querry = DoorPassword.objects.filter(password=input_password)
-            if querry.count() > 0:
-                mqtt_client.publish('door-control', 'open')
-                history_data = DoorHistory.objects.create(
-                    action='password open',
-                    time=now
+        if msg.topic == "DOOR":
+            mq_message = msg.payload.decode('utf-8')
+            if mq_message == 'open':
+                device_state = DeviceStates.objects.create(
+                    id="DOOR",
+                    state=True,
+                    time=datetime.now()
                 )
-                history_data.save()
-                async_to_sync(channel_layer.group_send)(
-                    room_group_name, {
-                        'type': 'update_history_list',
-                        'message': json.dumps({
-                            'action': 'password open',
-                            'time': arrow_now
-                        })
-                    }
+                device_state.save()
+            if mq_message == 'close':
+                device_state = DeviceStates.objects.create(
+                    id= 'DOOR',
+                    state=False,
+                    time=datetime.now()
                 )
-            else:
-                mqtt_client.publish('door-control', 'close')
-                history_data = DoorHistory.objects.create(
-                    action='wrong password',
-                    time=now
-                )
-                history_data.save()
-                async_to_sync(channel_layer.group_send)(
-                    room_group_name, {
-                        'type': 'update_history_list',
-                        'message': json.dumps({
-                            'action': 'wrong password',
-                            'time': arrow_now
-                        })
-                    }
-                )
+                device_state.save()
             pass
-        if msg.topic == 'door-autoclose':
-            history_data = DoorHistory.objects.create(
-                action='auto close',
-                time=now
-            )
-            async_to_sync(channel_layer.group_send)(
-                room_group_name, {
-                    'type': 'update_history_list',
-                    'message': json.dumps({
-                        'door_status': msg.payload.decode('utf-8')
-                    })
-                }
-            )
-            history_data.save()
-            pass
-        if msg.topic == 'door-identify':
-            door_id = msg.payload.decode('ascii')[:10]
-            if not DoorDevices.objects.filter(id=door_id).exists():
-                devices_data = DoorDevices.objects.create(
-                    id=door_id,
-                    status=True,
-                    last_check=now
-                )
-                devices_data.save()
-                on_interval_timeout()
-            else:
-                device = DoorDevices.objects.filter(id=door_id)[0]
-                device.status = True
-                device.last_check = now
-                device.save()
-            pass
-        if msg.topic == 'door-status':
-            async_to_sync(channel_layer.group_send)(
-                room_group_name, {
-                    'type': 'update_door_state',
-                    'message': json.dumps({
-                        'door_status': msg.payload.decode('utf-8'),
-                    })
-                }
-            )
-            pass
-        if msg.topic == 'door-rfid':
-            input_uid = msg.payload.decode('ascii')[:rfid_length]
-            if input_uid == rfid_uid:
-                auto_state = DoorState.objects.filter(key='auto')[0]
-                if auto_state.value == 'on':
-                    async_to_sync(channel_layer.group_send)(
-                        room_group_name, {
-                            'type': 'update_auto',
-                            'message': json.dumps({
-                                'update_door_auto': 'off',
-                            })
-                        }
-                    )
-                    mqtt_client.publish('door-auto', 'off')
-                    auto_state.value = 'off'
+
+        if msg.topic == "UUID":
+            input_uid = msg.payload.hex()
+            print(input_uid)
+            if input_uid in rfid_uid:
+                query = DeviceStates.objects.filter(id='RFID').order_by('-time')
+                if query.exists():
+                    if query[0].state :
+                        print('change true')
+                        device_state = DeviceStates.objects.create(
+                            id= 'RFID',
+                            state=False,
+                            time=datetime.now()
+                        )
+                        device_state.save()
+                        mqtt_client.publish('RFID', 'off')
+                    else:
+                        print('change false')
+                        device_state = DeviceStates.objects.create(
+                            id= 'RFID',
+                            state=True,
+                            time=datetime.now()
+                        )
+                        device_state.save()
+                        mqtt_client.publish('RFID', 'on')
                 else:
-                    async_to_sync(channel_layer.group_send)(
-                        room_group_name, {
-                            'type': 'update_auto',
-                            'message': json.dumps({
-                                'update_door_auto': 'on',
-                            })
-                        }
+                    print('new')
+                    device_state = DeviceStates.objects.create(
+                        id='RFID',
+                        state=True,
+                        time=datetime.now()
                     )
-                    mqtt_client.publish('door-auto', 'on')
-                    auto_state.value = 'on'
-                auto_state.save()
-            pass
+                    device_state.save()
+                    mqtt_client.publish('RFID', 'on')
+
         if msg.topic == "LED_CONTROL":
             mq_message = msg.payload.decode('utf-8')
-            ws_message = bind_mq_to_ws_message(msg.topic,mq_message)
-            print('mq',ws_message)
+            ws_message = bind_mq_to_ws_message(msg.topic, mq_message)
             async_to_sync(channel_layer.group_send)(
                 room_group_name, {
                     'type': 'led_control',
@@ -163,8 +110,8 @@ def start_job():
             )
             device_state = DeviceStates.objects.create(
                 id=ws_message['id'],
-                state= mq_message.isupper(),
-                time= datetime.now()
+                state=mq_message.isupper(),
+                time=datetime.now()
             )
             device_state.save()
             pass
@@ -196,11 +143,11 @@ def start_job():
                     })
                 }
             )
-            print('receive',msg.payload.decode('ascii'))
+            print('receive', msg.payload.decode('ascii'))
             device_state = DeviceStates.objects.create(
                 id=msg.topic,
-                state= int(msg.payload.decode('utf-8')),
-                time= datetime.now()
+                state=int(msg.payload.decode('utf-8')),
+                time=datetime.now()
             )
             device_state.save()
             pass
@@ -228,6 +175,8 @@ def start_job():
 
             mqtt_client.subscribe('LED_CONTROL')
             mqtt_client.subscribe('RES_STAT')
+            mqtt_client.subscribe('DOOR')
+            mqtt_client.subscribe('UUID')
             for ledId in ledIds:
                 mqtt_client.subscribe(ledId)
             for tempId in tempIds:

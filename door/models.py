@@ -19,6 +19,7 @@ class DoorHistory(models.Model):
     # time when the action happened
 
 
+# board status
 class DoorDevices(models.Model):
     id = models.CharField(max_length=10, primary_key=True)  # to identify devices
     status = models.BooleanField(default=False)  # True if device are connected
