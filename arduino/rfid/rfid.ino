@@ -10,12 +10,12 @@
 WiFiClient espClient;
 PubSubClient mqttclient(espClient);
 //-------------------------------------------------
-//const char* ssid = "UiTiOt-E3.1";
-//const char* password = "UiTiOtAP";
-//const char* mqtt_server = "10.71.2.217";
-const char* ssid = "Hieu-2";
-const char* password = "trunghieu196";
-const char* mqtt_server = "192.168.100.100";
+const char* ssid = "UiTiOt-E3.1";
+const char* password = "UiTiOtAP";
+const char* mqtt_server = "10.71.2.217";
+//const char* ssid = "Hieu-2";
+//const char* password = "trunghieu196";
+//const char* mqtt_server = "192.168.100.100";
 //---------------RFID-----------------------------
 
 #define SS_PIN 15
@@ -97,11 +97,12 @@ void loop()
     return;
   }
   //Show UID on serial monitor
-  
+  String uuid = "";
   for (byte i = 0; i < mfrc522.uid.size; i++) 
   {
-     Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
-     Serial.print(mfrc522.uid.uidByte[i], HEX);
+    uuid = uuid + (char)
+    Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+    Serial.print(mfrc522.uid.uidByte[i], HEX);
   }
   mqttclient.publish(uuid_topic,(char*) mfrc522.uid.uidByte);
   if (!mqttclient.connected()) {

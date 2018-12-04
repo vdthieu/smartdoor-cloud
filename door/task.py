@@ -35,8 +35,8 @@ channel_layer = get_channel_layer()
 local_timezone = timezone('Asia/Ho_Chi_Minh')
 pem_path = '/home/pyrus/SmartDoor/smartdoor/hivemq-server-cert.pem'
 
-# rfid_uid = '78f2dab'
-rfid_uid = ['856c5628']
+# rfid_uid = '78f2dab9'
+rfid_uid = ['856c5628','78f2dab9']
 
 ledIds = ['LLIV', 'LKIT', 'LBED', 'LBAT']
 tempIds = ['TOFF', 'THOM']
@@ -47,7 +47,7 @@ def start_job():
         arrow_now = arrow.now().format()
         now = datetime.now(local_timezone)
         print(msg.payload)
-        if msg.topic == "DOOR":
+        if msg.topic == "DOOR_UP":
             mq_message = msg.payload.decode('utf-8')
             if mq_message == 'open':
                 device_state = DeviceStates.objects.create(
@@ -175,7 +175,8 @@ def start_job():
 
             mqtt_client.subscribe('LED_CONTROL')
             mqtt_client.subscribe('RES_STAT')
-            mqtt_client.subscribe('DOOR')
+            mqtt_client.subscribe('DOOR_UP')
+            mqtt_client.subscribe('DOOR_DOWN')
             mqtt_client.subscribe('UUID')
             for ledId in ledIds:
                 mqtt_client.subscribe(ledId)

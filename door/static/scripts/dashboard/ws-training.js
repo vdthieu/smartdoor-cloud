@@ -37,8 +37,13 @@ socket.onmessage = function (e) {
                     if(ledId.some(led => led === item.id)){
                         $(`#${item.id}`).prop('checked',item.state)
                     }else if(tempIds.some(temp => temp === item.id)){
-                        console.log(item.id, item.state);
-                        $(`#${item.id}`).val(item.state)
+                        $(`#${item.id}`).val(item.state);
+                        if(item.id === "TOFF"){
+                            output.innerHTML = item.state;
+                        }
+                        if(item.id === "THOM"){
+                            document.getElementById("temp").innerHTML = item.state
+                        }
                     }
                 }
             );
