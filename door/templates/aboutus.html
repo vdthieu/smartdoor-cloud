@@ -54,7 +54,7 @@
                 <h3 class="menu-title"></h3>
                 <!-- /.menu-title -->
                 <li>
-                    <a href="/training" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a>
+                    <a href="/training-{{ user }}" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a>
                 </li>
                 <h3 class="menu-title"></h3>
                 <!-- /.menu-title -->
@@ -108,163 +108,49 @@
         <div class="col-sm-4">
             <div class="page-header float-left">
                 <div class="page-title ">
-                    <h1>State Device</h1>
+                    <h1>About Project</h1>
                 </div>
             </div>
         </div>
     </div>
-    <div >
-        <div class="col-sm-4 " id="status-container ">
-            <div class="alert alert-dark fade show "
-                 role="alert "
-                 id="device_servo_container ">
-                <span class="badge badge-pill badge-dark " id="device_servo_label ">Servo</span>
-                <span id="device_servo_content "> Đang chờ</span>
-
+    <div class="col-lg-4 col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title mb-3">Profile Card</strong>
             </div>
-        </div>
-        <div class="col-sm-4" id="status-container">
-            <div class="alert alert-dark fade show"
-                 role="alert"
-                 id="device_keypad_container">
-                <span class="badge badge-pill badge-dark " id="device_keypad_label">Light System</span>
-                <span id="device_keypad_content "> Đang chờ</span>
-
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="alert alert-dark fade show"
-                 role="alert "
-                 id="device_rfid_container">
-                <span class="badge badge-pill badge-dark " id="device_rfid_label">RFID</span>
-                <span id="device_rfid_content"> Đang chờ</span>
-
-            </div>
-        </div>
-    </div>
-    <!------------------------------Control------------------------------->
-    {# Điều khiển#}
-    <div class="breadcrumbs " id="dashboard ">
-        <div class="col-sm-4 ">
-            <div class="page-header float-left ">
-                <div class="page-title ">
-                    <h1>Control</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-4 col-md-6 ">
-        <aside class="profile-nav alt">
-            <section class="card">
-                <div class="card-header user-header alt bg-flat-color-1">
-                    <div class="media">
-                        <div>
-                            <h5 class="text-light">
-                                <span>Light Control</span>
-                                <span class=""></span>
-                            </h5>
-
-                        </div>
-                    </div>
-                </div>
-                <ul class="list-group list-group-flush" id="led_list">
-                    <li class="list-group-item">
-                        Living Room
-                        <span class="pull-right">
-                            <label class="switch switch-text switch-primary">
-                                <input id="LLIV" type="checkbox" class="switch-input" checked="false">
-                                <span data-on="On" data-off="Off" class="switch-label"></span>
-                                <span class="switch-handle"></span>
-                            </label>
-                        </span>
-                    </li>
-                    <li class="list-group-item">
-                        Kitchen
-                        <span class="pull-right">
-                            <label class="switch switch-text switch-primary">
-                                <input id="LKIT" type="checkbox" class="switch-input" checked="true">
-                                <span data-on="On" data-off="Off" class="switch-label"></span>
-                                <span class="switch-handle"></span>
-                            </label>
-                        </span>
-                    </li>
-                    <li class="list-group-item">
-                        Bed Room
-                        <span class="pull-right">
-                            <label class="switch switch-text switch-primary">
-                                <input id="LBED" type="checkbox" class="switch-input" checked="false">
-                                <span data-on="On" data-off="Off" class="switch-label"></span>
-                                <span class="switch-handle"></span>
-                            </label>
-                        </span>
-                    </li>
-                    <li class="list-group-item">
-                        Bath Room
-                        <span class="pull-right">
-                            <label class="switch switch-text switch-primary">
-                                <input id="LBAT" type="checkbox" class="switch-input" checked="true">
-                                <span data-on="On" data-off="Off" class="switch-label"></span>
-                                <span class="switch-handle"></span>
-                            </label>
-                        </span>
-                    </li>
-
-                </ul>
-            </section>
-        </aside>
-    </div>
-    <!---------Office Room Light---------------->
-    <div class="col-lg-4 col-md-6 ">
-        <div class="card ">
-            <div class="card-header ">
-                <strong class="card-title mb-3 ">Office Room Light</strong>
-            </div>
-            <div class="card-body ">
-                <br>
-                <div class="stat-widget-four ">
-                    <div class="stat-icon dib ">
-                        <i class="ti-light-bulb text-muted "></i>
-                    </div>
-                    <div class="stat-content ">
-                        <div class="text-left dib ">
-                            <h5>Temperature</h5>
-                            <h3><span class="count" id="light"></span> °C</h3>
-                        </div>
-                    </div>
+            <div class="card-body">
+                <div class="mx-auto d-block">
+                    <img class="rounded-circle mx-auto d-block" src=" {% static 'images/hai.jpg' %}"  style="max-width: 50%">
+                    <h5 class="text-sm-center mt-2 mb-1">Nhat-Hai Phung</h5>
+                    <div class="location text-sm-center"><i class="fa ti-archive"></i> University of Information Technology</div>
                 </div>
                 <hr>
-                <h6><span>Warn</span><span class="pull-right ">Cool</span></h6>
-                <div class="card-text text-sm-center ">
-                    <input type="range" min="1" max="100" value="50" class="Tempslider" id="TOFF">
+                <div class="card-text text-sm-center">
+                    <a href="#"><i class="fa fa-facebook pr-1"></i></a>
+                    <a href="#"><i class="fa fa-twitter pr-1"></i></a>
+                    <a href="#"><i class="fa fa-linkedin pr-1"></i></a>
+                    <a href="#"><i class="fa fa-pinterest pr-1"></i></a>
                 </div>
             </div>
         </div>
     </div>
-
-    <!---------------->
-    <div class="col-lg-4 col-md-6 ">
-        <div class="card ">
-            <div class="card-header ">
-                <strong class="card-title mb-3 ">Air Condition</strong>
+    <div class="col-lg-4 col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title mb-3">Profile Card</strong>
             </div>
-            <div class="card-body ">
-                <br>
-                <div class="stat-widget-four ">
-                    <div class="stat-icon dib ">
-                        <i class="ti-pulse text-muted "></i>
-                    </div>
-                    <div class="stat-content ">
-                        <div class="text-left dib ">
-                            <h5>Temperature</h5>
-                            <h3><span class="count" id="temp"></span> °C</h3>
-                        </div>
-                    </div>
+            <div class="card-body">
+                <div class="mx-auto d-block">
+                    <img class="rounded-circle mx-auto d-block"  src=" {% static 'images/hieu.jpg' %} "style="max-width: 53%">
+                    <h5 class="text-sm-center mt-2 mb-1">Trung-Hieu Vo Dinh</h5>
+                    <div class="location text-sm-center"><i class="fa ti-archive"></i> University of Information Technology</div>
                 </div>
                 <hr>
-                <h6><span>-</span><span class="pull-right ">+</span></h6>
-                <div class="card-text text-sm-center ">
-                    <input type="range" min="1" max="100" value="50" class="Tempslider" id="THOM">
+                <div class="card-text text-sm-center">
+                    <a href="#"><i class="fa fa-facebook pr-1"></i></a>
+                    <a href="#"><i class="fa fa-twitter pr-1"></i></a>
+                    <a href="#"><i class="fa fa-linkedin pr-1"></i></a>
+                    <a href="#"><i class="fa fa-pinterest pr-1"></i></a>
                 </div>
             </div>
         </div>

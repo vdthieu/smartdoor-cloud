@@ -20,7 +20,7 @@ def dashboard(request):
     }
     return render(request, 'dashboard.html', args)
 @login_required
-def training(request):
+def traininguser(request):
     password_list = DoorPassword.objects.all()
     history_list = DoorHistory.objects.all()
     auto = True if DoorState.objects.filter(key='auto')[0].value == 'on' else False
@@ -30,7 +30,19 @@ def training(request):
         'user': request.user,
         'auto': auto
     }
-    return render(request, 'training.html', args)
+    return render(request, 'training-user.html', args)
+@login_required
+def trainingadmin(request):
+    password_list = DoorPassword.objects.all()
+    history_list = DoorHistory.objects.all()
+    auto = True if DoorState.objects.filter(key='auto')[0].value == 'on' else False
+    args = {
+        'password_list': password_list,
+        'history_list': history_list,
+        'user': request.user,
+        'auto': auto
+    }
+    return render(request, 'training-admin.html', args)
 @login_required
 def aboutus(request):
     password_list = DoorPassword.objects.all()

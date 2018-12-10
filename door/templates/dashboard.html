@@ -54,7 +54,7 @@
                 <h3 class="menu-title"></h3>
                 <!-- /.menu-title -->
                 <li>
-                    <a href="/training" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a>
+                    <a href="/training-{{ user }}" class="aria-has" popup=" true " aria-expanded="false " id="training" > <i class="menu-icon ti-rocket "></i>Training</a>
                 </li>
                 <h3 class="menu-title"></h3>
                 <!-- /.menu-title -->
@@ -220,7 +220,7 @@
             <div class="card-header ">
                 <strong class="card-title mb-3 ">Office Room Light</strong>
             </div>
-            <div class="card-body ">
+            <div class="card-body " style="padding: 2rem">
                 <br>
                 <div class="stat-widget-four ">
                     <div class="stat-icon dib ">
@@ -228,7 +228,8 @@
                     </div>
                     <div class="stat-content ">
                         <div class="text-left dib ">
-                            <h3><span class="count" id="light"></span> value</h3>
+                            <h5>Value</h5>
+                            <h3><span class="count" id="light"></span></h3>
                         </div>
                     </div>
                 </div>
@@ -236,6 +237,9 @@
                 <h6><span>Warn</span><span class="pull-right ">Cool</span></h6>
                 <div class="card-text text-sm-center ">
                     <input type="range" min="0" max="255" class="Tempslider" id="TOFF">
+                    <span>    
+
+                    </span>
                 </div>
             </div>
         </div>
@@ -247,7 +251,8 @@
             <div class="card-header ">
                 <strong class="card-title mb-3 ">Air Condition</strong>
             </div>
-            <div class="card-body ">
+            <div class="card-body" style="padding: 2rem">
+
                 <br>
                 <div class="stat-widget-four ">
                     <div class="stat-icon dib ">
@@ -292,6 +297,14 @@
 <script src="{% static 'scripts/dashboard/ws-training.js' %}"></script>
 <script src="{% static 'scripts/dashboard/ledControl.js' %}"></script>
 <script src="{% static 'scripts/dashboard/tempControl.js' %}"></script>
+<script type="text/javascript">
+  document.getElementById("training").onclick = function() {
+    if ({{ user }} === "user") {
+    document.getElementById("training").href="/training-user";
+    }
+    return false;
+  };
+</script>
 <script>
     (function ($) {
         "use strict ";
