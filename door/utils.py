@@ -3,6 +3,8 @@ from door.models import DoorDevices, DeviceStates
 binary_type = 1
 multiple_type = 2
 
+binary_devices = ["LLIV", "LKIT", 'LBED', 'LBAT']
+
 led_ws_dict = {
     "LLIV": ['l', 'L'],
     "LKIT": ['k', 'K'],

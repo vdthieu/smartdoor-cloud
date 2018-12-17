@@ -4,6 +4,13 @@ let socket = new WebSocket('ws://' + window.location.host + '/ws/door/');
 socket.addEventListener('open', function (event) {
     console.log('kết nối thành công');
     getTable();
+
+    socket.send(
+        JSON.stringify({
+            type : 'TRAINING CONTROL',
+            state : true
+        })
+    );
 });
 
 socket.onmessage = function (e) {

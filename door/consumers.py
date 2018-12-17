@@ -9,7 +9,7 @@ from datetime import datetime
 from pytz import timezone
 import arrow
 import ssl
-from door.learning import parse_data
+from door.learning import parse_data,train_data
 from door.utils import bind_ws_to_mq_message, get_online_devices_ws_message,get_devices_logs_from_times, get_devices_state_ws_message
 
 local_timezone = timezone('Asia/Ho_Chi_Minh')
@@ -79,6 +79,7 @@ class DoorConsumer(WebsocketConsumer):
             if text_data_json['state']:
                 print('call')
                 parse_data()
+                train_data()
             pass
 
         if text_data_json['type'] == 'GET TABLE':
