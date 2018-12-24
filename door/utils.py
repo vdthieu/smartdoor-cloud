@@ -48,6 +48,10 @@ default_device_state = {
         "default_value": 50,
         "type": multiple_type
     },
+    "RFID": {
+        "default_value" : False,
+        "type": binary_type
+    }
 }
 
 
@@ -98,7 +102,6 @@ def get_devices_state_ws_message():
     for device_id in default_device_state.keys():
         queries = DeviceStates.objects.filter(id=device_id).order_by('-time')
         if queries.exists():
-            a = queries[0]
             device_states.append({
                 "id": device_id,
                 "state":
@@ -107,7 +110,7 @@ def get_devices_state_ws_message():
                     else queries[0].state
             })
         else:
-            print(device_id, 'defautl')
+            print(device_id, 'default')
             device_states.append({
                 "id": device_id,
                 "state": default_device_state[device_id]['default_value']
@@ -116,3 +119,45 @@ def get_devices_state_ws_message():
         "type": "DEVICE STATUS",
         "device_states": device_states
     }
+
+
+# get latest devices status
+def get_device_state():
+    device_states = []
+    for device_id in default_device_state.keys():
+        queries = DeviceStates.objects.filter(id=device_id).order_by('-time')
+        if queries.exists():
+            device_states.append({
+                "id": device_id,
+                "state":
+                    queries[0].state == 1
+                    if default_device_state[device_id]['type'] == binary_type
+                    else queries[0].state
+            })
+        else:
+            device_states.append({
+                "id": device_id,
+                "state": default_device_state[device_id]['default_value']
+            })
+    return device_states
+
+
+def on_control_predict_data(data,mqtt_instance):
+    print('control',data)
+    for key in data:
+        if key == 'RFID':
+            mqtt_instance.publish(
+                'RFID',
+                'on' if data[key] > 0.5 else 'off'
+            )
+            continue
+
+        if key in binary_devices:
+            mqtt_message = bind_ws_to_mq_message({
+                'type' : 'LED CONTROL',
+                'id' : key,
+                'state' : data[key] > 0.5
+            })
+            mqtt_instance.publish(mqtt_message['topic'],mqtt_message['message'])
+            continue
+        mqtt_instance.publish(key,str(data[key]))

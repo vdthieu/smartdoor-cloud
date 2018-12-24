@@ -3,14 +3,20 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 import paho.mqtt.client as mqtt
 from django.core.serializers.json import DjangoJSONEncoder
-from door.models import DoorPassword, DoorHistory, DoorState
 import json
 from datetime import datetime
 from pytz import timezone
 import arrow
 import ssl
-from door.learning import parse_data,train_data
-from door.utils import bind_ws_to_mq_message, get_online_devices_ws_message,get_devices_logs_from_times, get_devices_state_ws_message
+from door.utils import \
+    bind_ws_to_mq_message, \
+    get_online_devices_ws_message,get_devices_logs_from_times,\
+    get_devices_state_ws_message, binary_devices,\
+    on_control_predict_data
+from door.learning import make_predict, make_train
+from door.models import DoorPassword, DoorHistory, DoorState
+
+import threading
 
 local_timezone = timezone('Asia/Ho_Chi_Minh')
 ssl.match_hostname = lambda cert, hostname: True
@@ -48,38 +54,34 @@ class DoorConsumer(WebsocketConsumer):
         )
         self.mqtt.disconnect()
 
+    def on_control_predict_data(self,data):
+        on_control_predict_data(data,self.mqtt)
+
     # Receive message from WebSocket
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         print(text_data_json)
         if text_data_json['type'] == 'LED CONTROL':
-            # async_to_sync(self.channel_layer.group_send)(
-            #     self.room_group_name, {
-            #         'type': 'led_control',
-            #         'message': json.dumps(text_data_json)
-            #     }
-            # )
             if not text_data_json['update']:
                 mqtt_message = bind_ws_to_mq_message(text_data_json)
                 self.mqtt.publish(mqtt_message["topic"], mqtt_message['message'])
+                threading.Thread(target=make_predict, args=[self.on_control_predict_data]).start()
             pass
 
         if text_data_json['type'] == 'TEMP CONTROL':
-            # async_to_sync(self.channel_layer.group_send)(
-            #     self.room_group_name, {
-            #         'type': 'temp_control',
-            #         'message': json.dumps(text_data_json)
-            #     }
-            # )
             if not text_data_json['update']:
                 self.mqtt.publish(text_data_json['id'], text_data_json['state'])
+                threading.Thread(target=make_predict, args=[self.on_control_predict_data]).start()
             pass
 
         if text_data_json['type'] == 'TRAINING CONTROL':
             if text_data_json['state']:
-                print('call')
-                parse_data()
-                train_data()
+                def progress_callback(result):
+                    print(result)
+                    self.send(json.dumps(result))
+                    pass
+                print('call make train')
+                make_train(progress_callback)
             pass
 
         if text_data_json['type'] == 'GET TABLE':
@@ -234,7 +236,6 @@ class DoorConsumer(WebsocketConsumer):
     def led_control(self, event):
         self.send(event['message'])
         message = json.loads(event['message'])
-        print(message)
         self.send(json.dumps({
             "type" : "UNSHIFT DATA TABLE",
             'id' : message['id'],
@@ -247,7 +248,6 @@ class DoorConsumer(WebsocketConsumer):
     def temp_control(self, event):
         self.send(event['message'])
         message = json.loads(event['message'])
-        print(message)
         self.send(json.dumps({
             "type" : "UNSHIFT DATA TABLE",
             'id' : message['id'],

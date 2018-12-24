@@ -10,6 +10,7 @@ from pytz import timezone
 import threading
 import ssl
 from door.utils import bind_mq_to_ws_message, get_online_devices_ws_message
+from door.learning import predict_data
 
 ssl.match_hostname = lambda cert, hostname: True
 
@@ -137,7 +138,7 @@ def start_job():
                     'type': 'temp_control',
                     'message': json.dumps({
                         'id': msg.topic,
-                        'state': int(msg.payload.decode('utf-8')),
+                        'state': int(float(msg.payload.decode('utf-8'))),
                         'type': 'TEMP CONTROL',
                         'update': True
                     })
@@ -146,7 +147,7 @@ def start_job():
             print('receive', msg.payload.decode('ascii'))
             device_state = DeviceStates.objects.create(
                 id=msg.topic,
-                state=int(msg.payload.decode('utf-8')),
+                state= int(float(msg.payload.decode('utf-8'))),
                 time=datetime.now()
             )
             device_state.save()
@@ -182,7 +183,7 @@ def start_job():
                 mqtt_client.subscribe(ledId)
             for tempId in tempIds:
                 mqtt_client.subscribe(tempId)
-            set_interval(on_interval, 15)
+            set_interval(on_interval, 20)
 
     def disconnect(sender, **kwargs):
         print("FINISH")
@@ -200,6 +201,8 @@ def start_job():
     mqtt_client.connect('127.0.0.1', port=1883)
     mqtt_client.loop_start()
     request_finished.connect(disconnect)
+
+    set_interval(predict_data,15)
     #   init database data
     if not DoorState.objects.filter(key='auto').exists():
         state = DoorState.objects.create(key='auto', value='off')
