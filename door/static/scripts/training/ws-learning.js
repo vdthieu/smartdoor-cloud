@@ -18,6 +18,10 @@ socket.onmessage = function (e) {
             unshiftDataTable(data);
             break;
         }
+        case 'TRAINING SUMMARY':{
+            updateTrainingSummary(data.data);
+            break;
+        }
 
     }
 };

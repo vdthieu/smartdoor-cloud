@@ -1,4 +1,5 @@
-from door.models import DoorDevices, DeviceStates
+from door.models import DoorDevices, DeviceStates, TrainingDeviceParameter, TrainingLog
+from django.forms.models import model_to_dict
 
 binary_type = 1
 multiple_type = 2
@@ -49,7 +50,7 @@ default_device_state = {
         "type": multiple_type
     },
     "RFID": {
-        "default_value" : False,
+        "default_value": False,
         "type": binary_type
     }
 }
@@ -121,6 +122,26 @@ def get_devices_state_ws_message():
     }
 
 
+def get_training_summary_ws_message():
+    train_log = TrainingLog.objects.order_by('-created_at')
+    if train_log.exists():
+        train_log = train_log[0]
+    else:
+        return {}
+    devices = TrainingDeviceParameter.objects.filter(train_session=train_log)
+    devices = [model_to_dict(device, fields=[field.name for field in device._meta.fields])
+               for device in devices]
+    data = {
+        'created_at': train_log.created_at,
+        'train_time': train_log.train_time,
+        'row_count': train_log.row_count,
+        'devices': devices
+    }
+    return {
+        'type' : "TRAINING SUMMARY",
+        'data' : data
+    }
+
 # get latest devices status
 def get_device_state():
     device_states = []
@@ -142,8 +163,7 @@ def get_device_state():
     return device_states
 
 
-def on_control_predict_data(data,mqtt_instance):
-    print('control',data)
+def on_control_predict_data(data, mqtt_instance):
     for key in data:
         if key == 'RFID':
             mqtt_instance.publish(
@@ -154,10 +174,10 @@ def on_control_predict_data(data,mqtt_instance):
 
         if key in binary_devices:
             mqtt_message = bind_ws_to_mq_message({
-                'type' : 'LED CONTROL',
-                'id' : key,
-                'state' : data[key] > 0.5
+                'type': 'LED CONTROL',
+                'id': key,
+                'state': data[key] > 0.5
             })
-            mqtt_instance.publish(mqtt_message['topic'],mqtt_message['message'])
+            mqtt_instance.publish(mqtt_message['topic'], mqtt_message['message'])
             continue
-        mqtt_instance.publish(key,str(data[key]))
+        mqtt_instance.publish(key, str(data[key]))

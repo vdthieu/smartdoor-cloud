@@ -36,3 +36,27 @@ class DeviceStates(models.Model):
     id = models.CharField(max_length=10)
     state = models.IntegerField(default=0, blank=True, null=True)
     time = models.DateTimeField(default=now, primary_key=True)
+
+
+# training logs
+class TrainingLog(models.Model):
+    created_at = models.DateTimeField(default=now)
+    row_count = models.IntegerField(default=0)
+    train_time = models.FloatField(default=0)
+
+
+# device training summary
+class TrainingDeviceParameter(models.Model):
+    device_name = models.CharField(max_length=20)
+    TYPE_CHOICES = (
+        ('C', 'Classification'),
+        ('R', 'Regression')
+    )
+    type = models.CharField(max_length=2,choices=TYPE_CHOICES)
+    accuracy = models.FloatField(default=0.0,null=True, blank=True)
+    f1 = models.FloatField(default=0.0,null=True, blank=True)
+    mean_squared_error = models.FloatField(default=0.0)
+    mean_absolute_error = models.FloatField(default=0.0)
+    r2 = models.FloatField(default=0.0,null=True, blank=True)
+
+    train_session = models.ForeignKey(TrainingLog, on_delete=models.CASCADE,null=True,blank=True)

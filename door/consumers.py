@@ -10,9 +10,9 @@ import arrow
 import ssl
 from door.utils import \
     bind_ws_to_mq_message, \
-    get_online_devices_ws_message,get_devices_logs_from_times,\
-    get_devices_state_ws_message, binary_devices,\
-    on_control_predict_data
+    get_online_devices_ws_message, get_devices_logs_from_times, \
+    get_devices_state_ws_message, binary_devices, \
+    on_control_predict_data, get_training_summary_ws_message
 from door.learning import make_predict, make_train
 from door.models import DoorPassword, DoorHistory, DoorState
 
@@ -45,6 +45,7 @@ class DoorConsumer(WebsocketConsumer):
         # get board status
         self.send(json.dumps(get_online_devices_ws_message()))
         self.send(json.dumps(get_devices_state_ws_message()))
+        self.send(json.dumps(get_training_summary_ws_message(),cls=DjangoJSONEncoder))
 
     def disconnect(self, close_code):
         # Leave room group
@@ -54,33 +55,39 @@ class DoorConsumer(WebsocketConsumer):
         )
         self.mqtt.disconnect()
 
-    def on_control_predict_data(self,data):
-        on_control_predict_data(data,self.mqtt)
+    def on_control_predict_data(self, data):
+        on_control_predict_data(data, self.mqtt)
 
     # Receive message from WebSocket
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        print(text_data_json)
         if text_data_json['type'] == 'LED CONTROL':
             if not text_data_json['update']:
                 mqtt_message = bind_ws_to_mq_message(text_data_json)
                 self.mqtt.publish(mqtt_message["topic"], mqtt_message['message'])
-                threading.Thread(target=make_predict, args=[self.on_control_predict_data]).start()
+                threading.Thread(target=make_predict, args=[self.on_control_predict_data,text_data_json['id']]).start()
             pass
 
         if text_data_json['type'] == 'TEMP CONTROL':
             if not text_data_json['update']:
                 self.mqtt.publish(text_data_json['id'], text_data_json['state'])
-                threading.Thread(target=make_predict, args=[self.on_control_predict_data]).start()
+                threading.Thread(target=make_predict, args=[self.on_control_predict_data,text_data_json['id']]).start()
             pass
 
         if text_data_json['type'] == 'TRAINING CONTROL':
             if text_data_json['state']:
                 def progress_callback(result):
-                    print(result)
-                    self.send(json.dumps(result))
+                    self.send(
+                        json.dumps({
+                            "type": "TRAINING SUMMARY",
+                            "data": result
+                        }, cls=DjangoJSONEncoder))
+                    # self.send(json.dumps({
+                    #     'train_time' : result['']
+                    # }))
+                    # self.send(json.dumps(result))
                     pass
-                print('call make train')
+
                 make_train(progress_callback)
             pass
 
@@ -237,10 +244,10 @@ class DoorConsumer(WebsocketConsumer):
         self.send(event['message'])
         message = json.loads(event['message'])
         self.send(json.dumps({
-            "type" : "UNSHIFT DATA TABLE",
-            'id' : message['id'],
-            'state' : message['state'],
-            'time' : datetime.now()
+            "type": "UNSHIFT DATA TABLE",
+            'id': message['id'],
+            'state': message['state'],
+            'time': datetime.now()
         },
             cls=DjangoJSONEncoder
         ))
@@ -249,10 +256,22 @@ class DoorConsumer(WebsocketConsumer):
         self.send(event['message'])
         message = json.loads(event['message'])
         self.send(json.dumps({
-            "type" : "UNSHIFT DATA TABLE",
-            'id' : message['id'],
-            'state' : message['state'],
-            'time' : datetime.now()
+            "type": "UNSHIFT DATA TABLE",
+            'id': message['id'],
+            'state': message['state'],
+            'time': datetime.now()
+        },
+            cls=DjangoJSONEncoder
+        ))
+
+    def rfid_control(self, event):
+        self.send(event['message'])
+        message = json.loads(event['message'])
+        self.send(json.dumps({
+            "type": "UNSHIFT DATA TABLE",
+            'id': message['id'],
+            'state': message['state'],
+            'time': datetime.now()
         },
             cls=DjangoJSONEncoder
         ))

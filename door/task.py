@@ -9,8 +9,8 @@ import json
 from pytz import timezone
 import threading
 import ssl
-from door.utils import bind_mq_to_ws_message, get_online_devices_ws_message
-from door.learning import predict_data
+from door.utils import bind_mq_to_ws_message, get_online_devices_ws_message, on_control_predict_data as control_predict_data
+from door.learning import predict_data, make_predict
 
 ssl.match_hostname = lambda cert, hostname: True
 
@@ -69,6 +69,7 @@ def start_job():
         if msg.topic == "UUID":
             input_uid = msg.payload.hex()
             print(input_uid)
+            next_state = 0
             if input_uid in rfid_uid:
                 query = DeviceStates.objects.filter(id='RFID').order_by('-time')
                 if query.exists():
@@ -90,6 +91,7 @@ def start_job():
                         )
                         device_state.save()
                         mqtt_client.publish('RFID', 'on')
+                        next_state = 1
                 else:
                     print('new')
                     device_state = DeviceStates.objects.create(
@@ -99,7 +101,18 @@ def start_job():
                     )
                     device_state.save()
                     mqtt_client.publish('RFID', 'on')
+                    next_state = 1
 
+                async_to_sync(channel_layer.group_send)(
+                    room_group_name, {
+                        'type': 'led_control',
+                        'message': json.dumps({
+                            'id' : 'RFID',
+                            'state'  : next_state,
+                        })
+                    }
+                )
+            pass
         if msg.topic == "LED_CONTROL":
             mq_message = msg.payload.decode('utf-8')
             ws_message = bind_mq_to_ws_message(msg.topic, mq_message)
@@ -192,6 +205,14 @@ def start_job():
     def on_disconnect():
         print('DISCONNECT')
 
+    def on_predict():
+        def on_control_predict_data(dif):
+            print('dif',dif)
+            control_predict_data(dif,mqtt_client)
+            pass
+        make_predict(on_control_predict_data)
+        pass
+
     mqtt_client = mqtt.Client()
     mqtt_client.on_message = on_message
     mqtt_client.on_connect = on_connect
@@ -202,7 +223,7 @@ def start_job():
     mqtt_client.loop_start()
     request_finished.connect(disconnect)
 
-    set_interval(predict_data,15)
+    set_interval(on_predict,5)
     #   init database data
     if not DoorState.objects.filter(key='auto').exists():
         state = DoorState.objects.create(key='auto', value='off')
