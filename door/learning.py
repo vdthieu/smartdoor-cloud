@@ -43,7 +43,7 @@ def parse_data_from_local():
         '%Y-%m-%d %H:%M:%S'
     ]
     # string value to parse in 1,0 data
-    binary_values = [['ON', 'OFF'], ["CLOSE", "OPEN"], ["ABSENT", "PRESENT"], ['false', 'true']]
+    binary_values = [['OFF','ON'], ["CLOSE", "OPEN"], ["ABSENT", "PRESENT"], ['false', 'true']]
 
     input_file_name = './door/output/rawdata.txt'
     # limit row for testing
@@ -291,7 +291,8 @@ def make_predict(callback,excepted=None):
 def predict_data(excepted= None):
     devices_state = get_device_state()
     now = datetime.datetime.now()
-    [weekDate, hour, min, sec] = [week_day[now.weekday()], now.hour+7, now.minute, now.second]
+    # [weekDate, hour, min, sec] = [week_day[now.weekday()], now.hour+7+4, now.minute, now.second]
+    [weekDate, hour, min, sec] = [week_day[now.weekday()],17, 56, now.second]
     result = {}
     for folder_name in os.listdir(model_file):
         if folder_name in ['DOOR','RFID'] or (excepted and excepted == folder_name):

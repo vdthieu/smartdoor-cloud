@@ -153,17 +153,17 @@ void onReceiveMQTT(char* _topic, byte* payload, unsigned int length)
   }
   Serial.println("mqtt ["+topic + "]:" + msg);
   if (topic == door_down_topic) {
-    if (msg == "close") {
-      close_door();
-    } else if (msg == "open") {
-      open_door();
-    }
+//    if (msg == "close") {
+//      close_door();
+//    } else if (msg == "open") {
+//      open_door();
+//    }
   }  
   if (topic == rfid_topic) {
-    if(msg == "on"){
+    if(msg == "off"){
       is_auto = false;
     }
-    if(msg == "off"){
+    if(msg == "on"){
       is_auto = true;
     }
   }
@@ -198,4 +198,4 @@ void open_door() {
   Serial.println("open"); 
   mqttclient.publish(door_up_topic,"open");
   b=true;
-}    
+}

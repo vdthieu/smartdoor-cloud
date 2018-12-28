@@ -47,7 +47,7 @@ def start_job():
     def on_message(client, userdata, msg):
         arrow_now = arrow.now().format()
         now = datetime.now(local_timezone)
-        print(msg.payload)
+        print(msg.topic, ' : ' ,msg.payload)
         if msg.topic == "DOOR_UP":
             mq_message = msg.payload.decode('utf-8')
             if mq_message == 'open':
@@ -70,7 +70,7 @@ def start_job():
             input_uid = msg.payload.hex()
             print(input_uid)
             next_state = 0
-            if input_uid in rfid_uid:
+            if input_uid in rfid_uid or True:
                 query = DeviceStates.objects.filter(id='RFID').order_by('-time')
                 if query.exists():
                     if query[0].state :
@@ -207,7 +207,7 @@ def start_job():
 
     def on_predict():
         def on_control_predict_data(dif):
-            print('dif',dif)
+            print('predict',dif)
             control_predict_data(dif,mqtt_client)
             pass
         make_predict(on_control_predict_data)

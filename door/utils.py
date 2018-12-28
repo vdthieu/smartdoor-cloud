@@ -142,6 +142,7 @@ def get_training_summary_ws_message():
         'data' : data
     }
 
+
 # get latest devices status
 def get_device_state():
     device_states = []
