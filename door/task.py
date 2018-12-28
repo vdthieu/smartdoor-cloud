@@ -223,7 +223,7 @@ def start_job():
     mqtt_client.loop_start()
     request_finished.connect(disconnect)
 
-    set_interval(on_predict,5)
+    set_interval(on_predict,30)
     #   init database data
     if not DoorState.objects.filter(key='auto').exists():
         state = DoorState.objects.create(key='auto', value='off')

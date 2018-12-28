@@ -291,7 +291,7 @@ def make_predict(callback,excepted=None):
 def predict_data(excepted= None):
     devices_state = get_device_state()
     now = datetime.datetime.now()
-    [weekDate, hour, min, sec] = [week_day[now.weekday()], now.hour, now.minute, now.second]
+    [weekDate, hour, min, sec] = [week_day[now.weekday()], now.hour+7, now.minute, now.second]
     result = {}
     for folder_name in os.listdir(model_file):
         if folder_name in ['DOOR','RFID'] or (excepted and excepted == folder_name):
@@ -316,6 +316,29 @@ def predict_data(excepted= None):
                 value_vector[feature_list.index("sec")] = sec
             except ValueError:
                 continue
+
             predict = rf.predict([value_vector])[0]
             result[folder_name] = predict
+
+            print(folder_name, '=> ',' '.join(feature_list))
+            print(display_string_in_gap(predict,8),' '.join([display_string_in_gap(value,len(feature_list[index])) for index, value in enumerate(value_vector)]))
+    #
+    # input_string = []
+    # output_string = []
+    # for device in devices_state:
+    #     input_string.append(device['id'] + ":" + str(int(device['state'])))
+    #     try:
+    #         output_string.append(device['id'] + ":" + str(int(result[device['id']])))
+    #     except Exception:
+    #         output_string.append(device['id'] + ":--")
+    # print(' '.join(input_string))
+    # print(' '.join(output_string))
     return result
+
+
+def display_string_in_gap(string, gap):
+    string = str(string)
+    while len(string) < gap:
+        string += ' '
+
+    return string
