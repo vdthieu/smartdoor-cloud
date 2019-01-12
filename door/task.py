@@ -70,7 +70,7 @@ def start_job():
             input_uid = msg.payload.hex()
             print(input_uid)
             next_state = 0
-            if input_uid in rfid_uid or True:
+            if input_uid in rfid_uid:
                 query = DeviceStates.objects.filter(id='RFID').order_by('-time')
                 if query.exists():
                     if query[0].state :
@@ -223,7 +223,7 @@ def start_job():
     mqtt_client.loop_start()
     request_finished.connect(disconnect)
 
-    set_interval(on_predict,30)
+    set_interval(on_predict,10)
     #   init database data
     if not DoorState.objects.filter(key='auto').exists():
         state = DoorState.objects.create(key='auto', value='off')

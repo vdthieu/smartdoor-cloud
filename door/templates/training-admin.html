@@ -21,7 +21,7 @@
     <link rel="stylesheet" href=" {% static 'assets/css/cs-skin-elastic.css' %}">
     <link rel="stylesheet" href=" {% static 'assets/css/Footer-with-logo.css' %}">
     <link rel="stylesheet" href=" {% static 'assets/scss/style.css' %}">
-    <link rel="stylesheet" href=" {%static 'vendors/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href=" {% static 'vendors/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}">
     <link href=" {% static 'assets/css/lib/vector-map/jqvmap.min.css' %}">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 
@@ -47,24 +47,24 @@
         </div>
         <div id="main-menu" class="main-menu collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active">
+                <li>
                     <a href="/dashboard">
                         <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
                 </li>
                 <h3 class="menu-title"></h3>
                 <!-- /.menu-title -->
-                <li>
-                    <a href="/training-{{ user }}" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a>
+                <li class="active">
+                    <a href="/training-{{ user }}"> <i class="menu-icon ti-rocket "></i>Training</a>
                 </li>
                 <h3 class="menu-title"></h3>
                 <!-- /.menu-title -->
                 <li>
-                    <a href="/aboutus" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-github"></i>About us</a>
+                    <a href="/aboutus"> <i class="menu-icon ti-github"></i>About us</a>
                 </li>
                 <h3 class="menu-title"></h3>
                 <!-- /.menu-title -->
                 <li>
-                    <a href="/logout" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-shift-left"></i>Logout</a>
+                    <a href="/logout"> <i class="menu-icon ti-shift-left"></i>Logout</a>
                 </li>
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -134,7 +134,7 @@
                     <div class="h1 text-muted text-right mb-4">
                         <i class="fa ti-calendar"></i>
                     </div>
-                    <div class="h4 mb-0">
+                    <div class="h6 mb-art">
                         <span id="latest-training">--</span>
                     </div>
                     <small class="text-muted text-uppercase font-weight-bold">Latest training</small>
@@ -146,7 +146,7 @@
                     <div class="h1 text-muted text-right mb-4">
                         <i class="fa ti-view-list-alt"></i>
                     </div>
-                    <div class="h4 mb-0">
+                    <div class="h6 mb-0">
                         <span id="row-count">--</span>
                     </div>
                     <small class="text-muted text-uppercase font-weight-bold">Dataset Shape</small>
@@ -158,7 +158,7 @@
                     <div class="h1 text-muted text-right mb-4">
                         <i class="fa fa-clock-o"></i>
                     </div>
-                    <div class="h4 mb-0"  id="training-time">--</div>
+                    <div class="h6 mb-0"  id="training-time">--</div>
                     <small class="text-muted text-uppercase font-weight-bold">Avg. Time</small>
                     <div class="progress progress-xs mt-3 mb-0 bg-flat-color-5" style="width: 40%; height: 5px;"></div>
                 </div>
@@ -168,14 +168,14 @@
                     <div class="h1 text-muted text-right mb-4">
                         <i class="fa ti-star"></i>
                     </div>
-                    <div id="accuracy" class="h5 mb-0">
+                    <div id="accuracy" class="h6 mb-0">
                         <span >--</span>
                     </div>
                     <small class="text-muted text-uppercase font-weight-bold">Accuracy</small>
                     <div class="progress progress-xs mt-3 mb-0 bg-flat-color-4" style="width: 40%; height: 5px;"></div>
                 </div>
             </div>
-            
+
 {#            <div class="card col-md-6 no-padding ">#}
 {#                <div class="card-body">#}
 {#                    <div class="h1 text-muted text-right mb-4">#}
@@ -191,12 +191,16 @@
         </div>
     </div>
     <!--/.col-->
-    <div class="breadcrumbs" id="dashboard ">
+    <div class="breadcrumbs" id="dashboard">
         <div class="col-sm-4">
             <div class="page-header float-left">
                 <div class="page-title ">
-                    <h1>Prediction       
-                    <label class="switch switch-text switch-success"><input type="checkbox" class="switch-input" checked="true" disabled > <span data-on="On" data-off="Off" class="switch-label"></span> <span class="switch-handle"></span></label>
+                    <h1>Prediction
+                        <label class="switch switch-text switch-primary">
+                            <input id="predict_button" type="checkbox" class="switch-input" checked="true">
+                            <span data-on="On" data-off="Off" class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                        </label>
                     </h1>
                 </div>
             </div>
@@ -210,7 +214,7 @@
                 <strong class="card-title">Data Collection</strong>
             </div>
             <div class="card-body">
-                <table id="bootstrap-data-table-export" class="table table-striped">
+                <table id="data-table" class="table table-striped">
                    <thead>
 	                    <tr>
 	                        <th scope="col">#</th>
@@ -225,9 +229,9 @@
 			</div>
 		</div>
 	</div>
-                        
 
- 
+
+
 
 </div><!-- /#right-panel -->
 
@@ -273,48 +277,49 @@
         });
     })(jQuery);
     (function ($) {
-    //    "use strict";
+        //    "use strict";
 
 
-    /*  Data Table
-    -------------*/
-/*
-    $('#bootstrap-data-table').DataTable({
-        lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
-    });
+        /*  Data Table
+        -------------*/
+        /*
+            $('#bootstrap-data-table').DataTable({
+                lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
+            });
 
-    $('#data-table').DataTable({
-        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-    });*/
+            $('#data-table').DataTable({
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            });*/
 
-    $('#row-select').DataTable( {
-        initComplete: function () {
-                this.api().columns().every( function () {
+        $('#row-select').DataTable({
+            initComplete: function () {
+                this.api().columns().every(function () {
                     var column = this;
                     var select = $('<select class="form-control"><option value=""></option></select>')
-                        .appendTo( $(column.footer()).empty() )
-                        .on( 'change', function () {
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
                             var val = $.fn.dataTable.util.escapeRegex(
                                 $(this).val()
                             );
 
                             column
-                                .search( val ? '^'+val+'$' : '', true, false )
+                                .search(val ? '^' + val + '$' : '', true, false)
                                 .draw();
-                        } );
+                        });
 
-                    column.data().unique().sort().each( function ( d, j ) {
-                        select.append( '<option value="'+d+'">'+d+'</option>' )
-                    } );
-                } );
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
             }
-        } );
+        });
 
-})(jQuery);
+    })(jQuery);
 </script>
 </body>
-</html><script>
+</html>
+<script>
 
 </script>
 </body>

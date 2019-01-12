@@ -1,1 +1,1 @@
-hour,min,sec,LBED,THOM,LBAT,LKIT,RFID,DOOR,LLIV,weekDate_fri,weekDate_mon,weekDate_sat,weekDate_sun,weekDate_thu,weekDate_tue,weekDate_wed
+hour,min,RFID,LBED,THOM,LBAT,LKIT,DOOR,LLIV,weekDate_fri,weekDate_mon,weekDate_sat,weekDate_sun,weekDate_thu,weekDate_tue,weekDate_wed

@@ -12,7 +12,8 @@ from door.utils import \
     bind_ws_to_mq_message, \
     get_online_devices_ws_message, get_devices_logs_from_times, \
     get_devices_state_ws_message, binary_devices, \
-    on_control_predict_data, get_training_summary_ws_message
+    on_control_predict_data, get_training_summary_ws_message, \
+    get_training_status, toggle_training_status
 from door.learning import make_predict, make_train
 from door.models import DoorPassword, DoorHistory, DoorState
 
@@ -47,6 +48,16 @@ class DoorConsumer(WebsocketConsumer):
         self.send(json.dumps(get_devices_state_ws_message()))
         self.send(json.dumps(get_training_summary_ws_message(),cls=DjangoJSONEncoder))
 
+        prediction_query = DoorState.objects.filter(key='prediction')
+        self.send(json.dumps({
+            "type" : "PREDICTION STATE",
+            "value" : False if (prediction_query.exists() and prediction_query[0].value == 'off') else True
+        }))
+        self.send(json.dumps({
+            "type" : "TRAINING STATUS",
+            "state" : "training" if get_training_status() else "free"
+        }))
+
     def disconnect(self, close_code):
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
@@ -75,6 +86,12 @@ class DoorConsumer(WebsocketConsumer):
             pass
 
         if text_data_json['type'] == 'TRAINING CONTROL':
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name, {
+                    'type': 'update_training_status',
+                    'message': toggle_training_status()
+                    })
+
             if text_data_json['state']:
                 def progress_callback(result):
                     self.send(
@@ -82,6 +99,11 @@ class DoorConsumer(WebsocketConsumer):
                             "type": "TRAINING SUMMARY",
                             "data": result
                         }, cls=DjangoJSONEncoder))
+                    async_to_sync(self.channel_layer.group_send)(
+                        self.room_group_name, {
+                            'type': 'update_training_status',
+                            'message': toggle_training_status()
+                        })
                     # self.send(json.dumps({
                     #     'train_time' : result['']
                     # }))
@@ -100,6 +122,20 @@ class DoorConsumer(WebsocketConsumer):
             },
                 cls=DjangoJSONEncoder
             ))
+            pass
+
+        if text_data_json['type'] == 'TOGGLE PREDICT':
+            query = DoorState.objects.filter(key='prediction')
+            if query.exists():
+                instance = query[0]
+                instance.value = 'on' if text_data_json['state'] else 'off'
+                instance.save()
+            else:
+                instance = DoorState.objects.create(
+                    key='prediction',
+                    value='on' if text_data_json['state'] else 'off'
+                )
+                instance.save()
             pass
 
         if 'door_control' in text_data_json:
@@ -220,6 +256,13 @@ class DoorConsumer(WebsocketConsumer):
                     'message': message
                 }
             )
+
+    def update_training_status(self, event):
+        data = event['message']
+        self.send(json.dumps({
+            "type" : "TRAINING STATUS",
+            "state" : "training" if data else "free"
+        }))
 
     def update_history_list(self, event):
         data = json.loads(event['message'])

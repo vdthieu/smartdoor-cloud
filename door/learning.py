@@ -9,7 +9,7 @@ from door.utils import binary_devices, on_control_predict_data
 from sklearn import metrics
 import shutil
 import pydot
-from door.models import TrainingLog,TrainingDeviceParameter
+from door.models import TrainingLog,TrainingDeviceParameter,DoorState
 from django.forms.models import model_to_dict
 
 import datetime
@@ -49,9 +49,9 @@ def parse_data_from_local():
     # limit row for testing
     limit = 500000
 
-    column = ['weekDate', 'hour', 'min', 'sec']
-    value = [0, 0, 0, 0]
-    device_type = ['x', 'x', 'x', 'x']  # device is Classification = 'c', Regression = 'r'
+    column = ['weekDate', 'hour', 'min']
+    value = [0, 0, 0]
+    device_type = ['x', 'x', 'x']  # device is Classification = 'c', Regression = 'r'
     # get devices id
     input_file = open(input_file_name, 'r')
     line_count = 0
@@ -107,13 +107,13 @@ def parse_data_from_local():
         # enrich row
         if previous_row_time:
             while previous_row_time < device_time:
-                value[0:4] = [week_day[previous_row_time.weekday()], previous_row_time.hour, previous_row_time.minute, previous_row_time.second]
+                value[0:3] = [week_day[previous_row_time.weekday()], previous_row_time.hour, previous_row_time.minute]
                 previous_row_time += datetime.timedelta(minutes=1)
                 output_data.append(value.copy())
         previous_row_time = device_time + datetime.timedelta(minutes=1)
         # save
         value[column.index(device_id)] = device_state
-        value[0:4] = [week_day[device_time.weekday()], device_time.hour, device_time.minute, device_time.second]
+        value[0:3] = [week_day[device_time.weekday()], device_time.hour, device_time.minute]
         output_data.append(value.copy())
 
         index = index + 1
@@ -123,7 +123,7 @@ def parse_data_from_local():
 
 
 def parse_data(callback):
-    column = ['weekDate', 'hour', 'min', 'sec']
+    column = ['weekDate', 'hour', 'min']
     value = [0, 0, 0, 0]
     for item in DeviceStates.objects.values('id').distinct():
         column.append(item['id'])
@@ -132,7 +132,7 @@ def parse_data(callback):
     values = []
     for row in DeviceStates.objects.all():
         value[column.index(row.id)] = row.state
-        value[0:4] = [week_day[row.time.weekday()], row.time.hour, row.time.minute, row.time.second]
+        value[0:3] = [week_day[row.time.weekday()], row.time.hour, row.time.minute]
         values.append(value.copy())
 
     # write data set to csv
@@ -145,7 +145,8 @@ def train_data(callback):
     device_type = data_set.tail(n=1)
     data_set.drop(device_type.index, inplace=True)
 
-    device_list = list(data_set.columns)[4:]
+    device_list = list(data_set.columns)[3:]
+    print(device_list)
 
     data_set = pd.get_dummies(data_set, columns=['weekDate'])
 
@@ -264,10 +265,10 @@ def train_data(callback):
         log.save()
 
     callback({
-        'created_at': train_log.created_at,
+        'created_at': (train_log.created_at + datetime.timedelta(hours=7)),
         'train_time': train_log.train_time,
         'row_count': train_log.row_count,
-        'devices' : [model_to_dict(device,fields=[field.name for field in device._meta.fields]) for device in device_train_parameter_logs]
+        'devices' : [model_to_dict(device,fields=[field.name for field in device._meta.fields]) for device in device_train_parameter_logs if device.device_name not in ["DOOR","RFID"]]
     })
 
     df = pd.DataFrame(result_data)
@@ -275,12 +276,16 @@ def train_data(callback):
 
 
 def make_predict(callback,excepted=None):
+    query = DoorState.objects.filter(key='prediction')
+    if query.exists() and query[0].value == 'off':
+        return
+    # return
     predict = predict_data(excepted)
     current_array = get_device_state()
     dif = {}
     for device in current_array:
         try:
-            if float(device['state']) != float(predict[device['id']]):
+            if int(device['state']) != int(predict[device['id']]):
                 dif[device['id']] = predict[device['id']]
         except Exception:
             continue
@@ -291,8 +296,8 @@ def make_predict(callback,excepted=None):
 def predict_data(excepted= None):
     devices_state = get_device_state()
     now = datetime.datetime.now()
-    # [weekDate, hour, min, sec] = [week_day[now.weekday()], now.hour+7+4, now.minute, now.second]
-    [weekDate, hour, min, sec] = [week_day[now.weekday()],17, 56, now.second]
+    [weekDate, hour, min] = [week_day[now.weekday()], now.hour, now.minute]
+    # [weekDate, hour, min] = [week_day[now.weekday()], 17, 59]
     result = {}
     for folder_name in os.listdir(model_file):
         if folder_name in ['DOOR','RFID'] or (excepted and excepted == folder_name):
@@ -314,15 +319,19 @@ def predict_data(excepted= None):
                 value_vector[feature_list.index("weekDate_{}".format(weekDate))] = 1
                 value_vector[feature_list.index("hour")] = hour
                 value_vector[feature_list.index("min")] = min
-                value_vector[feature_list.index("sec")] = sec
             except ValueError:
                 continue
 
             predict = rf.predict([value_vector])[0]
-            result[folder_name] = predict
+            result[folder_name] = int(predict)
 
-            print(folder_name, '=> ',' '.join(feature_list))
-            print(display_string_in_gap(predict,8),' '.join([display_string_in_gap(value,len(feature_list[index])) for index, value in enumerate(value_vector)]))
+            for index,item in enumerate(devices_state):
+                if item['id'] == folder_name:
+                    item['state'] = int(predict)
+                    break
+            print(folder_name, ": ",int(predict))
+            print(' '.join(feature_list))
+            print(' '.join([display_string_in_gap(value,len(feature_list[index])) for index, value in enumerate(value_vector)]))
     #
     # input_string = []
     # output_string = []

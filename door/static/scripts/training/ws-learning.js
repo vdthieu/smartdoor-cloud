@@ -20,6 +20,15 @@ socket.onmessage = function (e) {
         }
         case 'TRAINING SUMMARY':{
             updateTrainingSummary(data.data);
+            $('#train_button').html('Start!');
+            break;
+        }
+        case 'PREDICTION STATE': {
+            $('#predict_button').prop('checked',data.value);
+            break;
+        }
+        case 'TRAINING STATUS' : {
+            udpateTrainingStatus(data);
             break;
         }
 

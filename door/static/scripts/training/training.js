@@ -8,6 +8,16 @@ $('#train_button').on('click',
         );
     });
 
+$('#predict_button').on('click',
+    function () {
+        socket.send(
+            JSON.stringify({
+                type: 'TOGGLE PREDICT',
+                state: $(this).prop('checked')
+            })
+        );
+    });
+
 function updateTrainingSummary(data) {
     $('#row-count').text(data.row_count);
     const created_date = new Date(data.created_at);
@@ -21,10 +31,41 @@ function updateTrainingSummary(data) {
 
     const accuracy = data.devices.map(
         item => item.type === 'C' ?
-            `<div>${item.device_name}:A(${item.accuracy})</div>`
+            `<div>${item.device_name}: A = ${item.accuracy} </div>`
             :
-            `<div>${item.device_name}:MSE(${item.mean_squared_error})</div>`
+            `<div>${item.device_name}: MSE = ${item.mean_squared_error} </div>`
     ).join('');
     $('#accuracy').html(accuracy);
     $('#training-time').text(`${data.train_time.toFixed(2)}s`);
+}
+
+let training_interval = null;
+let training_interval_count = 0;
+function udpateTrainingStatus(data) {
+    if (data.state === 'training' ){
+        training_interval = setInterval(() => {
+            switch(training_interval_count){
+                case 0: {
+                    $('#train_button').html('Training');
+                    break;
+                }
+                case 1: {
+                    $('#train_button').html('Training.');
+                    break;
+                }
+                case 2: {
+                    $('#train_button').html('Training..');
+                    break;
+                }
+                case 3: {
+                    $('#train_button').html('Training...');
+                    break;
+                }
+            }
+            training_interval_count = (training_interval_count + 1) % 4;
+        },500)
+    }else{
+        clearInterval(training_interval);
+        $('#train_button').html('Start!');
+    }
 }

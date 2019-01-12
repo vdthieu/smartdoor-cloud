@@ -1,4 +1,4 @@
-from door.models import DoorDevices, DeviceStates, TrainingDeviceParameter, TrainingLog
+from door.models import DoorDevices, DeviceStates, TrainingDeviceParameter, TrainingLog, DoorState
 from django.forms.models import model_to_dict
 
 binary_type = 1
@@ -129,8 +129,8 @@ def get_training_summary_ws_message():
     else:
         return {}
     devices = TrainingDeviceParameter.objects.filter(train_session=train_log)
-    devices = [model_to_dict(device, fields=[field.name for field in device._meta.fields])
-               for device in devices]
+    devices = [model_to_dict(device, fields=[field.name for field in device._meta.fields ])
+               for device in devices if device.device_name not in ["DOOR","RFID"]]
     data = {
         'created_at': train_log.created_at,
         'train_time': train_log.train_time,
@@ -182,3 +182,29 @@ def on_control_predict_data(data, mqtt_instance):
             mqtt_instance.publish(mqtt_message['topic'], mqtt_message['message'])
             continue
         mqtt_instance.publish(key, str(data[key]))
+
+
+def get_training_status():
+    """
+        return true if is traing
+    """
+    try:
+        query = DoorState.objects.get(key='training')
+        return query.value == 'on'
+    except DoorState.DoesNotExist:
+        return False
+
+
+def toggle_training_status(value = None):
+    try:
+        query = DoorState.objects.get(key='training')
+        if value is None:
+            query.value = 'on' if query.value == 'off' else 'off'
+        else:
+            query.value = 'on' if value else 'off'
+        query.save()
+        return query.value == 'on'
+    except DoorState.DoesNotExist:
+        instance = DoorState.objects.create(key='training', value='on')
+        instance.save()
+        return True
