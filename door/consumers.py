@@ -89,7 +89,7 @@ class DoorConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name, {
                     'type': 'update_training_status',
-                    'message': toggle_training_status()
+                    'message': toggle_training_status(True)
                     })
 
             if text_data_json['state']:
@@ -102,7 +102,7 @@ class DoorConsumer(WebsocketConsumer):
                     async_to_sync(self.channel_layer.group_send)(
                         self.room_group_name, {
                             'type': 'update_training_status',
-                            'message': toggle_training_status()
+                            'message': toggle_training_status(False)
                         })
                     # self.send(json.dumps({
                     #     'train_time' : result['']

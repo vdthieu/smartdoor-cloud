@@ -1,9 +1,9 @@
 Device,Training Type,Mean Absolute Error,Mean Squared Error,Accuracy,F1,R^2,Training Time(ms)
-RFID,Regression,0.0,0.0,-,-,1.0,2.113590955734253
-LBED,Classification,0.0,0.0,1.0,1.0,-,7.6314661502838135
-THOM,Regression,0.04,0.57,-,-,1.0,1.8550629615783691
-LBAT,Classification,0.0,0.0,1.0,0.99,-,6.514570951461792
-LKIT,Classification,0.0,0.0,1.0,0.98,-,6.220080852508545
-TOFF,Regression,0.09,2.7,-,-,0.99,1.625356912612915
-DOOR,Regression,0.0,0.0,-,-,0.42,1.6579370498657227
-LLIV,Classification,0.0,0.0,1.0,0.99,-,6.133724927902222
+RFID,Regression,0.0,0.0,-,-,1.0,1.795555830001831
+LBED,Classification,0.0,0.0,0.9992,1.0,-,7.363239049911499
+THOM,Regression,0.04,0.57,-,-,1.0,1.7736830711364746
+LBAT,Classification,0.0,0.0,0.9977,0.99,-,6.275049924850464
+LKIT,Classification,0.0,0.0,0.9981,0.98,-,6.179483890533447
+TOFF,Regression,0.09,2.7,-,-,0.99,1.6712169647216797
+DOOR,Regression,0.0,0.0,-,-,0.42,1.6037580966949463
+LLIV,Classification,0.0,0.0,0.9986,0.99,-,5.7722392082214355

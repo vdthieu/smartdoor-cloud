@@ -41,7 +41,7 @@ function updateTrainingSummary(data) {
 
 let training_interval = null;
 let training_interval_count = 0;
-function udpateTrainingStatus(data) {
+function updateTrainingStatus(data) {
     if (data.state === 'training' ){
         training_interval = setInterval(() => {
             switch(training_interval_count){

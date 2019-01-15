@@ -207,7 +207,8 @@ def train_data(callback):
         if device_name in binary_devices:
             mean_absolute_error = round(metrics.mean_absolute_error(test_labels, predictions), 2)
             mean_squared_error = round(metrics.mean_squared_error(test_labels, predictions), 2)
-            accuracy = round(metrics.accuracy_score(test_labels, predictions), 2)
+            accuracy = metrics.accuracy_score(test_labels, predictions)
+            accuracy = round(accuracy,4)
             f1 = round(metrics.f1_score(test_labels, predictions), 2)
             result_data.append([device_name, 'Classification', mean_absolute_error, mean_squared_error, accuracy, f1, '-', train_time])
             device_parameter_instance = TrainingDeviceParameter.objects.create(
@@ -265,7 +266,7 @@ def train_data(callback):
         log.save()
 
     callback({
-        'created_at': (train_log.created_at + datetime.timedelta(hours=7)),
+        'created_at': train_log.created_at,
         'train_time': train_log.train_time,
         'row_count': train_log.row_count,
         'devices' : [model_to_dict(device,fields=[field.name for field in device._meta.fields]) for device in device_train_parameter_logs if device.device_name not in ["DOOR","RFID"]]

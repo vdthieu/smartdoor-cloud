@@ -93,7 +93,7 @@ def get_online_devices_ws_message():
 
 def get_devices_logs_from_times(time):
     queries = DeviceStates.objects.filter(time__lte=time).order_by('-time').values()
-    queries = list(queries)[:100]
+    queries = list(queries)[:10]
     return queries
     pass
 

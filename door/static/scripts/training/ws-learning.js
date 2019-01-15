@@ -28,7 +28,7 @@ socket.onmessage = function (e) {
             break;
         }
         case 'TRAINING STATUS' : {
-            udpateTrainingStatus(data);
+            updateTrainingStatus(data);
             break;
         }
 
