@@ -190,10 +190,10 @@ def train_data(callback):
         train_features = train_features.astype('float')
 
         if device_name in binary_devices:
-            rf = RandomForestClassifier(n_estimators=100, random_state=42)
+            rf = RandomForestClassifier(n_estimators=100, random_state=25)
             rf.fit(train_features, train_labels)
         else:
-            rf = RandomForestRegressor(n_estimators=10, random_state=42)
+            rf = RandomForestRegressor(n_estimators=10, random_state=25)
             rf.fit(train_features, train_labels)
 
         # save modal
@@ -205,8 +205,8 @@ def train_data(callback):
         train_time = datetime.datetime.now().timestamp() - device_time
 
         if device_name in binary_devices:
-            mean_absolute_error = round(metrics.mean_absolute_error(test_labels, predictions), 2)
-            mean_squared_error = round(metrics.mean_squared_error(test_labels, predictions), 2)
+            mean_absolute_error = round(metrics.mean_absolute_error(test_labels, predictions), 4)
+            mean_squared_error = round(metrics.mean_squared_error(test_labels, predictions), 4)
             accuracy = metrics.accuracy_score(test_labels, predictions)
             accuracy = round(accuracy,4)
             f1 = round(metrics.f1_score(test_labels, predictions), 2)
@@ -221,8 +221,8 @@ def train_data(callback):
             )
             device_train_parameter_logs.append(device_parameter_instance)
         else:
-            mean_absolute_error = round(metrics.mean_absolute_error(test_labels, predictions), 2)
-            mean_squared_error = round(metrics.mean_squared_error(test_labels, predictions), 2)
+            mean_absolute_error = round(metrics.mean_absolute_error(test_labels, predictions), 4)
+            mean_squared_error = round(metrics.mean_squared_error(test_labels, predictions), 4)
             r2 = round(metrics.r2_score(test_labels, predictions), 2)
             result_data.append([device_name, 'Regression', mean_absolute_error, mean_squared_error, '-', '-', r2, train_time])
             device_parameter_instance = TrainingDeviceParameter.objects.create(

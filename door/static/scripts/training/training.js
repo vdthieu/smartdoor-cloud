@@ -33,7 +33,7 @@ function updateTrainingSummary(data) {
         item => item.type === 'C' ?
             `<div>${item.device_name}: A = ${item.accuracy} </div>`
             :
-            `<div>${item.device_name}: MSE = ${item.mean_squared_error} </div>`
+            `<div>${item.device_name}: MAE = ${item.mean_absolute_error} </div>`
     ).join('');
     $('#accuracy').html(accuracy);
     $('#training-time').text(`${data.train_time.toFixed(2)}s`);
