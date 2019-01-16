@@ -294,12 +294,9 @@
 {#<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>#}
 
 {#<script src="{% static 'scripts/script.js' %}"></script>#}
-<script src="{% static 'scripts/dashboard/ws-training.js' %}"></script>
-<script src="{% static 'scripts/dashboard/ledControl.js' %}"></script>
-<script src="{% static 'scripts/dashboard/tempControl.js' %}"></script>
 <script type="text/javascript">
   document.getElementById("training").onclick = function() {
-    if ({{ user }} === "user") {
+    if( {{ user }} === "user") {
     document.getElementById("training").href="/training-user";
     }
     return false;
@@ -320,6 +317,10 @@
             normalizeFunction: 'polynomial'
         });
     })(jQuery);
+    $ = jQuery.noConflict()
 </script>
+<script src="{% static 'scripts/dashboard/ledControl.js' %}"></script>
+<script src="{% static 'scripts/dashboard/tempControl.js' %}"></script>
+<script src="{% static 'scripts/dashboard/ws-dashboard.js' %}"></script>
 </body>
 </html>

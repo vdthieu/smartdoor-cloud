@@ -1,5 +1,6 @@
 from door.models import DoorDevices, DeviceStates, TrainingDeviceParameter, TrainingLog, DoorState
 from django.forms.models import model_to_dict
+import datetime
 
 binary_type = 1
 multiple_type = 2
@@ -92,6 +93,7 @@ def get_online_devices_ws_message():
 
 
 def get_devices_logs_from_times(time):
+    time = datetime.datetime.now()
     queries = DeviceStates.objects.filter(time__lte=time).order_by('-time').values()
     queries = list(queries)[:10]
     return queries

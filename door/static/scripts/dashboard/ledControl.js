@@ -8,14 +8,19 @@ const ledId = [
 ledId.forEach(
     led => {
         $(`#${led}`).on('click',
-            function(){
-            console.log('send', $(this).prop('checked'));
+            function () {
+                console.log('send',{
+                        type: 'LED CONTROL',
+                        id: led,
+                        state: $(this).prop('checked'),
+                        update: false
+                    });
                 socket.send(
                     JSON.stringify({
-                        type : 'LED CONTROL',
-                        id : led,
-                        state : $(this).prop('checked'),
-                        update : false
+                        type: 'LED CONTROL',
+                        id: led,
+                        state: $(this).prop('checked'),
+                        update: false
                     })
                 );
             })

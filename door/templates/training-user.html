@@ -54,17 +54,17 @@
                 <h3 class="menu-title"></h3>
                 <!-- /.menu-title -->
                 <li class="active">
-                    <a href="/training-{{ user }}" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-rocket "></i>Training</a>
+                    <a href="/training-{{ user }}"> <i class="menu-icon ti-rocket "></i>Training</a>
                 </li>
                 <h3 class="menu-title"></h3>
                 <!-- /.menu-title -->
                 <li>
-                    <a href="/aboutus" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-github"></i>About us</a>
+                    <a href="/aboutus"> <i class="menu-icon ti-github"></i>About us</a>
                 </li>
                 <h3 class="menu-title"></h3>
                 <!-- /.menu-title -->
                 <li>
-                    <a href="/logout" class="aria-has" popup=" true " aria-expanded="false "> <i class="menu-icon ti-shift-left"></i>Logout</a>
+                    <a href="/logout"> <i class="menu-icon ti-shift-left"></i>Logout</a>
                 </li>
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -103,7 +103,7 @@
         <div class="col-sm-4">
             <div class="page-header float-left">
                 <div class="page-title ">
-                    <h1>Users - Training</h1>
+                    <h1>User - Training</h1>
                 </div>
             </div>
         </div>
@@ -120,7 +120,9 @@
                     </div>
 
                     <div class="h4 mb-0">
-                        <button type="button" class="btn btn-warning btn-sm font-weight-bold">Bắt đầu</button>
+                        <button type="button" class="btn btn-warning btn-sm font-weight-bold" id="train_button" disabled>
+                            Start!
+                        </button>
                     </div>
 
                     <small class="text-muted text-uppercase font-weight-bold">Training Mode</small>
@@ -132,8 +134,8 @@
                     <div class="h1 text-muted text-right mb-4">
                         <i class="fa ti-calendar"></i>
                     </div>
-                    <div class="h4 mb-0">
-                        <span>5:34:11</span>
+                    <div class="h6 mb-art">
+                        <span id="latest-training">--</span>
                     </div>
                     <small class="text-muted text-uppercase font-weight-bold">Latest training</small>
                     <div class="progress progress-xs mt-3 mb-0 bg-flat-color-2" style="width: 40%; height: 5px;"></div>
@@ -144,10 +146,10 @@
                     <div class="h1 text-muted text-right mb-4">
                         <i class="fa ti-view-list-alt"></i>
                     </div>
-                    <div class="h4 mb-0">
-                        <span class="count">1238</span>
+                    <div class="h6 mb-0">
+                        <span id="row-count">--</span>
                     </div>
-                    <small class="text-muted text-uppercase font-weight-bold">Training data</small>
+                    <small class="text-muted text-uppercase font-weight-bold">Dataset Shape</small>
                     <div class="progress progress-xs mt-3 mb-0 bg-flat-color-3" style="width: 40%; height: 5px;"></div>
                 </div>
             </div>
@@ -156,39 +158,54 @@
                     <div class="h1 text-muted text-right mb-4">
                         <i class="fa fa-clock-o"></i>
                     </div>
-                    <div class="h4 mb-0">5:34:11</div>
+                    <div class="h6 mb-0"  id="training-time">--</div>
                     <small class="text-muted text-uppercase font-weight-bold">Avg. Time</small>
                     <div class="progress progress-xs mt-3 mb-0 bg-flat-color-5" style="width: 40%; height: 5px;"></div>
                 </div>
             </div>
-            <div class="card col-md-6 no-padding ">
+            <div class="card col-md-6 no-padding " style="min-width: 200px;">
                 <div class="card-body">
                     <div class="h1 text-muted text-right mb-4">
                         <i class="fa ti-star"></i>
                     </div>
-                    <div class="h4 mb-0">
-                        <span class="count">28</span>%
+                    <div id="accuracy" class="h6 mb-0">
+                        <span >--</span>
                     </div>
                     <small class="text-muted text-uppercase font-weight-bold">Accuracy</small>
                     <div class="progress progress-xs mt-3 mb-0 bg-flat-color-4" style="width: 40%; height: 5px;"></div>
                 </div>
             </div>
-            
-            <div class="card col-md-6 no-padding ">
-                <div class="card-body">
-                    <div class="h1 text-muted text-right mb-4">
-                        <i class="fa fa-comments-o"></i>
-                    </div>
-                    <div class="h4 mb-0">
-                        <span class="count">972</span>
-                    </div>
-                    <small class="text-muted text-uppercase font-weight-bold">COMMENTS</small>
-                    <div class="progress progress-xs mt-3 mb-0 bg-flat-color-1" style="width: 40%; height: 5px;"></div>
+
+{#            <div class="card col-md-6 no-padding ">#}
+{#                <div class="card-body">#}
+{#                    <div class="h1 text-muted text-right mb-4">#}
+{#                        <i class="fa fa-comments-o"></i>#}
+{#                    </div>#}
+{#                    <div class="h4 mb-0">#}
+{#                        <span class="count">972</span>#}
+{#                    </div>#}
+{#                    <small class="text-muted text-uppercase font-weight-bold">COMMENTS</small>#}
+{#                    <div class="progress progress-xs mt-3 mb-0 bg-flat-color-1" style="width: 40%; height: 5px;"></div>#}
+{#                </div>#}
+{#            </div>#}
+        </div>
+    </div>
+    <!--/.col-->
+    <div class="breadcrumbs" id="dashboard">
+        <div class="col-sm-4">
+            <div class="page-header float-left">
+                <div class="page-title ">
+                    <h1>Prediction
+                        <label class="switch switch-text switch-secondary">
+                            <input id="predict_button" type="checkbox" class="switch-input" checked="true" disabled>
+                            <span data-on="On" data-off="Off" class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                        </label>
+                    </h1>
                 </div>
             </div>
         </div>
     </div>
-    <!--/.col-->
     <!---Data Collection Table--->
 
      <div class="col-md-12">
@@ -212,9 +229,9 @@
 			</div>
 		</div>
 	</div>
-                        
 
- 
+
+
 
 </div><!-- /#right-panel -->
 
@@ -260,48 +277,49 @@
         });
     })(jQuery);
     (function ($) {
-    //    "use strict";
+        //    "use strict";
 
 
-    /*  Data Table
-    -------------*/
-/*
-    $('#bootstrap-data-table').DataTable({
-        lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
-    });
+        /*  Data Table
+        -------------*/
+        /*
+            $('#bootstrap-data-table').DataTable({
+                lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
+            });
 
-    $('#data-table').DataTable({
-        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-    });*/
+            $('#data-table').DataTable({
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+            });*/
 
-    $('#row-select').DataTable( {
-        initComplete: function () {
-                this.api().columns().every( function () {
+        $('#row-select').DataTable({
+            initComplete: function () {
+                this.api().columns().every(function () {
                     var column = this;
                     var select = $('<select class="form-control"><option value=""></option></select>')
-                        .appendTo( $(column.footer()).empty() )
-                        .on( 'change', function () {
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
                             var val = $.fn.dataTable.util.escapeRegex(
                                 $(this).val()
                             );
 
                             column
-                                .search( val ? '^'+val+'$' : '', true, false )
+                                .search(val ? '^' + val + '$' : '', true, false)
                                 .draw();
-                        } );
+                        });
 
-                    column.data().unique().sort().each( function ( d, j ) {
-                        select.append( '<option value="'+d+'">'+d+'</option>' )
-                    } );
-                } );
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
             }
-        } );
+        });
 
-})(jQuery);
+    })(jQuery);
 </script>
 </body>
-</html><script>
+</html>
+<script>
 
 </script>
 </body>
